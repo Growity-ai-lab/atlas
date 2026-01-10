@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segment Analizi | Time & Growity</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%); min-height: 100vh; color: #fff; }
+        
+        .header { background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .back-btn { padding: 8px 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: transparent; color: #fff; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; }
+        .back-btn:hover { background: rgba(255,255,255,0.1); }
+        .logo { font-size: 18px; font-weight: 700; color: #4fc3f7; }
+        .header-actions { display: flex; gap: 8px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-primary { background: linear-gradient(135deg, #4fc3f7, #29b6f6); color: #000; }
+        
+        .main-container { display: flex; height: calc(100vh - 56px); }
+        
+        /* Left Panel */
+        .left-panel { width: 300px; background: rgba(255,255,255,0.02); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
+        .panel-header { padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .panel-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .panel-subtitle { font-size: 11px; color: #888; }
+        .segment-list { flex: 1; overflow-y: auto; padding: 8px; }
+        .segment-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; border: 2px solid transparent; transition: all 0.2s; }
+        .segment-item:hover { background: rgba(255,255,255,0.05); }
+        .segment-item.selected { background: rgba(79,195,247,0.15); border-color: rgba(79,195,247,0.4); }
+        .segment-color { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+        .segment-info { flex: 1; min-width: 0; }
+        .segment-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .segment-parent { font-size: 10px; color: #666; }
+        .segment-reach { font-size: 11px; color: #4fc3f7; font-weight: 600; }
+        .segment-actions { display: flex; gap: 4px; }
+        .segment-action-btn { width: 24px; height: 24px; border-radius: 4px; border: none; background: rgba(255,255,255,0.1); color: #888; cursor: pointer; font-size: 12px; }
+        .segment-action-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .segment-action-btn.delete:hover { background: rgba(244,67,54,0.3); color: #f44336; }
+        
+        /* Center Panel */
+        .center-panel { flex: 1; display: flex; flex-direction: column; }
+        
+        /* Tabs */
+        .tabs { display: flex; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .tab { padding: 14px 24px; font-size: 13px; font-weight: 500; color: #888; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+        .tab:hover { color: #fff; background: rgba(255,255,255,0.03); }
+        .tab.active { color: #4fc3f7; border-bottom-color: #4fc3f7; }
+        
+        /* Tab Content */
+        .tab-content { flex: 1; display: none; padding: 20px; overflow: auto; }
+        .tab-content.active { display: block; }
+        
+        /* Quadrant */
+        .quadrant-container { display: flex; gap: 20px; height: 100%; }
+        .quadrant-canvas-wrap { flex: 1; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); position: relative; min-height: 500px; }
+        #quadrantCanvas { width: 100%; height: 100%; }
+        
+        /* Quadrant Right Panel */
+        .quadrant-details { width: 280px; display: flex; flex-direction: column; gap: 12px; }
+        .detail-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px; }
+        .detail-card-title { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; margin-bottom: 10px; }
+        .metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .metric-label { font-size: 11px; color: #aaa; }
+        .metric-input { width: 80px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 6px 8px; color: #4fc3f7; font-size: 13px; font-weight: 600; text-align: right; }
+        .metric-input:focus { outline: none; border-color: #4fc3f7; }
+        
+        /* Venn Diagram */
+        .venn-container { display: flex; gap: 20px; height: 100%; }
+        .venn-canvas-wrap { flex: 1; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); position: relative; min-height: 500px; display: flex; align-items: center; justify-content: center; }
+        #vennCanvas { max-width: 100%; max-height: 100%; }
+        
+        /* Venn Controls */
+        .venn-controls { width: 320px; display: flex; flex-direction: column; gap: 12px; }
+        .venn-segment-select { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px; }
+        .venn-select-title { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; margin-bottom: 10px; }
+        .venn-slot { display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px; border: 2px dashed rgba(255,255,255,0.1); }
+        .venn-slot.filled { border-style: solid; border-color: rgba(255,255,255,0.2); }
+        .venn-slot-color { width: 20px; height: 20px; border-radius: 50%; }
+        .venn-slot-name { flex: 1; font-size: 12px; }
+        .venn-slot-remove { width: 20px; height: 20px; border-radius: 4px; border: none; background: rgba(244,67,54,0.2); color: #f44336; cursor: pointer; font-size: 10px; }
+        .venn-slot-placeholder { color: #555; font-style: italic; font-size: 11px; }
+        
+        /* Intersection Results */
+        .intersection-results { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px; flex: 1; overflow-y: auto; }
+        .intersection-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 6px; }
+        .intersection-label { font-size: 12px; display: flex; align-items: center; gap: 6px; }
+        .intersection-dots { display: flex; gap: 3px; }
+        .intersection-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .intersection-value { font-size: 14px; font-weight: 700; color: #4fc3f7; }
+        .intersection-pct { font-size: 10px; color: #888; margin-left: 4px; }
+        
+        /* Comparison Table */
+        .comparison-container { height: 100%; overflow: auto; }
+        .comparison-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .comparison-table th { background: rgba(255,255,255,0.05); padding: 12px; text-align: left; font-weight: 600; color: #aaa; text-transform: uppercase; font-size: 10px; position: sticky; top: 0; }
+        .comparison-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .comparison-table tr:hover { background: rgba(255,255,255,0.03); }
+        .comparison-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .comparison-bar-fill { height: 100%; border-radius: 4px; }
+        
+        /* Tooltip */
+        .tooltip { position: fixed; background: rgba(0,0,0,0.95); padding: 12px 16px; border-radius: 10px; font-size: 12px; pointer-events: none; z-index: 1000; display: none; max-width: 280px; border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Legend */
+        .legend { padding: 12px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.1); }
+        .legend-title { font-size: 10px; color: #666; margin-bottom: 8px; }
+        .legend-items { display: flex; gap: 16px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; }
+        
+        /* Empty State */
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #555; text-align: center; }
+        .empty-icon { font-size: 48px; margin-bottom: 12px; }
+        .empty-title { font-size: 16px; color: #888; margin-bottom: 6px; }
+        .empty-desc { font-size: 12px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="../" class="back-btn">← Segment Seçimi</a>
+            <div class="logo">🎯 Segment Analizi</div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="exportPNG()">📥 PNG</button>
+            <button class="btn btn-secondary" onclick="exportExcel()">📊 Excel</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left Panel: Segment List -->
+        <div class="left-panel">
+            <div class="panel-header">
+                <div class="panel-title">Seçili Segmentler</div>
+                <div class="panel-subtitle" id="segmentCount">0 segment</div>
+            </div>
+            <div class="segment-list" id="segmentList"></div>
+            <div class="legend">
+                <div class="legend-title">Quadrant Konumu</div>
+                <div class="legend-items">
+                    <div class="legend-item"><div class="legend-color" style="background:#4caf50;"></div>Yüksek Öncelik</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#2196f3;"></div>Orta</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#ff9800;"></div>Düşük</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel -->
+        <div class="center-panel">
+            <div class="tabs">
+                <div class="tab active" data-tab="quadrant" onclick="switchTab('quadrant')">📊 Quadrant</div>
+                <div class="tab" data-tab="venn" onclick="switchTab('venn')">🔵 Kesişim Analizi</div>
+                <div class="tab" data-tab="comparison" onclick="switchTab('comparison')">📋 Karşılaştırma</div>
+            </div>
+
+            <!-- Quadrant Tab -->
+            <div class="tab-content active" id="tab-quadrant">
+                <div class="quadrant-container">
+                    <div class="quadrant-canvas-wrap">
+                        <canvas id="quadrantCanvas"></canvas>
+                    </div>
+                    <div class="quadrant-details">
+                        <div class="detail-card">
+                            <div class="detail-card-title">Seçili Segment</div>
+                            <div id="selectedSegmentInfo">
+                                <p style="color:#555;font-size:11px;text-align:center;">Düzenlemek için bir segment seçin</p>
+                            </div>
+                        </div>
+                        <div class="detail-card">
+                            <div class="detail-card-title">Eksen Açıklamaları</div>
+                            <div style="font-size:11px;color:#aaa;line-height:1.6;">
+                                <p><strong style="color:#4fc3f7;">X - Erişilebilirlik:</strong> Hedefe ulaşma kolaylığı, platform varlığı</p>
+                                <p style="margin-top:8px;"><strong style="color:#4fc3f7;">Y - Değer Potansiyeli:</strong> Müşteri değeri, LTV potansiyeli</p>
+                                <p style="margin-top:8px;"><strong style="color:#4fc3f7;">Boyut:</strong> Erişim hacmi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venn Tab -->
+            <div class="tab-content" id="tab-venn">
+                <div class="venn-container">
+                    <div class="venn-canvas-wrap">
+                        <canvas id="vennCanvas" width="600" height="500"></canvas>
+                    </div>
+                    <div class="venn-controls">
+                        <div class="venn-segment-select">
+                            <div class="venn-select-title">Kesişim için Segment Seç (Max 4)</div>
+                            <div id="vennSlots"></div>
+                            <p style="font-size:10px;color:#666;margin-top:8px;">Sol panelden segmentleri sürükleyin veya tıklayarak ekleyin</p>
+                        </div>
+                        <div class="intersection-results">
+                            <div class="venn-select-title">Kesişim Sonuçları</div>
+                            <div id="intersectionResults">
+                                <p style="color:#555;font-size:11px;text-align:center;">En az 2 segment seçin</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Tab -->
+            <div class="tab-content" id="tab-comparison">
+                <div class="comparison-container">
+                    <table class="comparison-table" id="comparisonTable">
+                        <thead>
+                            <tr>
+                                <th>Segment</th>
+                                <th>Ana Kategori</th>
+                                <th>Erişim Hacmi</th>
+                                <th>Erişilebilirlik</th>
+                                <th>Değer Potansiyeli</th>
+                                <th>Öncelik Skoru</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Segment colors
+        const segmentColors = [
+            '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', 
+            '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a',
+            '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'
+        ];
+
+        let segments = [];
+        let selectedSegmentId = null;
+        let vennSegments = [];
+        let quadrantCanvas, quadrantCtx, vennCanvas, vennCtx;
+        const padding = 60;
+
+        function init() {
+            const savedSegments = localStorage.getItem('selectedSegments');
+            if (!savedSegments) {
+                alert('Segment seçimi bulunamadı.');
+                window.location.href = '../';
+                return;
+            }
+
+            const rawSegments = JSON.parse(savedSegments);
+            segments = rawSegments.map((seg, index) => ({
+                ...seg,
+                color: segmentColors[index % segmentColors.length],
+                x: Math.floor(Math.random() * 40) + 30,
+                y: Math.floor(Math.random() * 40) + 30,
+                reachNum: seg.reach
+            }));
+
+            quadrantCanvas = document.getElementById('quadrantCanvas');
+            quadrantCtx = quadrantCanvas.getContext('2d');
+            vennCanvas = document.getElementById('vennCanvas');
+            vennCtx = vennCanvas.getContext('2d');
+
+            resizeQuadrantCanvas();
+            window.addEventListener('resize', resizeQuadrantCanvas);
+            quadrantCanvas.addEventListener('mousemove', handleQuadrantMouseMove);
+            quadrantCanvas.addEventListener('click', handleQuadrantClick);
+            quadrantCanvas.addEventListener('mouseleave', () => document.getElementById('tooltip').style.display = 'none');
+
+            renderSegmentList();
+            renderVennSlots();
+            drawQuadrant();
+            drawVenn();
+            renderComparison();
+        }
+
+        function resizeQuadrantCanvas() {
+            const container = quadrantCanvas.parentElement;
+            quadrantCanvas.width = container.clientWidth;
+            quadrantCanvas.height = container.clientHeight;
+            drawQuadrant();
+        }
+
+        function renderSegmentList() {
+            const list = document.getElementById('segmentList');
+            document.getElementById('segmentCount').textContent = `${segments.length} segment`;
+
+            list.innerHTML = segments.map((seg, idx) => `
+                <div class="segment-item ${selectedSegmentId === seg.id ? 'selected' : ''}" 
+                     data-id="${seg.id}" 
+                     onclick="selectSegment('${seg.id}')"
+                     draggable="true"
+                     ondragstart="dragStart(event, '${seg.id}')">
+                    <div class="segment-color" style="background:${seg.color};"></div>
+                    <div class="segment-info">
+                        <div class="segment-name">${seg.name}</div>
+                        <div class="segment-parent">${seg.parent}</div>
+                    </div>
+                    <div class="segment-reach">${formatReach(seg.reachNum)}</div>
+                    <div class="segment-actions">
+                        <button class="segment-action-btn" onclick="event.stopPropagation(); addToVenn('${seg.id}')" title="Venn'e ekle">+</button>
+                        <button class="segment-action-btn delete" onclick="event.stopPropagation(); removeSegment('${seg.id}')" title="Sil">×</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function selectSegment(id) {
+            selectedSegmentId = id;
+            const seg = segments.find(s => s.id === id);
+            renderSegmentList();
+            drawQuadrant();
+
+            if (seg) {
+                document.getElementById('selectedSegmentInfo').innerHTML = `
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                        <div style="width:16px;height:16px;border-radius:50%;background:${seg.color};"></div>
+                        <div style="font-size:13px;font-weight:600;">${seg.name}</div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Erişilebilirlik (X)</span>
+                        <input type="number" class="metric-input" value="${seg.x}" min="0" max="100" onchange="updateSegmentMetric('${seg.id}', 'x', this.value)">
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Değer Potansiyeli (Y)</span>
+                        <input type="number" class="metric-input" value="${seg.y}" min="0" max="100" onchange="updateSegmentMetric('${seg.id}', 'y', this.value)">
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Erişim Hacmi</span>
+                        <input type="text" class="metric-input" value="${formatReach(seg.reachNum)}" onchange="updateSegmentMetric('${seg.id}', 'reach', this.value)">
+                    </div>
+                `;
+            }
+        }
+
+        function updateSegmentMetric(id, metric, value) {
+            const seg = segments.find(s => s.id === id);
+            if (!seg) return;
+
+            if (metric === 'x') seg.x = Math.min(100, Math.max(0, parseInt(value) || 50));
+            else if (metric === 'y') seg.y = Math.min(100, Math.max(0, parseInt(value) || 50));
+            else if (metric === 'reach') seg.reachNum = parseReach(value);
+
+            drawQuadrant();
+            renderComparison();
+            renderSegmentList();
+        }
+
+        function removeSegment(id) {
+            segments = segments.filter(s => s.id !== id);
+            vennSegments = vennSegments.filter(v => v !== id);
+            if (selectedSegmentId === id) selectedSegmentId = null;
+            renderSegmentList();
+            renderVennSlots();
+            drawQuadrant();
+            drawVenn();
+            renderComparison();
+        }
+
+        function formatReach(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+            return num.toString();
+        }
+
+        function parseReach(str) {
+            str = str.toString().toUpperCase().replace(/\s/g, '');
+            if (str.includes('M')) return parseFloat(str) * 1000000;
+            if (str.includes('K')) return parseFloat(str) * 1000;
+            return parseInt(str) || 1000000;
+        }
+
+        // Quadrant Drawing
+        function drawQuadrant() {
+            const width = quadrantCanvas.width, height = quadrantCanvas.height;
+            quadrantCtx.fillStyle = '#0f0f1a';
+            quadrantCtx.fillRect(0, 0, width, height);
+
+            const chartWidth = width - padding * 2, chartHeight = height - padding * 2;
+            const centerX = padding + chartWidth / 2, centerY = padding + chartHeight / 2;
+
+            // Quadrant backgrounds
+            quadrantCtx.fillStyle = 'rgba(255,152,0,0.05)';
+            quadrantCtx.fillRect(padding, padding, chartWidth / 2, chartHeight / 2);
+            quadrantCtx.fillStyle = 'rgba(76,175,80,0.08)';
+            quadrantCtx.fillRect(centerX, padding, chartWidth / 2, chartHeight / 2);
+            quadrantCtx.fillStyle = 'rgba(244,67,54,0.05)';
+            quadrantCtx.fillRect(padding, centerY, chartWidth / 2, chartHeight / 2);
+            quadrantCtx.fillStyle = 'rgba(33,150,243,0.05)';
+            quadrantCtx.fillRect(centerX, centerY, chartWidth / 2, chartHeight / 2);
+
+            // Grid
+            quadrantCtx.strokeStyle = 'rgba(255,255,255,0.05)';
+            quadrantCtx.lineWidth = 1;
+            for (let i = 0; i <= 10; i++) {
+                quadrantCtx.beginPath();
+                quadrantCtx.moveTo(padding + (chartWidth / 10) * i, padding);
+                quadrantCtx.lineTo(padding + (chartWidth / 10) * i, height - padding);
+                quadrantCtx.stroke();
+                quadrantCtx.beginPath();
+                quadrantCtx.moveTo(padding, padding + (chartHeight / 10) * i);
+                quadrantCtx.lineTo(width - padding, padding + (chartHeight / 10) * i);
+                quadrantCtx.stroke();
+            }
+
+            // Axes
+            quadrantCtx.strokeStyle = 'rgba(255,255,255,0.2)';
+            quadrantCtx.lineWidth = 2;
+            quadrantCtx.beginPath();
+            quadrantCtx.moveTo(centerX, padding);
+            quadrantCtx.lineTo(centerX, height - padding);
+            quadrantCtx.stroke();
+            quadrantCtx.beginPath();
+            quadrantCtx.moveTo(padding, centerY);
+            quadrantCtx.lineTo(width - padding, centerY);
+            quadrantCtx.stroke();
+
+            // Labels
+            quadrantCtx.font = '10px Segoe UI';
+            quadrantCtx.fillStyle = 'rgba(255,255,255,0.4)';
+            quadrantCtx.textAlign = 'center';
+            quadrantCtx.fillText('YATIRIM GEREKLİ', padding + chartWidth / 4, padding + 20);
+            quadrantCtx.fillText('🎯 ÖNCELİK', centerX + chartWidth / 4, padding + 20);
+            quadrantCtx.fillText('DÜŞÜK PRİORİTE', padding + chartWidth / 4, height - padding - 10);
+            quadrantCtx.fillText('HACİM OYUNU', centerX + chartWidth / 4, height - padding - 10);
+
+            // Axis labels
+            quadrantCtx.fillStyle = 'rgba(255,255,255,0.5)';
+            quadrantCtx.fillText('Erişilebilirlik →', width / 2, height - 15);
+            quadrantCtx.save();
+            quadrantCtx.translate(18, height / 2);
+            quadrantCtx.rotate(-Math.PI / 2);
+            quadrantCtx.fillText('Değer Potansiyeli →', 0, 0);
+            quadrantCtx.restore();
+
+            // Draw segments
+            const maxReach = Math.max(...segments.map(s => s.reachNum), 1);
+
+            segments.forEach(seg => {
+                const x = padding + (seg.x / 100) * chartWidth;
+                const y = padding + ((100 - seg.y) / 100) * chartHeight;
+                const baseSize = (seg.reachNum / maxReach) * 40 + 15;
+                const size = selectedSegmentId === seg.id ? baseSize * 1.15 : baseSize;
+
+                // Selection glow
+                if (selectedSegmentId === seg.id) {
+                    quadrantCtx.beginPath();
+                    quadrantCtx.arc(x, y, size + 8, 0, Math.PI * 2);
+                    quadrantCtx.fillStyle = 'rgba(79,195,247,0.3)';
+                    quadrantCtx.fill();
+                }
+
+                // Bubble
+                quadrantCtx.beginPath();
+                quadrantCtx.arc(x, y, size, 0, Math.PI * 2);
+                quadrantCtx.fillStyle = seg.color + '40';
+                quadrantCtx.fill();
+                quadrantCtx.strokeStyle = seg.color;
+                quadrantCtx.lineWidth = selectedSegmentId === seg.id ? 3 : 2;
+                quadrantCtx.stroke();
+
+                // Label
+                quadrantCtx.fillStyle = '#fff';
+                quadrantCtx.font = `${size > 25 ? 11 : 9}px Segoe UI`;
+                quadrantCtx.textAlign = 'center';
+                quadrantCtx.textBaseline = 'middle';
+                const shortName = seg.name.length > 12 ? seg.name.substring(0, 10) + '...' : seg.name;
+                quadrantCtx.fillText(shortName, x, y);
+            });
+        }
+
+        function handleQuadrantMouseMove(e) {
+            const rect = quadrantCanvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+            const chartWidth = quadrantCanvas.width - padding * 2;
+            const chartHeight = quadrantCanvas.height - padding * 2;
+            const maxReach = Math.max(...segments.map(s => s.reachNum), 1);
+
+            let found = null;
+            segments.forEach(seg => {
+                const x = padding + (seg.x / 100) * chartWidth;
+                const y = padding + ((100 - seg.y) / 100) * chartHeight;
+                const size = (seg.reachNum / maxReach) * 40 + 15;
+                if (Math.sqrt((mx - x) ** 2 + (my - y) ** 2) < size) found = seg;
+            });
+
+            const tooltip = document.getElementById('tooltip');
+            if (found) {
+                quadrantCanvas.style.cursor = 'pointer';
+                tooltip.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                        <div style="width:12px;height:12px;border-radius:50%;background:${found.color};"></div>
+                        <strong>${found.name}</strong>
+                    </div>
+                    <div style="color:#888;font-size:11px;margin-bottom:8px;">${found.parent}</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">
+                        <div>Erişilebilirlik: <span style="color:#4fc3f7;font-weight:600;">${found.x}</span></div>
+                        <div>Değer: <span style="color:#4fc3f7;font-weight:600;">${found.y}</span></div>
+                        <div>Hacim: <span style="color:#4fc3f7;font-weight:600;">${formatReach(found.reachNum)}</span></div>
+                    </div>
+                `;
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY + 15) + 'px';
+            } else {
+                quadrantCanvas.style.cursor = 'default';
+                tooltip.style.display = 'none';
+            }
+        }
+
+        function handleQuadrantClick(e) {
+            const rect = quadrantCanvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+            const chartWidth = quadrantCanvas.width - padding * 2;
+            const chartHeight = quadrantCanvas.height - padding * 2;
+            const maxReach = Math.max(...segments.map(s => s.reachNum), 1);
+
+            segments.forEach(seg => {
+                const x = padding + (seg.x / 100) * chartWidth;
+                const y = padding + ((100 - seg.y) / 100) * chartHeight;
+                const size = (seg.reachNum / maxReach) * 40 + 15;
+                if (Math.sqrt((mx - x) ** 2 + (my - y) ** 2) < size) {
+                    selectSegment(seg.id);
+                }
+            });
+        }
+
+        // Venn Diagram
+        function addToVenn(id) {
+            if (vennSegments.includes(id)) return;
+            if (vennSegments.length >= 4) {
+                alert('Maksimum 4 segment seçebilirsiniz');
+                return;
+            }
+            vennSegments.push(id);
+            renderVennSlots();
+            drawVenn();
+        }
+
+        function removeFromVenn(id) {
+            vennSegments = vennSegments.filter(v => v !== id);
+            renderVennSlots();
+            drawVenn();
+        }
+
+        function renderVennSlots() {
+            const container = document.getElementById('vennSlots');
+            let html = '';
+
+            for (let i = 0; i < 4; i++) {
+                if (vennSegments[i]) {
+                    const seg = segments.find(s => s.id === vennSegments[i]);
+                    if (seg) {
+                        html += `
+                            <div class="venn-slot filled">
+                                <div class="venn-slot-color" style="background:${seg.color};"></div>
+                                <div class="venn-slot-name">${seg.name}</div>
+                                <button class="venn-slot-remove" onclick="removeFromVenn('${seg.id}')">×</button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    html += `
+                        <div class="venn-slot" ondrop="dropToVenn(event, ${i})" ondragover="event.preventDefault()">
+                            <div class="venn-slot-placeholder">Slot ${i + 1} - Segment sürükleyin</div>
+                        </div>
+                    `;
+                }
+            }
+
+            container.innerHTML = html;
+            calculateIntersections();
+        }
+
+        function dragStart(e, id) {
+            e.dataTransfer.setData('text/plain', id);
+        }
+
+        function dropToVenn(e, slotIndex) {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/plain');
+            if (!vennSegments.includes(id) && vennSegments.length < 4) {
+                vennSegments.push(id);
+                renderVennSlots();
+                drawVenn();
+            }
+        }
+
+        function drawVenn() {
+            const width = vennCanvas.width, height = vennCanvas.height;
+            vennCtx.fillStyle = '#0f0f1a';
+            vennCtx.fillRect(0, 0, width, height);
+
+            const vennSegs = vennSegments.map(id => segments.find(s => s.id === id)).filter(Boolean);
+            if (vennSegs.length < 2) {
+                vennCtx.fillStyle = '#555';
+                vennCtx.font = '14px Segoe UI';
+                vennCtx.textAlign = 'center';
+                vennCtx.fillText('En az 2 segment seçin', width / 2, height / 2);
+                return;
+            }
+
+            const centerX = width / 2, centerY = height / 2;
+            const radius = 120;
+            const positions = [
+                { x: centerX - 60, y: centerY - 40 },
+                { x: centerX + 60, y: centerY - 40 },
+                { x: centerX - 60, y: centerY + 60 },
+                { x: centerX + 60, y: centerY + 60 }
+            ];
+
+            // Draw circles
+            vennSegs.forEach((seg, i) => {
+                vennCtx.beginPath();
+                vennCtx.arc(positions[i].x, positions[i].y, radius, 0, Math.PI * 2);
+                vennCtx.fillStyle = seg.color + '30';
+                vennCtx.fill();
+                vennCtx.strokeStyle = seg.color;
+                vennCtx.lineWidth = 3;
+                vennCtx.stroke();
+            });
+
+            // Labels
+            const labelOffsets = [
+                { x: -80, y: -100 },
+                { x: 80, y: -100 },
+                { x: -80, y: 120 },
+                { x: 80, y: 120 }
+            ];
+
+            vennSegs.forEach((seg, i) => {
+                vennCtx.fillStyle = seg.color;
+                vennCtx.font = 'bold 12px Segoe UI';
+                vennCtx.textAlign = 'center';
+                const lx = positions[i].x + labelOffsets[i].x;
+                const ly = positions[i].y + labelOffsets[i].y;
+                vennCtx.fillText(seg.name, lx, ly);
+                vennCtx.fillStyle = '#888';
+                vennCtx.font = '11px Segoe UI';
+                vennCtx.fillText(formatReach(seg.reachNum), lx, ly + 16);
+            });
+
+            // Center intersection label
+            if (vennSegs.length >= 2) {
+                vennCtx.fillStyle = 'rgba(255,255,255,0.9)';
+                vennCtx.font = 'bold 14px Segoe UI';
+                vennCtx.textAlign = 'center';
+                const intersectReach = calculateTotalIntersection();
+                vennCtx.fillText(formatReach(intersectReach), centerX, centerY);
+                vennCtx.fillStyle = '#888';
+                vennCtx.font = '10px Segoe UI';
+                vennCtx.fillText('Kesişim', centerX, centerY + 16);
+            }
+        }
+
+        function calculateTotalIntersection() {
+            const vennSegs = vennSegments.map(id => segments.find(s => s.id === id)).filter(Boolean);
+            if (vennSegs.length < 2) return 0;
+
+            // Simplified intersection calculation (overlap assumption: 15-30%)
+            const minReach = Math.min(...vennSegs.map(s => s.reachNum));
+            const overlapFactor = 0.15 + (Math.random() * 0.15);
+            return Math.floor(minReach * overlapFactor);
+        }
+
+        function calculateIntersections() {
+            const container = document.getElementById('intersectionResults');
+            const vennSegs = vennSegments.map(id => segments.find(s => s.id === id)).filter(Boolean);
+
+            if (vennSegs.length < 2) {
+                container.innerHTML = '<p style="color:#555;font-size:11px;text-align:center;">En az 2 segment seçin</p>';
+                return;
+            }
+
+            let html = '';
+            const totalReach = vennSegs.reduce((sum, s) => sum + s.reachNum, 0);
+
+            // Individual segments
+            vennSegs.forEach(seg => {
+                const pct = ((seg.reachNum / totalReach) * 100).toFixed(1);
+                html += `
+                    <div class="intersection-item">
+                        <div class="intersection-label">
+                            <div class="intersection-dots"><div class="intersection-dot" style="background:${seg.color};"></div></div>
+                            ${seg.name}
+                        </div>
+                        <div>
+                            <span class="intersection-value">${formatReach(seg.reachNum)}</span>
+                            <span class="intersection-pct">(${pct}%)</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Pairwise intersections
+            for (let i = 0; i < vennSegs.length; i++) {
+                for (let j = i + 1; j < vennSegs.length; j++) {
+                    const minReach = Math.min(vennSegs[i].reachNum, vennSegs[j].reachNum);
+                    const intersect = Math.floor(minReach * (0.1 + Math.random() * 0.2));
+                    const pct = ((intersect / totalReach) * 100).toFixed(1);
+                    html += `
+                        <div class="intersection-item">
+                            <div class="intersection-label">
+                                <div class="intersection-dots">
+                                    <div class="intersection-dot" style="background:${vennSegs[i].color};"></div>
+                                    <div class="intersection-dot" style="background:${vennSegs[j].color};"></div>
+                                </div>
+                                Kesişim
+                            </div>
+                            <div>
+                                <span class="intersection-value">${formatReach(intersect)}</span>
+                                <span class="intersection-pct">(${pct}%)</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Total intersection (all)
+            if (vennSegs.length >= 2) {
+                const totalIntersect = calculateTotalIntersection();
+                const pct = ((totalIntersect / totalReach) * 100).toFixed(1);
+                html += `
+                    <div class="intersection-item" style="background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.3);">
+                        <div class="intersection-label">
+                            <div class="intersection-dots">
+                                ${vennSegs.map(s => `<div class="intersection-dot" style="background:${s.color};"></div>`).join('')}
+                            </div>
+                            <strong>Toplam Kesişim</strong>
+                        </div>
+                        <div>
+                            <span class="intersection-value">${formatReach(totalIntersect)}</span>
+                            <span class="intersection-pct">(${pct}%)</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Comparison Table
+        function renderComparison() {
+            const tbody = document.getElementById('comparisonBody');
+            const maxReach = Math.max(...segments.map(s => s.reachNum), 1);
+
+            tbody.innerHTML = segments.map(seg => {
+                const priorityScore = Math.round((seg.x * 0.4 + seg.y * 0.6));
+                const reachPct = (seg.reachNum / maxReach * 100).toFixed(0);
+
+                return `
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="width:12px;height:12px;border-radius:50%;background:${seg.color};"></div>
+                                <strong>${seg.name}</strong>
+                            </div>
+                        </td>
+                        <td style="color:#888;">${seg.parent}</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div class="comparison-bar" style="width:100px;">
+                                    <div class="comparison-bar-fill" style="width:${reachPct}%;background:${seg.color};"></div>
+                                </div>
+                                <span style="color:#4fc3f7;font-weight:600;">${formatReach(seg.reachNum)}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div class="comparison-bar" style="width:60px;">
+                                    <div class="comparison-bar-fill" style="width:${seg.x}%;background:#2196f3;"></div>
+                                </div>
+                                <span>${seg.x}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div class="comparison-bar" style="width:60px;">
+                                    <div class="comparison-bar-fill" style="width:${seg.y}%;background:#4caf50;"></div>
+                                </div>
+                                <span>${seg.y}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-weight:700;color:${priorityScore >= 60 ? '#4caf50' : priorityScore >= 40 ? '#ff9800' : '#f44336'};">
+                                ${priorityScore}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabName}`));
+            
+            if (tabName === 'quadrant') {
+                setTimeout(() => { resizeQuadrantCanvas(); }, 100);
+            }
+        }
+
+        // Export
+        function exportPNG() {
+            const activeTab = document.querySelector('.tab.active').dataset.tab;
+            const canvas = activeTab === 'venn' ? vennCanvas : quadrantCanvas;
+            const link = document.createElement('a');
+            link.download = `segment-${activeTab}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function exportExcel() {
+            let html = '<html><head><meta charset="UTF-8"></head><body><table border="1">';
+            html += '<tr><th>Segment</th><th>Kategori</th><th>Erişim</th><th>Erişilebilirlik</th><th>Değer</th><th>Öncelik</th></tr>';
+            segments.forEach(seg => {
+                const priority = Math.round((seg.x * 0.4 + seg.y * 0.6));
+                html += `<tr><td>${seg.name}</td><td>${seg.parent}</td><td>${formatReach(seg.reachNum)}</td><td>${seg.x}</td><td>${seg.y}</td><td>${priority}</td></tr>`;
+            });
+            html += '</table></body></html>';
+            const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'segment-analizi.xls';
+            link.click();
+        }
+
+        init();
+    </script>
+</body>
+</html>
