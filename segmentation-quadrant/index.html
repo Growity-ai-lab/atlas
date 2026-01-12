@@ -4,130 +4,681 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Segment Analizi | Time & Growity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --accent-blue: #00d4ff;
+            --accent-purple: #7c3aed;
+            --accent-orange: #ff6b35;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-pink: #ec4899;
+            --accent-red: #ef4444;
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888a0;
+            --border-color: #2a2a3a;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%); min-height: 100vh; color: #fff; }
         
-        .header { background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .header-left { display: flex; align-items: center; gap: 16px; }
-        .back-btn { padding: 8px 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: transparent; color: #fff; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; }
-        .back-btn:hover { background: rgba(255,255,255,0.1); }
-        .po-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 28px; background: rgba(227,30,36,0.15); border: 1px solid rgba(227,30,36,0.4); border-radius: 6px; cursor: pointer; transition: all 0.2s; text-decoration: none; }
-        .po-btn:hover { background: rgba(227,30,36,0.3); transform: scale(1.05); }
-        .logo { font-size: 18px; font-weight: 700; color: #4fc3f7; }
-        .header-actions { display: flex; gap: 8px; }
-        .btn { padding: 8px 16px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
-        .btn-primary { background: linear-gradient(135deg, #4fc3f7, #29b6f6); color: #000; }
-        
-        .main-container { display: flex; height: calc(100vh - 56px); }
-        
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(10,10,15,0.9);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(20px);
+        }
+
+        .header-left { display: flex; align-items: center; gap: 20px; }
+
+        .back-btn {
+            padding: 10px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: 'Sora', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            border-color: var(--accent-blue);
+            background: rgba(0,212,255,0.1);
+        }
+
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; }
+        .logo-text h1 { font-size: 18px; font-weight: 600; background: linear-gradient(90deg, #E91E8C, #7B2D8E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-text .version-line { display: flex; align-items: center; gap: 8px; }
+        .logo-text .version { font-size: 11px; color: var(--text-secondary); font-family: 'Space Mono', monospace; }
+        .logo-text .update-date { font-size: 10px; color: var(--text-secondary); font-family: 'Space Mono', monospace; opacity: 0.7; }
+
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+
+        .po-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            background: rgba(227,30,36,0.15);
+            border: 1px solid rgba(227,30,36,0.4);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            gap: 8px;
+            color: #e31e24;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .po-btn:hover {
+            background: rgba(227,30,36,0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(227,30,36,0.2);
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Sora', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-blue);
+            background: rgba(0,212,255,0.1);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 65px);
+            position: relative;
+            z-index: 1;
+        }
+
         /* Left Panel */
-        .left-panel { width: 300px; background: rgba(255,255,255,0.02); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
-        .panel-header { padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .panel-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-        .panel-subtitle { font-size: 11px; color: #888; }
-        .segment-list { flex: 1; overflow-y: auto; padding: 8px; }
-        .segment-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; border: 2px solid transparent; transition: all 0.2s; }
-        .segment-item:hover { background: rgba(255,255,255,0.05); }
-        .segment-item.selected { background: rgba(79,195,247,0.15); border-color: rgba(79,195,247,0.4); }
-        .segment-color { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+        .left-panel {
+            width: 320px;
+            background: rgba(26,26,36,0.8);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .panel-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .segment-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .segment-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            border: 2px solid transparent;
+            background: var(--bg-card);
+            transition: all 0.3s;
+        }
+
+        .segment-item:hover {
+            background: rgba(0,212,255,0.05);
+            border-color: rgba(0,212,255,0.2);
+        }
+
+        .segment-item.selected {
+            background: rgba(0,212,255,0.1);
+            border-color: var(--accent-blue);
+        }
+
+        .segment-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 10px currentColor;
+        }
+
         .segment-info { flex: 1; min-width: 0; }
-        .segment-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .segment-parent { font-size: 10px; color: #666; }
-        .segment-reach { font-size: 11px; color: #4fc3f7; font-weight: 600; }
-        .segment-actions { display: flex; gap: 4px; }
-        .segment-action-btn { width: 24px; height: 24px; border-radius: 4px; border: none; background: rgba(255,255,255,0.1); color: #888; cursor: pointer; font-size: 12px; }
-        .segment-action-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
-        .segment-action-btn.delete:hover { background: rgba(244,67,54,0.3); color: #f44336; }
-        
+
+        .segment-name {
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .segment-parent {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .segment-reach {
+            font-size: 12px;
+            color: var(--accent-blue);
+            font-weight: 600;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .segment-actions { display: flex; gap: 6px; }
+
+        .segment-action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .segment-action-btn:hover {
+            background: rgba(0,212,255,0.1);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .segment-action-btn.delete:hover {
+            background: rgba(239,68,68,0.1);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
         /* Center Panel */
-        .center-panel { flex: 1; display: flex; flex-direction: column; }
-        
+        .center-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
         /* Tabs */
-        .tabs { display: flex; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .tab { padding: 14px 24px; font-size: 13px; font-weight: 500; color: #888; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
-        .tab:hover { color: #fff; background: rgba(255,255,255,0.03); }
-        .tab.active { color: #4fc3f7; border-bottom-color: #4fc3f7; }
-        
+        .tabs {
+            display: flex;
+            background: rgba(26,26,36,0.6);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 20px;
+        }
+
+        .tab {
+            padding: 16px 28px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: rgba(0,212,255,0.05);
+        }
+
+        .tab.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
         /* Tab Content */
-        .tab-content { flex: 1; display: none; padding: 20px; overflow: auto; }
+        .tab-content {
+            flex: 1;
+            display: none;
+            padding: 24px;
+            overflow: auto;
+        }
+
         .tab-content.active { display: block; }
-        
+
         /* Quadrant */
-        .quadrant-container { display: flex; gap: 20px; height: 100%; }
-        .quadrant-canvas-wrap { flex: 1; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); position: relative; min-height: 500px; }
+        .quadrant-container {
+            display: flex;
+            gap: 24px;
+            height: 100%;
+        }
+
+        .quadrant-canvas-wrap {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            min-height: 500px;
+        }
+
         #quadrantCanvas { width: 100%; height: 100%; }
-        
-        /* Quadrant Right Panel */
-        .quadrant-details { width: 280px; display: flex; flex-direction: column; gap: 12px; }
-        .detail-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px; }
-        .detail-card-title { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; margin-bottom: 10px; }
-        .metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .metric-label { font-size: 11px; color: #aaa; }
-        .metric-input { width: 80px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 6px 8px; color: #4fc3f7; font-size: 13px; font-weight: 600; text-align: right; }
-        .metric-input:focus { outline: none; border-color: #4fc3f7; }
-        
+
+        /* Quadrant Details */
+        .quadrant-details {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .detail-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .detail-card-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .metric-input {
+            width: 90px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: var(--accent-blue);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Space Mono', monospace;
+            text-align: right;
+        }
+
+        .metric-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+        }
+
         /* Venn Diagram */
-        .venn-container { display: flex; gap: 20px; height: 100%; }
-        .venn-canvas-wrap { flex: 1; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); position: relative; min-height: 500px; display: flex; align-items: center; justify-content: center; }
+        .venn-container {
+            display: flex;
+            gap: 24px;
+            height: 100%;
+        }
+
+        .venn-canvas-wrap {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         #vennCanvas { max-width: 100%; max-height: 100%; }
-        
+
         /* Venn Controls */
-        .venn-controls { width: 320px; display: flex; flex-direction: column; gap: 12px; }
-        .venn-segment-select { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px; }
-        .venn-select-title { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; margin-bottom: 10px; }
-        .venn-slot { display: flex; align-items: center; gap: 10px; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-bottom: 8px; border: 2px dashed rgba(255,255,255,0.1); }
-        .venn-slot.filled { border-style: solid; border-color: rgba(255,255,255,0.2); }
-        .venn-slot-color { width: 20px; height: 20px; border-radius: 50%; }
-        .venn-slot-name { flex: 1; font-size: 12px; }
-        .venn-slot-remove { width: 20px; height: 20px; border-radius: 4px; border: none; background: rgba(244,67,54,0.2); color: #f44336; cursor: pointer; font-size: 10px; }
-        .venn-slot-placeholder { color: #555; font-style: italic; font-size: 11px; }
-        
+        .venn-controls {
+            width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .venn-segment-select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .venn-select-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .venn-slot {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 2px dashed var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .venn-slot.filled {
+            border-style: solid;
+            border-color: rgba(0,212,255,0.3);
+        }
+
+        .venn-slot-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .venn-slot-name {
+            flex: 1;
+            font-size: 13px;
+        }
+
+        .venn-slot-remove {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: none;
+            background: rgba(239,68,68,0.2);
+            color: var(--accent-red);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .venn-slot-remove:hover {
+            background: rgba(239,68,68,0.3);
+        }
+
+        .venn-slot-placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 12px;
+        }
+
         /* Intersection Results */
-        .intersection-results { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 14px; flex: 1; overflow-y: auto; }
-        .intersection-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 6px; margin-bottom: 6px; }
-        .intersection-label { font-size: 12px; display: flex; align-items: center; gap: 6px; }
-        .intersection-dots { display: flex; gap: 3px; }
-        .intersection-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .intersection-value { font-size: 14px; font-weight: 700; color: #4fc3f7; }
-        .intersection-pct { font-size: 10px; color: #888; margin-left: 4px; }
-        
+        .intersection-results {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .intersection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .intersection-label {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .intersection-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .intersection-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .intersection-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .intersection-pct {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: 6px;
+        }
+
         /* Comparison Table */
         .comparison-container { height: 100%; overflow: auto; }
-        .comparison-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .comparison-table th { background: rgba(255,255,255,0.05); padding: 12px; text-align: left; font-weight: 600; color: #aaa; text-transform: uppercase; font-size: 10px; position: sticky; top: 0; }
-        .comparison-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .comparison-table tr:hover { background: rgba(255,255,255,0.03); }
-        .comparison-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-        .comparison-bar-fill { height: 100%; border-radius: 4px; }
-        
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .comparison-table th {
+            background: var(--bg-card);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-size: 11px;
+            font-family: 'Space Mono', monospace;
+            position: sticky;
+            top: 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(0,212,255,0.03);
+        }
+
+        .comparison-bar {
+            height: 10px;
+            background: var(--bg-secondary);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .comparison-bar-fill {
+            height: 100%;
+            border-radius: 5px;
+        }
+
         /* Tooltip */
-        .tooltip { position: fixed; background: rgba(0,0,0,0.95); padding: 12px 16px; border-radius: 10px; font-size: 12px; pointer-events: none; z-index: 1000; display: none; max-width: 280px; border: 1px solid rgba(255,255,255,0.1); }
-        
+        .tooltip {
+            position: fixed;
+            background: rgba(26,26,36,0.98);
+            padding: 16px 20px;
+            border-radius: 14px;
+            font-size: 13px;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+            max-width: 300px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
         /* Legend */
-        .legend { padding: 12px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.1); }
-        .legend-title { font-size: 10px; color: #666; margin-bottom: 8px; }
-        .legend-items { display: flex; gap: 16px; flex-wrap: wrap; }
-        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #888; }
-        .legend-color { width: 12px; height: 12px; border-radius: 3px; }
-        
+        .legend {
+            padding: 16px 20px;
+            background: rgba(26,26,36,0.6);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .legend-title {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .legend-items {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+        }
+
         /* Empty State */
-        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #555; text-align: center; }
-        .empty-icon { font-size: 48px; margin-bottom: 12px; }
-        .empty-title { font-size: 16px; color: #888; margin-bottom: 6px; }
-        .empty-desc { font-size: 12px; }
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 13px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
     </style>
 </head>
 <body>
+    <div class="bg-grid"></div>
+
     <header class="header">
         <div class="header-left">
             <a href="../" class="back-btn">← Segment Seçimi</a>
-            <div class="logo">🎯 Segment Analizi</div>
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" width="40" height="40">
+                        <circle cx="14" cy="20" r="10" fill="none" stroke="#E91E8C" stroke-width="4"/>
+                        <circle cx="26" cy="20" r="10" fill="none" stroke="#7B2D8E" stroke-width="4"/>
+                        <path d="M14 10 A10 10 0 0 0 14 30" fill="none" stroke="#E91E8C" stroke-width="4"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Time & Growity</h1>
+                    <div class="version-line">
+                        <span class="version">Segment Analizi v7.8</span>
+                        <span class="update-date">• Ocak 2026</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="header-actions">
-            <a href="po-segmentasyon/" class="po-btn" title="Petrol Ofisi Premium Market">
-                <svg viewBox="0 0 100 70" width="28" height="20"><path d="M50 0 L95 50 L80 50 L80 70 L20 70 L20 50 L5 50 Z" fill="#e31e24"/><path d="M30 25 Q25 20 20 25 L5 50 L20 50 L30 35 Z" fill="#e31e24"/></svg>
+            <a href="po-segmentasyon/" class="po-btn">
+                🎯 PO Premium Market
             </a>
             <button class="btn btn-secondary" onclick="exportPNG()">📥 PNG</button>
             <button class="btn btn-secondary" onclick="exportExcel()">📊 Excel</button>
@@ -135,7 +686,6 @@
     </header>
 
     <div class="main-container">
-        <!-- Left Panel: Segment List -->
         <div class="left-panel">
             <div class="panel-header">
                 <div class="panel-title">Seçili Segmentler</div>
@@ -145,14 +695,13 @@
             <div class="legend">
                 <div class="legend-title">Quadrant Konumu</div>
                 <div class="legend-items">
-                    <div class="legend-item"><div class="legend-color" style="background:#4caf50;"></div>Yüksek Öncelik</div>
-                    <div class="legend-item"><div class="legend-color" style="background:#2196f3;"></div>Orta</div>
-                    <div class="legend-item"><div class="legend-color" style="background:#ff9800;"></div>Düşük</div>
+                    <div class="legend-item"><div class="legend-color" style="background:var(--accent-green);"></div>Yüksek Öncelik</div>
+                    <div class="legend-item"><div class="legend-color" style="background:var(--accent-blue);"></div>Orta</div>
+                    <div class="legend-item"><div class="legend-color" style="background:var(--accent-orange);"></div>Düşük</div>
                 </div>
             </div>
         </div>
 
-        <!-- Center Panel -->
         <div class="center-panel">
             <div class="tabs">
                 <div class="tab active" data-tab="quadrant" onclick="switchTab('quadrant')">📊 Quadrant</div>
@@ -160,7 +709,6 @@
                 <div class="tab" data-tab="comparison" onclick="switchTab('comparison')">📋 Karşılaştırma</div>
             </div>
 
-            <!-- Quadrant Tab -->
             <div class="tab-content active" id="tab-quadrant">
                 <div class="quadrant-container">
                     <div class="quadrant-canvas-wrap">
@@ -170,22 +718,21 @@
                         <div class="detail-card">
                             <div class="detail-card-title">Seçili Segment</div>
                             <div id="selectedSegmentInfo">
-                                <p style="color:#555;font-size:11px;text-align:center;">Düzenlemek için bir segment seçin</p>
+                                <p style="color:var(--text-secondary);font-size:12px;text-align:center;">Düzenlemek için bir segment seçin</p>
                             </div>
                         </div>
                         <div class="detail-card">
                             <div class="detail-card-title">Eksen Açıklamaları</div>
-                            <div style="font-size:11px;color:#aaa;line-height:1.6;">
-                                <p><strong style="color:#4fc3f7;">X - Erişilebilirlik:</strong> Hedefe ulaşma kolaylığı, platform varlığı</p>
-                                <p style="margin-top:8px;"><strong style="color:#4fc3f7;">Y - Değer Potansiyeli:</strong> Müşteri değeri, LTV potansiyeli</p>
-                                <p style="margin-top:8px;"><strong style="color:#4fc3f7;">Boyut:</strong> Erişim hacmi</p>
+                            <div style="font-size:12px;color:var(--text-secondary);line-height:1.7;">
+                                <p><strong style="color:var(--accent-blue);">X - Erişilebilirlik:</strong> Hedefe ulaşma kolaylığı, platform varlığı</p>
+                                <p style="margin-top:10px;"><strong style="color:var(--accent-purple);">Y - Değer Potansiyeli:</strong> Müşteri değeri, LTV potansiyeli</p>
+                                <p style="margin-top:10px;"><strong style="color:var(--accent-green);">Boyut:</strong> Erişim hacmi</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Venn Tab -->
             <div class="tab-content" id="tab-venn">
                 <div class="venn-container">
                     <div class="venn-canvas-wrap">
@@ -195,19 +742,18 @@
                         <div class="venn-segment-select">
                             <div class="venn-select-title">Kesişim için Segment Seç (Max 4)</div>
                             <div id="vennSlots"></div>
-                            <p style="font-size:10px;color:#666;margin-top:8px;">Sol panelden segmentleri sürükleyin veya tıklayarak ekleyin</p>
+                            <p style="font-size:11px;color:var(--text-secondary);margin-top:10px;">Sol panelden segmentleri sürükleyin veya + butonuyla ekleyin</p>
                         </div>
                         <div class="intersection-results">
                             <div class="venn-select-title">Kesişim Sonuçları</div>
                             <div id="intersectionResults">
-                                <p style="color:#555;font-size:11px;text-align:center;">En az 2 segment seçin</p>
+                                <p style="color:var(--text-secondary);font-size:12px;text-align:center;">En az 2 segment seçin</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Comparison Tab -->
             <div class="tab-content" id="tab-comparison">
                 <div class="comparison-container">
                     <table class="comparison-table" id="comparisonTable">
@@ -231,18 +777,17 @@
     <div class="tooltip" id="tooltip"></div>
 
     <script>
-        // Segment colors
         const segmentColors = [
-            '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', 
-            '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a',
-            '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'
+            '#00d4ff', '#7c3aed', '#ec4899', '#10b981', '#f59e0b', 
+            '#ef4444', '#06b6d4', '#8b5cf6', '#f43f5e', '#22c55e',
+            '#eab308', '#ff6b35', '#14b8a6', '#a855f7', '#f97316'
         ];
 
         let segments = [];
         let selectedSegmentId = null;
         let vennSegments = [];
         let quadrantCanvas, quadrantCtx, vennCanvas, vennCtx;
-        const padding = 60;
+        const padding = 70;
 
         function init() {
             const savedSegments = localStorage.getItem('selectedSegments');
@@ -296,7 +841,7 @@
                      onclick="selectSegment('${seg.id}')"
                      draggable="true"
                      ondragstart="dragStart(event, '${seg.id}')">
-                    <div class="segment-color" style="background:${seg.color};"></div>
+                    <div class="segment-color" style="background:${seg.color};color:${seg.color};"></div>
                     <div class="segment-info">
                         <div class="segment-name">${seg.name}</div>
                         <div class="segment-parent">${seg.parent}</div>
@@ -318,9 +863,9 @@
 
             if (seg) {
                 document.getElementById('selectedSegmentInfo').innerHTML = `
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-                        <div style="width:16px;height:16px;border-radius:50%;background:${seg.color};"></div>
-                        <div style="font-size:13px;font-weight:600;">${seg.name}</div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+                        <div style="width:20px;height:20px;border-radius:50%;background:${seg.color};box-shadow:0 0 15px ${seg.color};"></div>
+                        <div style="font-size:14px;font-weight:600;">${seg.name}</div>
                     </div>
                     <div class="metric-row">
                         <span class="metric-label">Erişilebilirlik (X)</span>
@@ -375,27 +920,26 @@
             return parseInt(str) || 1000000;
         }
 
-        // Quadrant Drawing
         function drawQuadrant() {
             const width = quadrantCanvas.width, height = quadrantCanvas.height;
-            quadrantCtx.fillStyle = '#0f0f1a';
+            quadrantCtx.fillStyle = '#0a0a0f';
             quadrantCtx.fillRect(0, 0, width, height);
 
             const chartWidth = width - padding * 2, chartHeight = height - padding * 2;
             const centerX = padding + chartWidth / 2, centerY = padding + chartHeight / 2;
 
             // Quadrant backgrounds
-            quadrantCtx.fillStyle = 'rgba(255,152,0,0.05)';
+            quadrantCtx.fillStyle = 'rgba(255,107,53,0.04)';
             quadrantCtx.fillRect(padding, padding, chartWidth / 2, chartHeight / 2);
-            quadrantCtx.fillStyle = 'rgba(76,175,80,0.08)';
+            quadrantCtx.fillStyle = 'rgba(16,185,129,0.06)';
             quadrantCtx.fillRect(centerX, padding, chartWidth / 2, chartHeight / 2);
-            quadrantCtx.fillStyle = 'rgba(244,67,54,0.05)';
+            quadrantCtx.fillStyle = 'rgba(239,68,68,0.04)';
             quadrantCtx.fillRect(padding, centerY, chartWidth / 2, chartHeight / 2);
-            quadrantCtx.fillStyle = 'rgba(33,150,243,0.05)';
+            quadrantCtx.fillStyle = 'rgba(0,212,255,0.04)';
             quadrantCtx.fillRect(centerX, centerY, chartWidth / 2, chartHeight / 2);
 
             // Grid
-            quadrantCtx.strokeStyle = 'rgba(255,255,255,0.05)';
+            quadrantCtx.strokeStyle = 'rgba(255,255,255,0.04)';
             quadrantCtx.lineWidth = 1;
             for (let i = 0; i <= 10; i++) {
                 quadrantCtx.beginPath();
@@ -409,7 +953,7 @@
             }
 
             // Axes
-            quadrantCtx.strokeStyle = 'rgba(255,255,255,0.2)';
+            quadrantCtx.strokeStyle = 'rgba(255,255,255,0.15)';
             quadrantCtx.lineWidth = 2;
             quadrantCtx.beginPath();
             quadrantCtx.moveTo(centerX, padding);
@@ -421,19 +965,20 @@
             quadrantCtx.stroke();
 
             // Labels
-            quadrantCtx.font = '10px Segoe UI';
-            quadrantCtx.fillStyle = 'rgba(255,255,255,0.4)';
+            quadrantCtx.font = '11px Sora';
+            quadrantCtx.fillStyle = 'rgba(255,255,255,0.35)';
             quadrantCtx.textAlign = 'center';
-            quadrantCtx.fillText('YATIRIM GEREKLİ', padding + chartWidth / 4, padding + 20);
-            quadrantCtx.fillText('🎯 ÖNCELİK', centerX + chartWidth / 4, padding + 20);
-            quadrantCtx.fillText('DÜŞÜK PRİORİTE', padding + chartWidth / 4, height - padding - 10);
-            quadrantCtx.fillText('HACİM OYUNU', centerX + chartWidth / 4, height - padding - 10);
+            quadrantCtx.fillText('YATIRIM GEREKLİ', padding + chartWidth / 4, padding + 24);
+            quadrantCtx.fillText('🎯 ÖNCELİK', centerX + chartWidth / 4, padding + 24);
+            quadrantCtx.fillText('DÜŞÜK PRİORİTE', padding + chartWidth / 4, height - padding - 12);
+            quadrantCtx.fillText('HACİM OYUNU', centerX + chartWidth / 4, height - padding - 12);
 
             // Axis labels
             quadrantCtx.fillStyle = 'rgba(255,255,255,0.5)';
-            quadrantCtx.fillText('Erişilebilirlik →', width / 2, height - 15);
+            quadrantCtx.font = '12px Space Mono';
+            quadrantCtx.fillText('Erişilebilirlik →', width / 2, height - 20);
             quadrantCtx.save();
-            quadrantCtx.translate(18, height / 2);
+            quadrantCtx.translate(22, height / 2);
             quadrantCtx.rotate(-Math.PI / 2);
             quadrantCtx.fillText('Değer Potansiyeli →', 0, 0);
             quadrantCtx.restore();
@@ -444,21 +989,21 @@
             segments.forEach(seg => {
                 const x = padding + (seg.x / 100) * chartWidth;
                 const y = padding + ((100 - seg.y) / 100) * chartHeight;
-                const baseSize = (seg.reachNum / maxReach) * 40 + 15;
+                const baseSize = (seg.reachNum / maxReach) * 45 + 18;
                 const size = selectedSegmentId === seg.id ? baseSize * 1.15 : baseSize;
 
                 // Selection glow
                 if (selectedSegmentId === seg.id) {
                     quadrantCtx.beginPath();
-                    quadrantCtx.arc(x, y, size + 8, 0, Math.PI * 2);
-                    quadrantCtx.fillStyle = 'rgba(79,195,247,0.3)';
+                    quadrantCtx.arc(x, y, size + 12, 0, Math.PI * 2);
+                    quadrantCtx.fillStyle = seg.color + '40';
                     quadrantCtx.fill();
                 }
 
                 // Bubble
                 quadrantCtx.beginPath();
                 quadrantCtx.arc(x, y, size, 0, Math.PI * 2);
-                quadrantCtx.fillStyle = seg.color + '40';
+                quadrantCtx.fillStyle = seg.color + '30';
                 quadrantCtx.fill();
                 quadrantCtx.strokeStyle = seg.color;
                 quadrantCtx.lineWidth = selectedSegmentId === seg.id ? 3 : 2;
@@ -466,10 +1011,10 @@
 
                 // Label
                 quadrantCtx.fillStyle = '#fff';
-                quadrantCtx.font = `${size > 25 ? 11 : 9}px Segoe UI`;
+                quadrantCtx.font = `${size > 28 ? 12 : 10}px Sora`;
                 quadrantCtx.textAlign = 'center';
                 quadrantCtx.textBaseline = 'middle';
-                const shortName = seg.name.length > 12 ? seg.name.substring(0, 10) + '...' : seg.name;
+                const shortName = seg.name.length > 14 ? seg.name.substring(0, 12) + '...' : seg.name;
                 quadrantCtx.fillText(shortName, x, y);
             });
         }
@@ -485,7 +1030,7 @@
             segments.forEach(seg => {
                 const x = padding + (seg.x / 100) * chartWidth;
                 const y = padding + ((100 - seg.y) / 100) * chartHeight;
-                const size = (seg.reachNum / maxReach) * 40 + 15;
+                const size = (seg.reachNum / maxReach) * 45 + 18;
                 if (Math.sqrt((mx - x) ** 2 + (my - y) ** 2) < size) found = seg;
             });
 
@@ -493,15 +1038,15 @@
             if (found) {
                 quadrantCanvas.style.cursor = 'pointer';
                 tooltip.innerHTML = `
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                        <div style="width:12px;height:12px;border-radius:50%;background:${found.color};"></div>
-                        <strong>${found.name}</strong>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                        <div style="width:14px;height:14px;border-radius:50%;background:${found.color};box-shadow:0 0 10px ${found.color};"></div>
+                        <strong style="font-size:14px;">${found.name}</strong>
                     </div>
-                    <div style="color:#888;font-size:11px;margin-bottom:8px;">${found.parent}</div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">
-                        <div>Erişilebilirlik: <span style="color:#4fc3f7;font-weight:600;">${found.x}</span></div>
-                        <div>Değer: <span style="color:#4fc3f7;font-weight:600;">${found.y}</span></div>
-                        <div>Hacim: <span style="color:#4fc3f7;font-weight:600;">${formatReach(found.reachNum)}</span></div>
+                    <div style="color:var(--text-secondary);font-size:12px;margin-bottom:10px;">${found.parent}</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;">
+                        <div>Erişilebilirlik: <span style="color:var(--accent-blue);font-weight:600;">${found.x}</span></div>
+                        <div>Değer: <span style="color:var(--accent-purple);font-weight:600;">${found.y}</span></div>
+                        <div>Hacim: <span style="color:var(--accent-green);font-weight:600;">${formatReach(found.reachNum)}</span></div>
                     </div>
                 `;
                 tooltip.style.display = 'block';
@@ -523,20 +1068,17 @@
             segments.forEach(seg => {
                 const x = padding + (seg.x / 100) * chartWidth;
                 const y = padding + ((100 - seg.y) / 100) * chartHeight;
-                const size = (seg.reachNum / maxReach) * 40 + 15;
+                const size = (seg.reachNum / maxReach) * 45 + 18;
                 if (Math.sqrt((mx - x) ** 2 + (my - y) ** 2) < size) {
                     selectSegment(seg.id);
                 }
             });
         }
 
-        // Venn Diagram
+        // Venn Functions
         function addToVenn(id) {
             if (vennSegments.includes(id)) return;
-            if (vennSegments.length >= 4) {
-                alert('Maksimum 4 segment seçebilirsiniz');
-                return;
-            }
+            if (vennSegments.length >= 4) { alert('Maksimum 4 segment'); return; }
             vennSegments.push(id);
             renderVennSlots();
             drawVenn();
@@ -551,36 +1093,21 @@
         function renderVennSlots() {
             const container = document.getElementById('vennSlots');
             let html = '';
-
             for (let i = 0; i < 4; i++) {
                 if (vennSegments[i]) {
                     const seg = segments.find(s => s.id === vennSegments[i]);
                     if (seg) {
-                        html += `
-                            <div class="venn-slot filled">
-                                <div class="venn-slot-color" style="background:${seg.color};"></div>
-                                <div class="venn-slot-name">${seg.name}</div>
-                                <button class="venn-slot-remove" onclick="removeFromVenn('${seg.id}')">×</button>
-                            </div>
-                        `;
+                        html += `<div class="venn-slot filled"><div class="venn-slot-color" style="background:${seg.color};color:${seg.color};"></div><div class="venn-slot-name">${seg.name}</div><button class="venn-slot-remove" onclick="removeFromVenn('${seg.id}')">×</button></div>`;
                     }
                 } else {
-                    html += `
-                        <div class="venn-slot" ondrop="dropToVenn(event, ${i})" ondragover="event.preventDefault()">
-                            <div class="venn-slot-placeholder">Slot ${i + 1} - Segment sürükleyin</div>
-                        </div>
-                    `;
+                    html += `<div class="venn-slot" ondrop="dropToVenn(event, ${i})" ondragover="event.preventDefault()"><div class="venn-slot-placeholder">Slot ${i + 1} - Segment sürükleyin</div></div>`;
                 }
             }
-
             container.innerHTML = html;
             calculateIntersections();
         }
 
-        function dragStart(e, id) {
-            e.dataTransfer.setData('text/plain', id);
-        }
-
+        function dragStart(e, id) { e.dataTransfer.setData('text/plain', id); }
         function dropToVenn(e, slotIndex) {
             e.preventDefault();
             const id = e.dataTransfer.getData('text/plain');
@@ -593,79 +1120,60 @@
 
         function drawVenn() {
             const width = vennCanvas.width, height = vennCanvas.height;
-            vennCtx.fillStyle = '#0f0f1a';
+            vennCtx.fillStyle = '#0a0a0f';
             vennCtx.fillRect(0, 0, width, height);
 
             const vennSegs = vennSegments.map(id => segments.find(s => s.id === id)).filter(Boolean);
             if (vennSegs.length < 2) {
-                vennCtx.fillStyle = '#555';
-                vennCtx.font = '14px Segoe UI';
+                vennCtx.fillStyle = 'var(--text-secondary)';
+                vennCtx.font = '15px Sora';
                 vennCtx.textAlign = 'center';
                 vennCtx.fillText('En az 2 segment seçin', width / 2, height / 2);
                 return;
             }
 
-            const centerX = width / 2, centerY = height / 2;
-            const radius = 120;
-            const positions = [
-                { x: centerX - 60, y: centerY - 40 },
-                { x: centerX + 60, y: centerY - 40 },
-                { x: centerX - 60, y: centerY + 60 },
-                { x: centerX + 60, y: centerY + 60 }
-            ];
+            const centerX = width / 2, centerY = height / 2, radius = 120;
+            const positions = [{ x: centerX - 60, y: centerY - 40 }, { x: centerX + 60, y: centerY - 40 }, { x: centerX - 60, y: centerY + 60 }, { x: centerX + 60, y: centerY + 60 }];
 
-            // Draw circles
             vennSegs.forEach((seg, i) => {
                 vennCtx.beginPath();
                 vennCtx.arc(positions[i].x, positions[i].y, radius, 0, Math.PI * 2);
-                vennCtx.fillStyle = seg.color + '30';
+                vennCtx.fillStyle = seg.color + '25';
                 vennCtx.fill();
                 vennCtx.strokeStyle = seg.color;
                 vennCtx.lineWidth = 3;
                 vennCtx.stroke();
             });
 
-            // Labels
-            const labelOffsets = [
-                { x: -80, y: -100 },
-                { x: 80, y: -100 },
-                { x: -80, y: 120 },
-                { x: 80, y: 120 }
-            ];
-
+            const labelOffsets = [{ x: -80, y: -100 }, { x: 80, y: -100 }, { x: -80, y: 120 }, { x: 80, y: 120 }];
             vennSegs.forEach((seg, i) => {
                 vennCtx.fillStyle = seg.color;
-                vennCtx.font = 'bold 12px Segoe UI';
+                vennCtx.font = 'bold 13px Sora';
                 vennCtx.textAlign = 'center';
-                const lx = positions[i].x + labelOffsets[i].x;
-                const ly = positions[i].y + labelOffsets[i].y;
+                const lx = positions[i].x + labelOffsets[i].x, ly = positions[i].y + labelOffsets[i].y;
                 vennCtx.fillText(seg.name, lx, ly);
                 vennCtx.fillStyle = '#888';
-                vennCtx.font = '11px Segoe UI';
-                vennCtx.fillText(formatReach(seg.reachNum), lx, ly + 16);
+                vennCtx.font = '12px Space Mono';
+                vennCtx.fillText(formatReach(seg.reachNum), lx, ly + 18);
             });
 
-            // Center intersection label
             if (vennSegs.length >= 2) {
                 vennCtx.fillStyle = 'rgba(255,255,255,0.9)';
-                vennCtx.font = 'bold 14px Segoe UI';
+                vennCtx.font = 'bold 16px Space Mono';
                 vennCtx.textAlign = 'center';
                 const intersectReach = calculateTotalIntersection();
                 vennCtx.fillText(formatReach(intersectReach), centerX, centerY);
                 vennCtx.fillStyle = '#888';
-                vennCtx.font = '10px Segoe UI';
-                vennCtx.fillText('Kesişim', centerX, centerY + 16);
+                vennCtx.font = '11px Sora';
+                vennCtx.fillText('Kesişim', centerX, centerY + 18);
             }
         }
 
         function calculateTotalIntersection() {
             const vennSegs = vennSegments.map(id => segments.find(s => s.id === id)).filter(Boolean);
             if (vennSegs.length < 2) return 0;
-
-            // Simplified intersection calculation (overlap assumption: 15-30%)
             const minReach = Math.min(...vennSegs.map(s => s.reachNum));
-            const overlapFactor = 0.15 + (Math.random() * 0.15);
-            return Math.floor(minReach * overlapFactor);
+            return Math.floor(minReach * (0.15 + Math.random() * 0.15));
         }
 
         function calculateIntersections() {
@@ -673,78 +1181,30 @@
             const vennSegs = vennSegments.map(id => segments.find(s => s.id === id)).filter(Boolean);
 
             if (vennSegs.length < 2) {
-                container.innerHTML = '<p style="color:#555;font-size:11px;text-align:center;">En az 2 segment seçin</p>';
+                container.innerHTML = '<p style="color:var(--text-secondary);font-size:12px;text-align:center;">En az 2 segment seçin</p>';
                 return;
             }
 
             let html = '';
             const totalReach = vennSegs.reduce((sum, s) => sum + s.reachNum, 0);
 
-            // Individual segments
             vennSegs.forEach(seg => {
                 const pct = ((seg.reachNum / totalReach) * 100).toFixed(1);
-                html += `
-                    <div class="intersection-item">
-                        <div class="intersection-label">
-                            <div class="intersection-dots"><div class="intersection-dot" style="background:${seg.color};"></div></div>
-                            ${seg.name}
-                        </div>
-                        <div>
-                            <span class="intersection-value">${formatReach(seg.reachNum)}</span>
-                            <span class="intersection-pct">(${pct}%)</span>
-                        </div>
-                    </div>
-                `;
+                html += `<div class="intersection-item"><div class="intersection-label"><div class="intersection-dots"><div class="intersection-dot" style="background:${seg.color};"></div></div>${seg.name}</div><div><span class="intersection-value">${formatReach(seg.reachNum)}</span><span class="intersection-pct">(${pct}%)</span></div></div>`;
             });
 
-            // Pairwise intersections
             for (let i = 0; i < vennSegs.length; i++) {
                 for (let j = i + 1; j < vennSegs.length; j++) {
-                    const minReach = Math.min(vennSegs[i].reachNum, vennSegs[j].reachNum);
-                    const intersect = Math.floor(minReach * (0.1 + Math.random() * 0.2));
-                    const pct = ((intersect / totalReach) * 100).toFixed(1);
-                    html += `
-                        <div class="intersection-item">
-                            <div class="intersection-label">
-                                <div class="intersection-dots">
-                                    <div class="intersection-dot" style="background:${vennSegs[i].color};"></div>
-                                    <div class="intersection-dot" style="background:${vennSegs[j].color};"></div>
-                                </div>
-                                Kesişim
-                            </div>
-                            <div>
-                                <span class="intersection-value">${formatReach(intersect)}</span>
-                                <span class="intersection-pct">(${pct}%)</span>
-                            </div>
-                        </div>
-                    `;
+                    const intersect = Math.floor(Math.min(vennSegs[i].reachNum, vennSegs[j].reachNum) * (0.1 + Math.random() * 0.2));
+                    html += `<div class="intersection-item"><div class="intersection-label"><div class="intersection-dots"><div class="intersection-dot" style="background:${vennSegs[i].color};"></div><div class="intersection-dot" style="background:${vennSegs[j].color};"></div></div>Kesişim</div><div><span class="intersection-value">${formatReach(intersect)}</span></div></div>`;
                 }
             }
 
-            // Total intersection (all)
-            if (vennSegs.length >= 2) {
-                const totalIntersect = calculateTotalIntersection();
-                const pct = ((totalIntersect / totalReach) * 100).toFixed(1);
-                html += `
-                    <div class="intersection-item" style="background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.3);">
-                        <div class="intersection-label">
-                            <div class="intersection-dots">
-                                ${vennSegs.map(s => `<div class="intersection-dot" style="background:${s.color};"></div>`).join('')}
-                            </div>
-                            <strong>Toplam Kesişim</strong>
-                        </div>
-                        <div>
-                            <span class="intersection-value">${formatReach(totalIntersect)}</span>
-                            <span class="intersection-pct">(${pct}%)</span>
-                        </div>
-                    </div>
-                `;
-            }
-
+            const totalIntersect = calculateTotalIntersection();
+            html += `<div class="intersection-item" style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);"><div class="intersection-label"><div class="intersection-dots">${vennSegs.map(s => `<div class="intersection-dot" style="background:${s.color};"></div>`).join('')}</div><strong>Toplam Kesişim</strong></div><div><span class="intersection-value">${formatReach(totalIntersect)}</span></div></div>`;
             container.innerHTML = html;
         }
 
-        // Comparison Table
         function renderComparison() {
             const tbody = document.getElementById('comparisonBody');
             const maxReach = Math.max(...segments.map(s => s.reachNum), 1);
@@ -752,61 +1212,25 @@
             tbody.innerHTML = segments.map(seg => {
                 const priorityScore = Math.round((seg.x * 0.4 + seg.y * 0.6));
                 const reachPct = (seg.reachNum / maxReach * 100).toFixed(0);
-
                 return `
                     <tr>
-                        <td>
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:12px;height:12px;border-radius:50%;background:${seg.color};"></div>
-                                <strong>${seg.name}</strong>
-                            </div>
-                        </td>
-                        <td style="color:#888;">${seg.parent}</td>
-                        <td>
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div class="comparison-bar" style="width:100px;">
-                                    <div class="comparison-bar-fill" style="width:${reachPct}%;background:${seg.color};"></div>
-                                </div>
-                                <span style="color:#4fc3f7;font-weight:600;">${formatReach(seg.reachNum)}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div class="comparison-bar" style="width:60px;">
-                                    <div class="comparison-bar-fill" style="width:${seg.x}%;background:#2196f3;"></div>
-                                </div>
-                                <span>${seg.x}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div class="comparison-bar" style="width:60px;">
-                                    <div class="comparison-bar-fill" style="width:${seg.y}%;background:#4caf50;"></div>
-                                </div>
-                                <span>${seg.y}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span style="font-weight:700;color:${priorityScore >= 60 ? '#4caf50' : priorityScore >= 40 ? '#ff9800' : '#f44336'};">
-                                ${priorityScore}
-                            </span>
-                        </td>
+                        <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:14px;height:14px;border-radius:50%;background:${seg.color};box-shadow:0 0 8px ${seg.color};"></div><strong>${seg.name}</strong></div></td>
+                        <td style="color:var(--text-secondary);">${seg.parent}</td>
+                        <td><div style="display:flex;align-items:center;gap:10px;"><div class="comparison-bar" style="width:100px;"><div class="comparison-bar-fill" style="width:${reachPct}%;background:${seg.color};"></div></div><span style="color:var(--accent-blue);font-weight:600;font-family:'Space Mono',monospace;">${formatReach(seg.reachNum)}</span></div></td>
+                        <td><div style="display:flex;align-items:center;gap:10px;"><div class="comparison-bar" style="width:70px;"><div class="comparison-bar-fill" style="width:${seg.x}%;background:var(--accent-blue);"></div></div><span>${seg.x}</span></div></td>
+                        <td><div style="display:flex;align-items:center;gap:10px;"><div class="comparison-bar" style="width:70px;"><div class="comparison-bar-fill" style="width:${seg.y}%;background:var(--accent-purple);"></div></div><span>${seg.y}</span></div></td>
+                        <td><span style="font-weight:700;font-family:'Space Mono',monospace;color:${priorityScore >= 60 ? 'var(--accent-green)' : priorityScore >= 40 ? 'var(--accent-orange)' : 'var(--accent-red)'};">${priorityScore}</span></td>
                     </tr>
                 `;
             }).join('');
         }
 
-        // Tab Switching
         function switchTab(tabName) {
             document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === `tab-${tabName}`));
-            
-            if (tabName === 'quadrant') {
-                setTimeout(() => { resizeQuadrantCanvas(); }, 100);
-            }
+            if (tabName === 'quadrant') setTimeout(resizeQuadrantCanvas, 100);
         }
 
-        // Export
         function exportPNG() {
             const activeTab = document.querySelector('.tab.active').dataset.tab;
             const canvas = activeTab === 'venn' ? vennCanvas : quadrantCanvas;
@@ -820,8 +1244,7 @@
             let html = '<html><head><meta charset="UTF-8"></head><body><table border="1">';
             html += '<tr><th>Segment</th><th>Kategori</th><th>Erişim</th><th>Erişilebilirlik</th><th>Değer</th><th>Öncelik</th></tr>';
             segments.forEach(seg => {
-                const priority = Math.round((seg.x * 0.4 + seg.y * 0.6));
-                html += `<tr><td>${seg.name}</td><td>${seg.parent}</td><td>${formatReach(seg.reachNum)}</td><td>${seg.x}</td><td>${seg.y}</td><td>${priority}</td></tr>`;
+                html += `<tr><td>${seg.name}</td><td>${seg.parent}</td><td>${formatReach(seg.reachNum)}</td><td>${seg.x}</td><td>${seg.y}</td><td>${Math.round((seg.x * 0.4 + seg.y * 0.6))}</td></tr>`;
             });
             html += '</table></body></html>';
             const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
