@@ -4,756 +4,437 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Segment Kütüphanesi | Time & Growity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --accent-blue: #00d4ff;
+            --accent-purple: #7c3aed;
+            --accent-orange: #ff6b35;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-pink: #ec4899;
+            --accent-red: #ef4444;
+            --accent-teal: #14b8a6;
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888a0;
+            --border-color: #2a2a3a;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%); min-height: 100vh; color: #fff; }
         
-        /* Header */
-        .header { background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: relative; }
-        .logo { font-size: 20px; font-weight: 700; color: #4fc3f7; display: flex; align-items: center; gap: 10px; }
-        .logo-sub { font-size: 11px; color: #666; font-weight: 400; }
-        .header-right { display: flex; align-items: center; gap: 16px; }
-        .po-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 32px; background: rgba(227,30,36,0.15); border: 1px solid rgba(227,30,36,0.4); border-radius: 6px; cursor: pointer; transition: all 0.2s; }
-        .po-btn:hover { background: rgba(227,30,36,0.3); transform: scale(1.05); }
-        .po-btn img.po-logo { width: 140px; height: auto; display: block; }
-        .selected-count { background: rgba(79,195,247,0.2); padding: 8px 16px; border-radius: 20px; font-size: 13px; color: #4fc3f7; }
-        .selected-count strong { color: #fff; }
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
-        .btn-primary { background: linear-gradient(135deg, #4fc3f7, #29b6f6); color: #000; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79,195,247,0.3); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        
-        /* Main */
-        .main { max-width: 1800px; margin: 0 auto; padding: 24px; }
-        
-        /* Hero */
-        .hero { text-align: center; padding: 40px 20px; margin-bottom: 32px; }
-        .hero-title { font-size: 36px; font-weight: 700; margin-bottom: 12px; background: linear-gradient(135deg, #fff, #4fc3f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero-subtitle { font-size: 16px; color: #888; max-width: 600px; margin: 0 auto; }
-        
-        /* Stats Bar */
-        .stats-bar { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
-        .stat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 20px; border-radius: 30px; font-size: 13px; display: flex; align-items: center; gap: 8px; }
-        .stat-pill strong { color: #4fc3f7; font-size: 16px; }
-        
-        /* Search & Filters */
-        .controls { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 48px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo { display: flex; align-items: center; gap: 16px; }
+        .logo-icon { width: 52px; height: 52px; }
+        .logo-text h1 { font-size: 24px; font-weight: 600; background: linear-gradient(90deg, #E91E8C, #7B2D8E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-text .version-line { display: flex; align-items: center; gap: 12px; margin-top: 2px; }
+        .logo-text .version { font-size: 12px; color: var(--text-secondary); font-family: 'Space Mono', monospace; letter-spacing: 1px; }
+        .logo-text .update-date { font-size: 11px; color: var(--text-secondary); font-family: 'Space Mono', monospace; opacity: 0.7; }
+
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .badge { background: var(--bg-card); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; font-size: 12px; color: var(--accent-blue); font-family: 'Space Mono', monospace; }
+
+        .hero { text-align: center; padding: 60px 20px 40px; margin-bottom: 40px; }
+        .hero-badge { display: inline-block; background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15)); border: 1px solid rgba(0,212,255,0.3); padding: 8px 20px; border-radius: 30px; font-size: 12px; font-family: 'Space Mono', monospace; color: var(--accent-blue); margin-bottom: 24px; }
+        .hero-title { font-size: 48px; font-weight: 700; margin-bottom: 16px; background: linear-gradient(135deg, #fff 0%, var(--accent-blue) 50%, var(--accent-purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtitle { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        .stats-bar { display: flex; gap: 16px; margin-bottom: 40px; justify-content: center; flex-wrap: wrap; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); padding: 16px 24px; border-radius: 12px; display: flex; align-items: center; gap: 12px; transition: all 0.3s; }
+        .stat-card:hover { border-color: var(--accent-blue); transform: translateY(-2px); }
+        .stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .stat-icon.blue { background: rgba(0,212,255,0.15); }
+        .stat-icon.purple { background: rgba(124,58,237,0.15); }
+        .stat-icon.green { background: rgba(16,185,129,0.15); }
+        .stat-icon.orange { background: rgba(255,107,53,0.15); }
+        .stat-value { font-size: 24px; font-weight: 700; font-family: 'Space Mono', monospace; color: var(--accent-blue); }
+        .stat-label { font-size: 12px; color: var(--text-secondary); }
+
+        .controls { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
         .search-box { flex: 1; min-width: 300px; position: relative; }
-        .search-input { width: 100%; padding: 14px 20px 14px 50px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(255,255,255,0.05); color: #fff; font-size: 15px; }
-        .search-input::placeholder { color: #555; }
-        .search-input:focus { outline: none; border-color: #4fc3f7; background: rgba(255,255,255,0.08); }
-        .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 18px; }
+        .search-input { width: 100%; padding: 16px 20px 16px 52px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-card); color: var(--text-primary); font-size: 15px; font-family: 'Sora', sans-serif; transition: all 0.3s; }
+        .search-input::placeholder { color: var(--text-secondary); }
+        .search-input:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(0,212,255,0.1); }
+        .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--text-secondary); }
         .filter-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-        .filter-btn { padding: 12px 20px; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; background: rgba(255,255,255,0.03); color: #aaa; font-size: 13px; cursor: pointer; transition: all 0.2s; }
-        .filter-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
-        .filter-btn.active { background: rgba(79,195,247,0.2); border-color: #4fc3f7; color: #4fc3f7; }
-        
-        /* Segment Grid */
-        .segment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
-        
-        /* Parent Segment Card */
-        .parent-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; transition: all 0.3s; }
-        .parent-card:hover { border-color: rgba(255,255,255,0.15); }
-        .parent-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .parent-info { display: flex; align-items: center; gap: 12px; }
-        .parent-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .parent-name { font-size: 15px; font-weight: 600; }
-        .parent-count { font-size: 11px; color: #666; margin-top: 2px; }
+        .filter-btn { padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-card); color: var(--text-secondary); font-size: 13px; font-family: 'Sora', sans-serif; cursor: pointer; transition: all 0.2s; }
+        .filter-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+        .filter-btn.active { background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(124,58,237,0.2)); border-color: var(--accent-blue); color: var(--accent-blue); }
+
+        .segment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 24px; }
+
+        .parent-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; transition: all 0.3s; }
+        .parent-card:hover { border-color: rgba(0,212,255,0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .parent-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid var(--border-color); transition: background 0.2s; }
+        .parent-header:hover { background: rgba(255,255,255,0.02); }
+        .parent-info { display: flex; align-items: center; gap: 14px; }
+        .parent-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .parent-name { font-size: 16px; font-weight: 600; }
+        .parent-count { font-size: 12px; color: var(--text-secondary); font-family: 'Space Mono', monospace; margin-top: 2px; }
         .parent-actions { display: flex; align-items: center; gap: 12px; }
-        .select-all-btn { padding: 6px 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; background: transparent; color: #888; font-size: 11px; cursor: pointer; transition: all 0.2s; }
-        .select-all-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        .expand-icon { font-size: 12px; color: #666; transition: transform 0.3s; }
+        .select-all-btn { padding: 8px 14px; border: 1px solid var(--border-color); border-radius: 8px; background: transparent; color: var(--text-secondary); font-size: 11px; font-family: 'Space Mono', monospace; cursor: pointer; transition: all 0.2s; }
+        .select-all-btn:hover { background: rgba(0,212,255,0.1); border-color: var(--accent-blue); color: var(--accent-blue); }
+        .expand-icon { font-size: 14px; color: var(--text-secondary); transition: transform 0.3s; }
         .parent-card.expanded .expand-icon { transform: rotate(180deg); }
-        
-        /* Sub Segments */
+
         .sub-segments { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
         .parent-card.expanded .sub-segments { max-height: 1000px; }
-        .sub-segment { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: all 0.2s; }
-        .sub-segment:hover { background: rgba(255,255,255,0.03); }
+        .sub-segment { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: all 0.2s; }
+        .sub-segment:hover { background: rgba(0,212,255,0.05); }
         .sub-segment:last-child { border-bottom: none; }
-        .sub-segment.selected { background: rgba(79,195,247,0.1); }
-        .checkbox { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 5px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
-        .checkbox.checked { background: #4fc3f7; border-color: #4fc3f7; }
-        .checkbox.checked::after { content: '✓'; color: #000; font-size: 12px; font-weight: bold; }
+        .sub-segment.selected { background: rgba(0,212,255,0.1); }
+        .checkbox { width: 22px; height: 22px; border: 2px solid var(--border-color); border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+        .checkbox.checked { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-color: var(--accent-blue); }
+        .checkbox.checked::after { content: '✓'; color: #fff; font-size: 12px; font-weight: bold; }
         .sub-info { flex: 1; }
-        .sub-name { font-size: 13px; font-weight: 500; }
-        .sub-desc { font-size: 11px; color: #666; margin-top: 2px; }
+        .sub-name { font-size: 14px; font-weight: 500; }
+        .sub-desc { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
         .sub-meta { display: flex; gap: 8px; }
-        .meta-tag { padding: 3px 8px; border-radius: 12px; font-size: 10px; background: rgba(255,255,255,0.05); color: #888; }
-        
-        /* Color Themes for Parents */
-        .theme-blue .parent-icon { background: rgba(33,150,243,0.2); color: #64b5f6; }
-        .theme-purple .parent-icon { background: rgba(156,39,176,0.2); color: #ba68c8; }
-        .theme-green .parent-icon { background: rgba(76,175,80,0.2); color: #81c784; }
-        .theme-orange .parent-icon { background: rgba(255,152,0,0.2); color: #ffb74d; }
-        .theme-red .parent-icon { background: rgba(244,67,54,0.2); color: #e57373; }
-        .theme-cyan .parent-icon { background: rgba(0,188,212,0.2); color: #4dd0e1; }
-        .theme-pink .parent-icon { background: rgba(233,30,99,0.2); color: #f06292; }
-        .theme-teal .parent-icon { background: rgba(0,150,136,0.2); color: #4db6ac; }
-        .theme-indigo .parent-icon { background: rgba(63,81,181,0.2); color: #7986cb; }
-        .theme-amber .parent-icon { background: rgba(255,193,7,0.2); color: #ffd54f; }
-        
-        /* Empty State */
-        .empty-state { text-align: center; padding: 60px 20px; color: #666; }
-        .empty-state-icon { font-size: 64px; margin-bottom: 16px; }
-        
-        /* Footer Actions */
-        .footer-actions { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(15,15,26,0.95); border-top: 1px solid rgba(255,255,255,0.1); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; transform: translateY(100%); transition: transform 0.3s; }
+        .meta-tag { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-family: 'Space Mono', monospace; background: rgba(255,255,255,0.05); color: var(--text-secondary); }
+
+        .theme-blue .parent-icon { background: rgba(0,212,255,0.15); color: var(--accent-blue); }
+        .theme-purple .parent-icon { background: rgba(124,58,237,0.15); color: var(--accent-purple); }
+        .theme-green .parent-icon { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+        .theme-orange .parent-icon { background: rgba(255,107,53,0.15); color: var(--accent-orange); }
+        .theme-pink .parent-icon { background: rgba(236,72,153,0.15); color: var(--accent-pink); }
+        .theme-yellow .parent-icon { background: rgba(245,158,11,0.15); color: var(--accent-yellow); }
+        .theme-red .parent-icon { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+        .theme-teal .parent-icon { background: rgba(20,184,166,0.15); color: var(--accent-teal); }
+        .theme-cyan .parent-icon { background: rgba(6,182,212,0.15); color: #06b6d4; }
+        .theme-indigo .parent-icon { background: rgba(99,102,241,0.15); color: #6366f1; }
+
+        .empty-state { text-align: center; padding: 80px 20px; color: var(--text-secondary); }
+        .empty-state-icon { font-size: 72px; margin-bottom: 20px; opacity: 0.5; }
+
+        .footer-actions { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,10,15,0.95); border-top: 1px solid var(--border-color); padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(20px); transform: translateY(100%); transition: transform 0.3s; z-index: 100; }
         .footer-actions.visible { transform: translateY(0); }
         .footer-left { display: flex; align-items: center; gap: 16px; }
-        .clear-btn { padding: 10px 20px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; background: transparent; color: #888; font-size: 13px; cursor: pointer; }
-        .clear-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
-        
-        /* Scrollbar */
+        .selected-chips { display: flex; gap: 8px; flex-wrap: wrap; max-width: 600px; }
+        .selected-chip { background: rgba(0,212,255,0.15); border: 1px solid rgba(0,212,255,0.3); padding: 6px 12px; border-radius: 20px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+        .chip-remove { cursor: pointer; opacity: 0.7; }
+        .chip-remove:hover { opacity: 1; }
+
+        .btn { padding: 14px 28px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); color: #fff; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,212,255,0.3); }
+        .btn-secondary { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); }
+        .btn-secondary:hover { border-color: var(--accent-blue); }
+
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .segment-grid { grid-template-columns: 1fr; }
-            .hero-title { font-size: 28px; }
-            .controls { flex-direction: column; }
-            .po-btn img.po-logo { width: 100px; }
-        }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="logo">
-            🎯 Segment Kütüphanesi
-            <span class="logo-sub">by Time & Growity</span>
-        </div>
-        <div class="header-right">
-            <a href="segmentation-quadrant/po-segmentasyon/" class="po-btn" title="Petrol Ofisi Premium Market">
-                <img src="image.png" alt="Petrol Ofisi Premium Market" class="po-logo" />
-            </a>
-            <div class="selected-count">
-                <strong id="selectedCount">0</strong> segment seçildi
+    <div class="bg-grid"></div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 52 52" width="52" height="52">
+                        <!-- Pink ring (left, behind) -->
+                        <circle cx="18" cy="26" r="14" fill="none" stroke="#E91E8C" stroke-width="5"/>
+                        <!-- Purple ring (right, in front) with mask for interlock -->
+                        <defs>
+                            <mask id="interlockMask">
+                                <rect width="100%" height="100%" fill="white"/>
+                                <path d="M18 12 A14 14 0 0 1 18 40" fill="black"/>
+                            </mask>
+                        </defs>
+                        <circle cx="34" cy="26" r="14" fill="none" stroke="#7B2D8E" stroke-width="5"/>
+                        <!-- Pink arc that goes over purple (the interlock part) -->
+                        <path d="M18 12 A14 14 0 0 0 18 40" fill="none" stroke="#E91E8C" stroke-width="5"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Time & Growity</h1>
+                    <div class="version-line">
+                        <span class="version">Segment Kütüphanesi v7.8</span>
+                        <span class="update-date">• Ocak 2026</span>
+                    </div>
+                </div>
             </div>
-            <button class="btn btn-primary" id="goToQuadrant" disabled onclick="goToQuadrant()">
-                Quadrant'a Git →
-            </button>
-        </div>
-    </header>
+            <div class="header-actions">
+                <span class="badge">40 SEGMENT</span>
+                <a href="segmentation-quadrant/po-segmentasyon/" class="btn btn-secondary">🎯 PO Premium Market</a>
+            </div>
+        </header>
 
-    <main class="main">
-        <div class="hero">
-            <h1 class="hero-title">Hedef Kitle Segment Kütüphanesi</h1>
-            <p class="hero-subtitle">100+ hazır segmentten projeniz için uygun olanları seçin ve interaktif quadrant analizine gönderin</p>
-        </div>
+        <section class="hero">
+            <div class="hero-badge">🎯 MEDYA PLANLAMA ARACI</div>
+            <h1 class="hero-title">Segment Kütüphanesi</h1>
+            <p class="hero-subtitle">TDY Lifestyle segmentlerini keşfedin, analiz edin ve medya planlamanızı optimize edin.</p>
+        </section>
 
         <div class="stats-bar">
-            <div class="stat-pill"><strong id="totalParents">30</strong> Ana Segment</div>
-            <div class="stat-pill"><strong id="totalSubs">120</strong> Alt Segment</div>
-            <div class="stat-pill"><strong>3</strong> Platform Desteği</div>
-            <div class="stat-pill"><strong>BHT</strong> Entegrasyonu</div>
+            <div class="stat-card">
+                <div class="stat-icon blue">👥</div>
+                <div><div class="stat-value">40</div><div class="stat-label">Toplam Segment</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon purple">📊</div>
+                <div><div class="stat-value">10</div><div class="stat-label">Ana Kategori</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">✓</div>
+                <div><div class="stat-value" id="selectedCount">0</div><div class="stat-label">Seçili Segment</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">📈</div>
+                <div><div class="stat-value" id="totalReach">0%</div><div class="stat-label">Tahmini Reach</div></div>
+            </div>
         </div>
 
         <div class="controls">
             <div class="search-box">
                 <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" id="searchInput" placeholder="Segment ara..." oninput="filterSegments()">
+                <input type="text" class="search-input" placeholder="Segment ara..." id="searchInput">
             </div>
             <div class="filter-btns">
-                <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Tümü</button>
-                <button class="filter-btn" data-filter="aile" onclick="setFilter('aile')">👨‍👩‍👧 Aile</button>
-                <button class="filter-btn" data-filter="teknoloji" onclick="setFilter('teknoloji')">📱 Teknoloji</button>
-                <button class="filter-btn" data-filter="yasam" onclick="setFilter('yasam')">🌿 Yaşam Tarzı</button>
-                <button class="filter-btn" data-filter="alisveris" onclick="setFilter('alisveris')">🛒 Alışveriş</button>
-                <button class="filter-btn" data-filter="seyahat" onclick="setFilter('seyahat')">✈️ Seyahat</button>
-                <button class="filter-btn" data-filter="finans" onclick="setFilter('finans')">💰 Finans</button>
+                <button class="filter-btn active" data-filter="all">Tümü</button>
+                <button class="filter-btn" data-filter="lifestyle">🌟 Lifestyle</button>
+                <button class="filter-btn" data-filter="demografik">👤 Demografik</button>
+                <button class="filter-btn" data-filter="davranis">🛒 Davranış</button>
             </div>
         </div>
 
         <div class="segment-grid" id="segmentGrid"></div>
-    </main>
+    </div>
 
     <div class="footer-actions" id="footerActions">
         <div class="footer-left">
-            <button class="clear-btn" onclick="clearSelection()">Seçimi Temizle</button>
-            <span style="color:#666;font-size:13px;" id="footerInfo">Quadrant için en az 5 segment seçin</span>
+            <span style="color: var(--text-secondary); font-size: 13px;"><strong id="footerCount" style="color: var(--accent-blue);">0</strong> segment seçildi</span>
+            <div class="selected-chips" id="selectedChips"></div>
         </div>
-        <button class="btn btn-primary" onclick="goToQuadrant()">
-            Quadrant Analizine Git →
-        </button>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn-secondary" onclick="clearSelection()">Temizle</button>
+            <button class="btn btn-secondary" onclick="exportSelection()">📥 CSV</button>
+            <button class="btn btn-primary" onclick="goToQuadrant()">📊 Quadrant'a Gönder →</button>
+        </div>
     </div>
 
     <script>
-        // Segment Kütüphanesi - 30 Ana Segment, 120+ Alt Segment
-        const segmentLibrary = [
-            {
-                id: 'aileler',
-                name: 'Aileler & Ebeveynler',
-                icon: '👨‍👩‍👧',
-                theme: 'theme-blue',
-                category: 'aile',
-                subs: [
-                    { id: 'aileler_1', name: 'Yeni Ebeveynler (0-2 yaş)', desc: 'İlk çocuğunu bekleyen veya yeni doğum yapmış aileler', reach: 2500000 },
-                    { id: 'aileler_2', name: 'Okul Öncesi Ebeveynleri', desc: '3-6 yaş arası çocuklu aileler', reach: 3200000 },
-                    { id: 'aileler_3', name: 'İlkokul Velileri', desc: '7-11 yaş arası çocuklu aileler', reach: 4100000 },
-                    { id: 'aileler_4', name: 'Ergen Ebeveynleri', desc: '12-18 yaş arası çocuklu aileler', reach: 3800000 },
-                ]
-            },
-            {
-                id: 'genc_yetiskinler',
-                name: 'Genç Yetişkinler',
-                icon: '🎓',
-                theme: 'theme-purple',
-                category: 'yasam',
-                subs: [
-                    { id: 'genc_1', name: 'Üniversite Öğrencileri', desc: 'Aktif üniversite öğrencileri', reach: 4500000 },
-                    { id: 'genc_2', name: 'Yeni Mezunlar', desc: 'Son 2 yılda mezun olmuş gençler', reach: 1800000 },
-                    { id: 'genc_3', name: 'Kariyer Başlangıcı', desc: 'İlk işinde çalışan 22-28 yaş', reach: 3200000 },
-                    { id: 'genc_4', name: 'Bekar Profesyoneller', desc: 'Evlenmemiş, kariyer odaklı gençler', reach: 2900000 },
-                ]
-            },
-            {
-                id: 'teknoloji_meraklilari',
-                name: 'Teknoloji Meraklıları',
-                icon: '📱',
-                theme: 'theme-cyan',
-                category: 'teknoloji',
-                subs: [
-                    { id: 'tech_1', name: 'Early Adopters', desc: 'Yeni teknolojileri ilk deneyen kullanıcılar', reach: 1200000 },
-                    { id: 'tech_2', name: 'Gadget Tutkunları', desc: 'Elektronik cihaz koleksiyoncuları', reach: 2100000 },
-                    { id: 'tech_3', name: 'Yazılım Geliştiriciler', desc: 'Profesyonel ve amatör kodcular', reach: 850000 },
-                    { id: 'tech_4', name: 'Gaming Topluluğu', desc: 'Aktif oyun oynayan kullanıcılar', reach: 5200000 },
-                    { id: 'tech_5', name: 'Akıllı Ev Kullanıcıları', desc: 'IoT ve akıllı ev sistemleri kullananlar', reach: 1500000 },
-                ]
-            },
-            {
-                id: 'saglik_fitness',
-                name: 'Sağlık & Fitness',
-                icon: '💪',
-                theme: 'theme-green',
-                category: 'yasam',
-                subs: [
-                    { id: 'saglik_1', name: 'Spor Salonu Üyeleri', desc: 'Düzenli fitness merkezi kullananlar', reach: 3800000 },
-                    { id: 'saglik_2', name: 'Koşucular & Maratoncular', desc: 'Koşu sporuna ilgi duyanlar', reach: 2200000 },
-                    { id: 'saglik_3', name: 'Yoga & Pilates Severler', desc: 'Zihin-beden egzersizleri yapanlar', reach: 1900000 },
-                    { id: 'saglik_4', name: 'Diyet Takipçileri', desc: 'Aktif diyet ve beslenme programı uygulayan', reach: 4100000 },
-                    { id: 'saglik_5', name: 'Doğal Yaşam Savunucuları', desc: 'Organik ve doğal ürün tercih edenler', reach: 2800000 },
-                ]
-            },
-            {
-                id: 'seyahat_turizm',
-                name: 'Seyahat & Turizm',
-                icon: '✈️',
-                theme: 'theme-orange',
-                category: 'seyahat',
-                subs: [
-                    { id: 'seyahat_1', name: 'Sık Seyahat Edenler', desc: 'Yılda 5+ kez seyahat edenler', reach: 2100000 },
-                    { id: 'seyahat_2', name: 'Lüks Tatilciler', desc: '5 yıldızlı otel tercih edenler', reach: 890000 },
-                    { id: 'seyahat_3', name: 'Bütçe Gezginleri', desc: 'Ekonomik seyahat seçenekleri arayanlar', reach: 4500000 },
-                    { id: 'seyahat_4', name: 'Macera Tutkunları', desc: 'Ekstrem sporlar ve macera turları', reach: 1400000 },
-                    { id: 'seyahat_5', name: 'Kültür Turisti', desc: 'Tarihi ve kültürel gezi yapanlar', reach: 2600000 },
-                ]
-            },
-            {
-                id: 'oto_suruculer',
-                name: 'Otomobil & Sürücüler',
-                icon: '🚗',
-                theme: 'theme-red',
-                category: 'yasam',
-                subs: [
-                    { id: 'oto_1', name: 'Yeni Araç Alıcıları', desc: 'Son 6 ayda araç almayı planlayanlar', reach: 1800000 },
-                    { id: 'oto_2', name: 'Premium Araç Sahipleri', desc: 'Lüks segment araç kullananlar', reach: 650000 },
-                    { id: 'oto_3', name: 'SUV & Crossover Sahipleri', desc: 'Büyük aile araçları kullananlar', reach: 2400000 },
-                    { id: 'oto_4', name: 'Uzun Yol Sürücüleri', desc: 'Düzenli şehirlerarası yolculuk yapanlar', reach: 3100000 },
-                    { id: 'oto_5', name: 'Elektrikli Araç İlgilileri', desc: 'EV ve hibrit araçlara ilgi duyanlar', reach: 1200000 },
-                ]
-            },
-            {
-                id: 'finansal_profiller',
-                name: 'Finansal Profiller',
-                icon: '💰',
-                theme: 'theme-amber',
-                category: 'finans',
-                subs: [
-                    { id: 'finans_1', name: 'Yatırımcılar', desc: 'Aktif borsa veya fon yatırımcıları', reach: 2200000 },
-                    { id: 'finans_2', name: 'Kredi Kartı Aktif Kullanıcılar', desc: 'Yüksek harcama hacimli kart sahipleri', reach: 5800000 },
-                    { id: 'finans_3', name: 'Kripto Para İlgilileri', desc: 'Kripto varlık sahipleri', reach: 1900000 },
-                    { id: 'finans_4', name: 'Sigorta Araştıranlar', desc: 'Sigorta ürünleri karşılaştıranlar', reach: 3400000 },
-                ]
-            },
-            {
-                id: 'alisveris_davranislari',
-                name: 'Alışveriş Davranışları',
-                icon: '🛒',
-                theme: 'theme-pink',
-                category: 'alisveris',
-                subs: [
-                    { id: 'alisveris_1', name: 'Online Alışveriş Bağımlıları', desc: 'Ayda 5+ online alışveriş yapanlar', reach: 8200000 },
-                    { id: 'alisveris_2', name: 'İndirim Avcıları', desc: 'Promosyon ve kampanya takipçileri', reach: 6500000 },
-                    { id: 'alisveris_3', name: 'Lüks Tüketiciler', desc: 'Premium marka tercih edenler', reach: 1100000 },
-                    { id: 'alisveris_4', name: 'İmpuls Alıcılar', desc: 'Anlık satın alma eğilimi yüksek olanlar', reach: 4300000 },
-                    { id: 'alisveris_5', name: 'Sadık Müşteriler', desc: 'Marka sadakati yüksek tüketiciler', reach: 3900000 },
-                ]
-            },
-            {
-                id: 'yeme_icme',
-                name: 'Yeme & İçme',
-                icon: '🍽️',
-                theme: 'theme-teal',
-                category: 'yasam',
-                subs: [
-                    { id: 'yeme_1', name: 'Gurme Lezzetçiler', desc: 'Yeni restoranları keşfeden foodie\'ler', reach: 2800000 },
-                    { id: 'yeme_2', name: 'Ev Şefleri', desc: 'Evde yemek yapmayı seven aşçılar', reach: 4200000 },
-                    { id: 'yeme_3', name: 'Kahve Tutkunları', desc: 'Özel kahve tüketen kahve severler', reach: 5100000 },
-                    { id: 'yeme_4', name: 'Vejetaryen & Veganlar', desc: 'Bitkisel beslenme tercih edenler', reach: 1400000 },
-                    { id: 'yeme_5', name: 'Hazır Yemek Siparişçileri', desc: 'Sık yemek siparişi verenler', reach: 6800000 },
-                ]
-            },
-            {
-                id: 'moda_guzellik',
-                name: 'Moda & Güzellik',
-                icon: '👗',
-                theme: 'theme-pink',
-                category: 'alisveris',
-                subs: [
-                    { id: 'moda_1', name: 'Trend Takipçileri', desc: 'Moda trendlerini yakından izleyenler', reach: 3600000 },
-                    { id: 'moda_2', name: 'Kozmetik Meraklıları', desc: 'Makyaj ve cilt bakımı tutkunları', reach: 4800000 },
-                    { id: 'moda_3', name: 'Lüks Moda Tüketicileri', desc: 'Designer marka tercih edenler', reach: 720000 },
-                    { id: 'moda_4', name: 'Sürdürülebilir Moda', desc: 'Etik ve çevreci moda tercih edenler', reach: 1800000 },
-                ]
-            },
-            {
-                id: 'eglence_medya',
-                name: 'Eğlence & Medya',
-                icon: '🎬',
-                theme: 'theme-purple',
-                category: 'yasam',
-                subs: [
-                    { id: 'eglence_1', name: 'Dizi & Film İzleyicileri', desc: 'Yoğun streaming platformu kullanıcıları', reach: 12500000 },
-                    { id: 'eglence_2', name: 'Müzik Dinleyicileri', desc: 'Aktif müzik streaming kullanıcıları', reach: 9800000 },
-                    { id: 'eglence_3', name: 'Podcast Dinleyicileri', desc: 'Düzenli podcast takipçileri', reach: 3200000 },
-                    { id: 'eglence_4', name: 'Konser & Festival Katılımcıları', desc: 'Canlı etkinlik katılımcıları', reach: 2100000 },
-                    { id: 'eglence_5', name: 'E-spor Takipçileri', desc: 'E-spor müsabakaları izleyenler', reach: 1800000 },
-                ]
-            },
-            {
-                id: 'ev_yasam',
-                name: 'Ev & Yaşam Alanı',
-                icon: '🏠',
-                theme: 'theme-teal',
-                category: 'alisveris',
-                subs: [
-                    { id: 'ev_1', name: 'Ev Sahipleri', desc: 'Kendi evinde oturanlar', reach: 8900000 },
-                    { id: 'ev_2', name: 'Kiracılar', desc: 'Kirada oturan haneler', reach: 6200000 },
-                    { id: 'ev_3', name: 'Yeni Ev Arayanlar', desc: 'Aktif ev arayan potansiyel alıcılar', reach: 2800000 },
-                    { id: 'ev_4', name: 'Dekorasyon Tutkunları', desc: 'Ev dekorasyonu ile ilgilenenler', reach: 4100000 },
-                    { id: 'ev_5', name: 'Bahçe & Hobi Bahçeciler', desc: 'Bahçe ve bitki bakımı yapanlar', reach: 2400000 },
-                ]
-            },
-            {
-                id: 'egitim_gelisim',
-                name: 'Eğitim & Kişisel Gelişim',
-                icon: '📚',
-                theme: 'theme-indigo',
-                category: 'yasam',
-                subs: [
-                    { id: 'egitim_1', name: 'Online Kurs Katılımcıları', desc: 'E-öğrenme platformları kullanıcıları', reach: 3400000 },
-                    { id: 'egitim_2', name: 'Dil Öğrenenler', desc: 'Yabancı dil kursu alanlar', reach: 2800000 },
-                    { id: 'egitim_3', name: 'Profesyonel Gelişim', desc: 'Kariyer eğitimi alanlar', reach: 2100000 },
-                    { id: 'egitim_4', name: 'Kitap Okuyucuları', desc: 'Düzenli kitap okuyan bireyler', reach: 4600000 },
-                ]
-            },
-            {
-                id: 'evcil_hayvan',
-                name: 'Evcil Hayvan Sahipleri',
-                icon: '🐕',
-                theme: 'theme-orange',
-                category: 'yasam',
-                subs: [
-                    { id: 'pet_1', name: 'Köpek Sahipleri', desc: 'Köpek besleyen haneler', reach: 4200000 },
-                    { id: 'pet_2', name: 'Kedi Sahipleri', desc: 'Kedi besleyen haneler', reach: 5100000 },
-                    { id: 'pet_3', name: 'Premium Pet Tüketicileri', desc: 'Yüksek harcama yapan pet sahipleri', reach: 1800000 },
-                    { id: 'pet_4', name: 'Yeni Pet Sahipleri', desc: 'Son 1 yılda hayvan sahiplenenler', reach: 1200000 },
-                ]
-            },
-            {
-                id: 'calisma_hayati',
-                name: 'Çalışma Hayatı',
-                icon: '💼',
-                theme: 'theme-blue',
-                category: 'yasam',
-                subs: [
-                    { id: 'calisma_1', name: 'Uzaktan Çalışanlar', desc: 'Remote veya hibrit çalışanlar', reach: 3800000 },
-                    { id: 'calisma_2', name: 'Girişimciler', desc: 'Kendi işini kuran veya kurmayı planlayan', reach: 1400000 },
-                    { id: 'calisma_3', name: 'Freelancerlar', desc: 'Serbest çalışan profesyoneller', reach: 2200000 },
-                    { id: 'calisma_4', name: 'C-Level Yöneticiler', desc: 'Üst düzey karar vericiler', reach: 180000 },
-                    { id: 'calisma_5', name: 'KOBİ Sahipleri', desc: 'Küçük ve orta işletme sahipleri', reach: 1600000 },
-                ]
-            },
-            {
-                id: 'sosyal_medya',
-                name: 'Sosyal Medya Profilleri',
-                icon: '📲',
-                theme: 'theme-cyan',
-                category: 'teknoloji',
-                subs: [
-                    { id: 'sosyal_1', name: 'Instagram Aktif Kullanıcılar', desc: 'Günlük Instagram kullananlar', reach: 18000000 },
-                    { id: 'sosyal_2', name: 'TikTok Creators', desc: 'İçerik üreten TikTok kullanıcıları', reach: 4200000 },
-                    { id: 'sosyal_3', name: 'LinkedIn Profesyonelleri', desc: 'Aktif LinkedIn kullanıcıları', reach: 5600000 },
-                    { id: 'sosyal_4', name: 'Twitter/X Aktif Kullanıcılar', desc: 'Güncel olayları takip edenler', reach: 6800000 },
-                    { id: 'sosyal_5', name: 'YouTube İçerik Üreticileri', desc: 'Video içerik üretenler', reach: 2400000 },
-                ]
-            },
-            {
-                id: 'cevre_surdurulebilirlik',
-                name: 'Çevre & Sürdürülebilirlik',
-                icon: '🌱',
-                theme: 'theme-green',
-                category: 'yasam',
-                subs: [
-                    { id: 'cevre_1', name: 'Çevre Aktivistleri', desc: 'Aktif çevre savunucuları', reach: 1800000 },
-                    { id: 'cevre_2', name: 'Geri Dönüşüm Bilinçliler', desc: 'Düzenli geri dönüşüm yapanlar', reach: 6200000 },
-                    { id: 'cevre_3', name: 'Enerji Tasarrufu Odaklılar', desc: 'Enerji verimliliği önemseyen', reach: 4100000 },
-                    { id: 'cevre_4', name: 'Sıfır Atık Takipçileri', desc: 'Minimal atık yaşam tarzı benimseyenler', reach: 980000 },
-                ]
-            },
-            {
-                id: 'saglik_hizmetleri',
-                name: 'Sağlık Hizmetleri',
-                icon: '🏥',
-                theme: 'theme-red',
-                category: 'yasam',
-                subs: [
-                    { id: 'saglik_h_1', name: 'Özel Sağlık Sigortası Sahipleri', desc: 'Tamamlayıcı sağlık sigortası olanlar', reach: 3200000 },
-                    { id: 'saglik_h_2', name: 'Kronik Hastalık Yönetimi', desc: 'Düzenli sağlık takibi yapanlar', reach: 4800000 },
-                    { id: 'saglik_h_3', name: 'Wellness Tüketicileri', desc: 'Spa ve wellness hizmeti alanlar', reach: 2100000 },
-                    { id: 'saglik_h_4', name: 'Online Sağlık Danışanları', desc: 'Telehealth hizmetleri kullananlar', reach: 1400000 },
-                ]
-            },
-            {
-                id: 'spor_outdoor',
-                name: 'Spor & Outdoor',
-                icon: '⛰️',
-                theme: 'theme-green',
-                category: 'yasam',
-                subs: [
-                    { id: 'spor_1', name: 'Futbol Severler', desc: 'Futbol takip eden ve oynayanlar', reach: 12000000 },
-                    { id: 'spor_2', name: 'Basketbol Tutkunları', desc: 'NBA ve yerel lig takipçileri', reach: 4200000 },
-                    { id: 'spor_3', name: 'Bisikletçiler', desc: 'Hobi veya ulaşım için bisiklet kullananlar', reach: 2800000 },
-                    { id: 'spor_4', name: 'Doğa Yürüyüşçüleri', desc: 'Trekking ve hiking yapanlar', reach: 1900000 },
-                    { id: 'spor_5', name: 'Su Sporları Tutkunları', desc: 'Yüzme, sörf, dalış yapanlar', reach: 2400000 },
-                ]
-            },
-            {
-                id: 'emekliler',
-                name: 'Emekliler & 55+',
-                icon: '👴',
-                theme: 'theme-amber',
-                category: 'yasam',
-                subs: [
-                    { id: 'emekli_1', name: 'Aktif Emekliler', desc: 'Sosyal ve fiziksel olarak aktif 55+', reach: 3400000 },
-                    { id: 'emekli_2', name: 'Dijital Göçmenler', desc: 'Teknolojiyi yeni öğrenen yaşlılar', reach: 2100000 },
-                    { id: 'emekli_3', name: 'Torun Bakıcıları', desc: 'Torunlarıyla ilgilenen büyükler', reach: 2800000 },
-                    { id: 'emekli_4', name: 'Emekli Gezginler', desc: 'Seyahat eden emekliler', reach: 1200000 },
-                ]
-            },
-            {
-                id: 'b2b_profesyoneller',
-                name: 'B2B Profesyoneller',
-                icon: '🏢',
-                theme: 'theme-indigo',
-                category: 'finans',
-                subs: [
-                    { id: 'b2b_1', name: 'IT Karar Vericiler', desc: 'Teknoloji satın alma yetkilileri', reach: 420000 },
-                    { id: 'b2b_2', name: 'Pazarlama Müdürleri', desc: 'Marketing departman yöneticileri', reach: 280000 },
-                    { id: 'b2b_3', name: 'İK Profesyonelleri', desc: 'İnsan kaynakları uzmanları', reach: 350000 },
-                    { id: 'b2b_4', name: 'Satış Temsilcileri', desc: 'B2B satış profesyonelleri', reach: 620000 },
-                    { id: 'b2b_5', name: 'Finans Yöneticileri', desc: 'CFO ve finans departmanları', reach: 180000 },
-                ]
-            },
-            {
-                id: 'oyuncullar',
-                name: 'Oyuncular & Gamers',
-                icon: '🎮',
-                theme: 'theme-purple',
-                category: 'teknoloji',
-                subs: [
-                    { id: 'game_1', name: 'Mobil Oyuncular', desc: 'Telefonda oyun oynayanlar', reach: 14000000 },
-                    { id: 'game_2', name: 'PC Gamers', desc: 'Bilgisayarda oyun oynayanlar', reach: 4800000 },
-                    { id: 'game_3', name: 'Konsol Oyuncuları', desc: 'PlayStation, Xbox sahipleri', reach: 2200000 },
-                    { id: 'game_4', name: 'Hardcore Gamers', desc: 'Günde 3+ saat oynayanlar', reach: 1800000 },
-                    { id: 'game_5', name: 'Casual Gamers', desc: 'Ara sıra oyun oynayanlar', reach: 8500000 },
-                ]
-            },
-            {
-                id: 'lukstuketiciler',
-                name: 'Lüks Tüketiciler',
-                icon: '💎',
-                theme: 'theme-amber',
-                category: 'alisveris',
-                subs: [
-                    { id: 'luks_1', name: 'Ultra Premium Segment', desc: 'En üst gelir grubu', reach: 280000 },
-                    { id: 'luks_2', name: 'Aspirasyonel Lüks', desc: 'Lükse erişmek isteyen orta-üst', reach: 1400000 },
-                    { id: 'luks_3', name: 'Deneyim Lüksü', desc: 'Ürün yerine deneyim harcayanlar', reach: 980000 },
-                    { id: 'luks_4', name: 'Miras Tüketiciler', desc: 'Aile serveti olan bireyler', reach: 180000 },
-                ]
-            },
-            {
-                id: 'akaryakit',
-                name: 'Akaryakıt & Enerji',
-                icon: '⛽',
-                theme: 'theme-red',
-                category: 'alisveris',
-                subs: [
-                    { id: 'yakit_1', name: 'Yüksek Kilometre Sürücüler', desc: 'Aylık 2000+ km yapanlar', reach: 3200000 },
-                    { id: 'yakit_2', name: 'Premium Yakıt Tercih Edenler', desc: 'Kaliteli yakıt için ekstra ödeyenler', reach: 1800000 },
-                    { id: 'yakit_3', name: 'Filo Yöneticileri', desc: 'Kurumsal araç filolarını yönetenler', reach: 120000 },
-                    { id: 'yakit_4', name: 'Yakıt Kartı Kullanıcıları', desc: 'Kurumsal veya bireysel kart sahipleri', reach: 2400000 },
-                    { id: 'yakit_5', name: 'İstasyon Sadıkları', desc: 'Belirli markaya sadık sürücüler', reach: 4100000 },
-                ]
-            },
-            {
-                id: 'convenience',
-                name: 'Convenience & Hız',
-                icon: '⚡',
-                theme: 'theme-cyan',
-                category: 'alisveris',
-                subs: [
-                    { id: 'conv_1', name: 'Yol Üstü Alışverişçiler', desc: 'Hareket halindeyken alışveriş yapanlar', reach: 6800000 },
-                    { id: 'conv_2', name: 'Grab & Go Tüketiciler', desc: 'Hızlı atıştırmalık alanlar', reach: 5200000 },
-                    { id: 'conv_3', name: 'Gece Kuşları', desc: 'Gece saatlerinde aktif olanlar', reach: 3400000 },
-                    { id: 'conv_4', name: 'Acil İhtiyaç Alıcıları', desc: 'Son dakika ihtiyaç giderme', reach: 7200000 },
-                ]
-            },
-            {
-                id: 'yerel_topluluklar',
-                name: 'Yerel Topluluklar',
-                icon: '📍',
-                theme: 'theme-teal',
-                category: 'yasam',
-                subs: [
-                    { id: 'yerel_1', name: 'İstanbul - Avrupa', desc: 'İstanbul Avrupa yakası sakinleri', reach: 9200000 },
-                    { id: 'yerel_2', name: 'İstanbul - Anadolu', desc: 'İstanbul Anadolu yakası sakinleri', reach: 6800000 },
-                    { id: 'yerel_3', name: 'Ankara Metropoliten', desc: 'Ankara büyükşehir sakinleri', reach: 5600000 },
-                    { id: 'yerel_4', name: 'İzmir & Ege', desc: 'Ege bölgesi kentleri', reach: 4400000 },
-                    { id: 'yerel_5', name: 'Antalya & Akdeniz', desc: 'Akdeniz sahil şeridi', reach: 2800000 },
-                ]
-            },
-            {
-                id: 'mevsimsel',
-                name: 'Mevsimsel Segmentler',
-                icon: '🗓️',
-                theme: 'theme-orange',
-                category: 'alisveris',
-                subs: [
-                    { id: 'mevsim_1', name: 'Yaz Tatilcileri', desc: 'Yaz aylarında tatil yapanlar', reach: 8400000 },
-                    { id: 'mevsim_2', name: 'Kış Sporları Tutkunları', desc: 'Kayak ve kış tatili yapanlar', reach: 1200000 },
-                    { id: 'mevsim_3', name: 'Bayram Gezginleri', desc: 'Dini bayramlarda seyahat edenler', reach: 6200000 },
-                    { id: 'mevsim_4', name: 'Yılbaşı Alışverişçileri', desc: 'Yılsonu harcama yapanlar', reach: 12000000 },
-                ]
-            },
-            {
-                id: 'gelir_gruplari',
-                name: 'Gelir Grupları',
-                icon: '📊',
-                theme: 'theme-indigo',
-                category: 'finans',
-                subs: [
-                    { id: 'gelir_1', name: 'Üst Gelir (A)', desc: 'En yüksek %10 gelir grubu', reach: 2800000 },
-                    { id: 'gelir_2', name: 'Üst-Orta Gelir (B)', desc: 'Ortanın üstü gelir grubu', reach: 6200000 },
-                    { id: 'gelir_3', name: 'Orta Gelir (C1)', desc: 'Orta gelir grubu', reach: 12000000 },
-                    { id: 'gelir_4', name: 'Alt-Orta Gelir (C2)', desc: 'Ortanın altı gelir grubu', reach: 14000000 },
-                    { id: 'gelir_5', name: 'Değer Odaklı (D+)', desc: 'Bütçe bilinçli segment', reach: 18000000 },
-                ]
-            },
-            {
-                id: 'dijital_davranis',
-                name: 'Dijital Davranış',
-                icon: '🌐',
-                theme: 'theme-cyan',
-                category: 'teknoloji',
-                subs: [
-                    { id: 'dijital_1', name: 'Mobil First Kullanıcılar', desc: 'Öncelikli mobil cihaz kullananlar', reach: 28000000 },
-                    { id: 'dijital_2', name: 'Multi-Device Kullanıcılar', desc: 'Çoklu cihaz kullananlar', reach: 12000000 },
-                    { id: 'dijital_3', name: 'App Power Users', desc: 'Yoğun mobil uygulama kullanıcıları', reach: 8400000 },
-                    { id: 'dijital_4', name: 'E-posta Aktif Kullanıcılar', desc: 'E-posta pazarlamasına duyarlı', reach: 14000000 },
-                    { id: 'dijital_5', name: 'Push Notification Açık', desc: 'Bildirimlere izin verenler', reach: 18000000 },
-                ]
-            },
+        const segments = [
+            { id: 'yasam-tarzi', name: 'Yaşam Tarzı Segmentleri', icon: '🌟', theme: 'theme-purple', category: 'lifestyle', subs: [
+                { id: 'yt-1', name: 'Trendsetter Öncüler', desc: 'Yeniliklere açık, trendleri belirleyen grup', reach: 8.2 },
+                { id: 'yt-2', name: 'Statü Odaklı Profesyoneller', desc: 'Kariyer ve sosyal statü öncelikli', reach: 12.5 },
+                { id: 'yt-3', name: 'Deneyim Avcıları', desc: 'Yeni deneyimler arayan maceraperestler', reach: 9.8 },
+                { id: 'yt-4', name: 'Wellness Tutkunları', desc: 'Sağlık ve wellness odaklı yaşam', reach: 7.3 }
+            ]},
+            { id: 'tuketim', name: 'Tüketim Alışkanlıkları', icon: '🛒', theme: 'theme-blue', category: 'davranis', subs: [
+                { id: 'tk-1', name: 'Premium Tüketiciler', desc: 'Kaliteyi fiyatın önünde tutan', reach: 11.2 },
+                { id: 'tk-2', name: 'Değer Arayanlar', desc: 'En iyi fiyat-performans peşinde', reach: 18.7 },
+                { id: 'tk-3', name: 'Dürtüsel Alışverişçiler', desc: 'Anlık kararlarla alışveriş yapan', reach: 14.3 },
+                { id: 'tk-4', name: 'Planlı Alışverişçiler', desc: 'Her şeyi önceden planlayan', reach: 15.8 }
+            ]},
+            { id: 'dijital', name: 'Dijital Davranış', icon: '📱', theme: 'theme-green', category: 'davranis', subs: [
+                { id: 'dj-1', name: 'Dijital Yerliler', desc: 'Hayatı tamamen dijitalde yaşayan', reach: 22.4 },
+                { id: 'dj-2', name: 'Sosyal Medya Aktifi', desc: 'Tüm platformlarda aktif', reach: 28.6 },
+                { id: 'dj-3', name: 'E-Ticaret Uzmanı', desc: 'Online alışverişi tercih eden', reach: 19.2 },
+                { id: 'dj-4', name: 'Dijital Temkinli', desc: 'Teknolojiyle mesafeli', reach: 12.1 }
+            ]},
+            { id: 'aile', name: 'Aile Yaşamı', icon: '👨‍👩‍👧‍👦', theme: 'theme-orange', category: 'demografik', subs: [
+                { id: 'al-1', name: 'Genç Aileler', desc: 'Küçük çocuklu aileler', reach: 16.8 },
+                { id: 'al-2', name: 'Büyüyen Aileler', desc: 'Okul çağı çocuklu', reach: 14.2 },
+                { id: 'al-3', name: 'Boş Yuva', desc: 'Çocuklar evden ayrılmış', reach: 9.5 },
+                { id: 'al-4', name: 'Tekli Yaşayanlar', desc: 'Yalnız yaşayan yetişkinler', reach: 11.3 }
+            ]},
+            { id: 'gelir', name: 'Gelir Segmentleri', icon: '💰', theme: 'theme-yellow', category: 'demografik', subs: [
+                { id: 'gl-1', name: 'Üst Gelir A+', desc: 'En yüksek gelir grubu', reach: 5.2 },
+                { id: 'gl-2', name: 'Üst-Orta A', desc: 'Yüksek gelir grubu', reach: 12.8 },
+                { id: 'gl-3', name: 'Orta B', desc: 'Orta gelir grubu', reach: 35.4 },
+                { id: 'gl-4', name: 'Alt-Orta C', desc: 'Alt-orta gelir grubu', reach: 28.6 }
+            ]},
+            { id: 'medya', name: 'Medya Tüketimi', icon: '📺', theme: 'theme-pink', category: 'davranis', subs: [
+                { id: 'md-1', name: 'TV Ağırlıklı', desc: 'Geleneksel TV izleyicisi', reach: 42.3 },
+                { id: 'md-2', name: 'Streaming Odaklı', desc: 'Dijital içerik tercih eden', reach: 31.5 },
+                { id: 'md-3', name: 'Multi-Screen', desc: 'Çoklu ekran kullanıcısı', reach: 38.7 },
+                { id: 'md-4', name: 'Radyo Dinleyicisi', desc: 'Aktif radyo takipçisi', reach: 24.8 }
+            ]},
+            { id: 'otomobil', name: 'Otomobil Segmentleri', icon: '🚗', theme: 'theme-teal', category: 'davranis', subs: [
+                { id: 'ot-1', name: 'Premium Araç Sahipleri', desc: 'Lüks segment araç kullanıcıları', reach: 8.4 },
+                { id: 'ot-2', name: 'SUV Tutkunları', desc: 'SUV/crossover tercihi', reach: 15.2 },
+                { id: 'ot-3', name: 'Ekonomik Sürücüler', desc: 'Yakıt tasarrufu odaklı', reach: 22.6 },
+                { id: 'ot-4', name: 'Elektrik/Hibrit İlgili', desc: 'Alternatif yakıt meraklıları', reach: 6.8 }
+            ]},
+            { id: 'seyahat', name: 'Seyahat Tercihleri', icon: '✈️', theme: 'theme-cyan', category: 'lifestyle', subs: [
+                { id: 'sy-1', name: 'Sık Seyahat Edenler', desc: 'Yılda 4+ seyahat', reach: 12.4 },
+                { id: 'sy-2', name: 'Tatil Planlayıcıları', desc: 'Yıllık tatil odaklı', reach: 28.6 },
+                { id: 'sy-3', name: 'İş Seyahati Yapanlar', desc: 'Profesyonel seyahat', reach: 9.8 },
+                { id: 'sy-4', name: 'Yerel Gezginler', desc: 'Yurt içi keşif seven', reach: 18.2 }
+            ]},
+            { id: 'finans', name: 'Finansal Davranış', icon: '💳', theme: 'theme-indigo', category: 'davranis', subs: [
+                { id: 'fn-1', name: 'Yatırımcılar', desc: 'Aktif yatırım yapan', reach: 14.6 },
+                { id: 'fn-2', name: 'Tasarruf Odaklı', desc: 'Birikim öncelikli', reach: 22.8 },
+                { id: 'fn-3', name: 'Kredi Kullanıcıları', desc: 'Aktif kredi kullanan', reach: 31.4 },
+                { id: 'fn-4', name: 'Dijital Bankacılık', desc: 'Mobile banking aktif', reach: 45.2 }
+            ]},
+            { id: 'beslenme', name: 'Beslenme Tercihleri', icon: '🍽️', theme: 'theme-red', category: 'lifestyle', subs: [
+                { id: 'bs-1', name: 'Sağlıklı Beslenme', desc: 'Organik ve doğal tercih', reach: 18.4 },
+                { id: 'bs-2', name: 'Fast Food Severler', desc: 'Hızlı yemek tercihi', reach: 24.6 },
+                { id: 'bs-3', name: 'Gurme Tutkunları', desc: 'Kaliteli restoran seven', reach: 11.2 },
+                { id: 'bs-4', name: 'Ev Yemekleri', desc: 'Evde pişirmeyi tercih eden', reach: 32.8 }
+            ]}
         ];
 
         let selectedSegments = new Set();
-        let currentFilter = 'all';
 
-        function init() {
-            renderSegments();
-            updateStats();
-        }
-
-        function renderSegments() {
+        function renderSegments(filter = 'all', search = '') {
             const grid = document.getElementById('segmentGrid');
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            
-            let filtered = segmentLibrary;
-            
-            // Category filter
-            if (currentFilter !== 'all') {
-                filtered = filtered.filter(p => p.category === currentFilter);
-            }
-            
-            // Search filter
-            if (search) {
-                filtered = filtered.filter(p => 
-                    p.name.toLowerCase().includes(search) ||
-                    p.subs.some(s => s.name.toLowerCase().includes(search) || s.desc.toLowerCase().includes(search))
-                );
-            }
-
+            grid.innerHTML = '';
+            const filtered = segments.filter(parent => {
+                if (filter !== 'all' && parent.category !== filter) return false;
+                if (search) {
+                    const s = search.toLowerCase();
+                    return parent.name.toLowerCase().includes(s) || parent.subs.some(sub => sub.name.toLowerCase().includes(s) || sub.desc.toLowerCase().includes(s));
+                }
+                return true;
+            });
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🔍</div><div>Aramanızla eşleşen segment bulunamadı</div></div>';
+                grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">🔍</div><h3>Segment bulunamadı</h3></div>';
                 return;
             }
-
-            grid.innerHTML = filtered.map(parent => {
-                const selectedCount = parent.subs.filter(s => selectedSegments.has(s.id)).length;
-                const isExpanded = search || selectedCount > 0;
-                
-                return `
-                    <div class="parent-card ${parent.theme} ${isExpanded ? 'expanded' : ''}" data-id="${parent.id}">
-                        <div class="parent-header" onclick="toggleParent('${parent.id}')">
-                            <div class="parent-info">
-                                <div class="parent-icon">${parent.icon}</div>
-                                <div>
-                                    <div class="parent-name">${parent.name}</div>
-                                    <div class="parent-count">${parent.subs.length} alt segment${selectedCount > 0 ? ` • <span style="color:#4fc3f7">${selectedCount} seçili</span>` : ''}</div>
-                                </div>
-                            </div>
-                            <div class="parent-actions">
-                                <button class="select-all-btn" onclick="event.stopPropagation(); toggleAllSubs('${parent.id}')">
-                                    ${selectedCount === parent.subs.length ? 'Hiçbirini Seçme' : 'Tümünü Seç'}
-                                </button>
-                                <span class="expand-icon">▼</span>
-                            </div>
+            filtered.forEach(parent => {
+                const isExpanded = document.querySelector(`[data-parent="${parent.id}"]`)?.classList.contains('expanded');
+                const selectedInParent = parent.subs.filter(s => selectedSegments.has(s.id)).length;
+                const card = document.createElement('div');
+                card.className = `parent-card ${parent.theme}${isExpanded ? ' expanded' : ''}`;
+                card.dataset.parent = parent.id;
+                card.innerHTML = `
+                    <div class="parent-header" onclick="toggleParent('${parent.id}')">
+                        <div class="parent-info">
+                            <div class="parent-icon">${parent.icon}</div>
+                            <div><div class="parent-name">${parent.name}</div><div class="parent-count">${parent.subs.length} segment${selectedInParent > 0 ? ` • ${selectedInParent} seçili` : ''}</div></div>
                         </div>
-                        <div class="sub-segments">
-                            ${parent.subs.map(sub => `
-                                <div class="sub-segment ${selectedSegments.has(sub.id) ? 'selected' : ''}" onclick="toggleSub('${sub.id}')">
-                                    <div class="checkbox ${selectedSegments.has(sub.id) ? 'checked' : ''}"></div>
-                                    <div class="sub-info">
-                                        <div class="sub-name">${sub.name}</div>
-                                        <div class="sub-desc">${sub.desc}</div>
-                                    </div>
-                                    <div class="sub-meta">
-                                        <span class="meta-tag">${formatReach(sub.reach)}</span>
-                                    </div>
-                                </div>
-                            `).join('')}
+                        <div class="parent-actions">
+                            <button class="select-all-btn" onclick="event.stopPropagation(); selectAllInParent('${parent.id}')">${selectedInParent === parent.subs.length ? 'Tümünü Kaldır' : 'Tümünü Seç'}</button>
+                            <span class="expand-icon">▼</span>
                         </div>
                     </div>
+                    <div class="sub-segments">
+                        ${parent.subs.map(sub => `
+                            <div class="sub-segment${selectedSegments.has(sub.id) ? ' selected' : ''}" onclick="toggleSegment('${sub.id}')">
+                                <div class="checkbox${selectedSegments.has(sub.id) ? ' checked' : ''}"></div>
+                                <div class="sub-info"><div class="sub-name">${sub.name}</div><div class="sub-desc">${sub.desc}</div></div>
+                                <div class="sub-meta"><span class="meta-tag">${sub.reach}%</span></div>
+                            </div>
+                        `).join('')}
+                    </div>
                 `;
-            }).join('');
+                grid.appendChild(card);
+            });
         }
 
-        function formatReach(num) {
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-            if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
-            return num.toString();
-        }
-
-        function toggleParent(parentId) {
-            const card = document.querySelector(`.parent-card[data-id="${parentId}"]`);
-            card.classList.toggle('expanded');
-        }
-
-        function toggleSub(subId) {
-            if (selectedSegments.has(subId)) {
-                selectedSegments.delete(subId);
-            } else {
-                selectedSegments.add(subId);
-            }
-            renderSegments();
-            updateUI();
-        }
-
-        function toggleAllSubs(parentId) {
-            const parent = segmentLibrary.find(p => p.id === parentId);
+        function toggleParent(parentId) { document.querySelector(`[data-parent="${parentId}"]`).classList.toggle('expanded'); }
+        function toggleSegment(segmentId) { selectedSegments.has(segmentId) ? selectedSegments.delete(segmentId) : selectedSegments.add(segmentId); updateUI(); }
+        function selectAllInParent(parentId) {
+            const parent = segments.find(p => p.id === parentId);
             const allSelected = parent.subs.every(s => selectedSegments.has(s.id));
-            
-            parent.subs.forEach(sub => {
-                if (allSelected) {
-                    selectedSegments.delete(sub.id);
-                } else {
-                    selectedSegments.add(sub.id);
-                }
-            });
-            
-            renderSegments();
+            parent.subs.forEach(sub => allSelected ? selectedSegments.delete(sub.id) : selectedSegments.add(sub.id));
             updateUI();
         }
-
-        function setFilter(filter) {
-            currentFilter = filter;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.filter === filter);
-            });
-            renderSegments();
-        }
-
-        function filterSegments() {
-            renderSegments();
-        }
+        function clearSelection() { selectedSegments.clear(); updateUI(); }
+        function findSegment(segmentId) { for (const p of segments) { const s = p.subs.find(s => s.id === segmentId); if (s) return s; } return null; }
 
         function updateUI() {
-            const count = selectedSegments.size;
-            document.getElementById('selectedCount').textContent = count;
-            document.getElementById('goToQuadrant').disabled = count < 3;
-            
-            const footer = document.getElementById('footerActions');
-            footer.classList.toggle('visible', count > 0);
-            
-            if (count < 3) {
-                document.getElementById('footerInfo').textContent = `En az 3 segment seçin (${3 - count} daha)`;
-            } else {
-                document.getElementById('footerInfo').textContent = `${count} segment seçildi, Quadrant'a gidebilirsiniz`;
-            }
+            document.getElementById('selectedCount').textContent = selectedSegments.size;
+            document.getElementById('footerCount').textContent = selectedSegments.size;
+            let totalReach = 0;
+            segments.forEach(p => p.subs.forEach(s => { if (selectedSegments.has(s.id)) totalReach += s.reach * 0.6; }));
+            document.getElementById('totalReach').textContent = Math.min(totalReach, 95).toFixed(1) + '%';
+            document.getElementById('footerActions').classList.toggle('visible', selectedSegments.size > 0);
+            const chipsContainer = document.getElementById('selectedChips');
+            chipsContainer.innerHTML = '';
+            let count = 0;
+            selectedSegments.forEach(segId => {
+                if (count >= 5) return;
+                const seg = findSegment(segId);
+                if (seg) { chipsContainer.innerHTML += `<span class="selected-chip">${seg.name} <span class="chip-remove" onclick="event.stopPropagation(); toggleSegment('${segId}')">×</span></span>`; count++; }
+            });
+            if (selectedSegments.size > 5) chipsContainer.innerHTML += `<span class="selected-chip">+${selectedSegments.size - 5} daha</span>`;
+            const filter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+            renderSegments(filter, document.getElementById('searchInput').value);
         }
 
-        function updateStats() {
-            const totalSubs = segmentLibrary.reduce((acc, p) => acc + p.subs.length, 0);
-            document.getElementById('totalParents').textContent = segmentLibrary.length;
-            document.getElementById('totalSubs').textContent = totalSubs;
-        }
-
-        function clearSelection() {
-            selectedSegments.clear();
-            renderSegments();
-            updateUI();
+        function exportSelection() {
+            let csv = 'Segment,Açıklama,Reach\n';
+            selectedSegments.forEach(segId => { const s = findSegment(segId); if (s) csv += `"${s.name}","${s.desc}",${s.reach}%\n`; });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'secili_segmentler.csv'; a.click();
         }
 
         function goToQuadrant() {
-            if (selectedSegments.size < 3) return;
-            
-            // Seçilen segmentleri localStorage'a kaydet
+            if (selectedSegments.size === 0) {
+                alert('Lütfen en az bir segment seçin');
+                return;
+            }
+            // Seçili segmentleri localStorage'a kaydet
             const selectedData = [];
-            segmentLibrary.forEach(parent => {
-                parent.subs.forEach(sub => {
-                    if (selectedSegments.has(sub.id)) {
+            selectedSegments.forEach(segId => {
+                for (const parent of segments) {
+                    const sub = parent.subs.find(s => s.id === segId);
+                    if (sub) {
                         selectedData.push({
                             id: sub.id,
                             name: sub.name,
-                            parent: parent.name,
-                            parentIcon: parent.icon,
                             desc: sub.desc,
-                            reach: sub.reach,
-                            theme: parent.theme
+                            reach: sub.reach * 100000, // Reach sayısına çevir
+                            parent: parent.name
                         });
+                        break;
                     }
-                });
+                }
             });
-            
             localStorage.setItem('selectedSegments', JSON.stringify(selectedData));
             window.location.href = 'segmentation-quadrant/';
         }
 
-        // Initialize
-        init();
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderSegments(btn.dataset.filter, document.getElementById('searchInput').value);
+        }));
+        document.getElementById('searchInput').addEventListener('input', (e) => renderSegments(document.querySelector('.filter-btn.active')?.dataset.filter || 'all', e.target.value));
+        renderSegments();
     </script>
 </body>
 </html>
