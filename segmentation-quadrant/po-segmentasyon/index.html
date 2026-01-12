@@ -3,120 +3,646 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Petrol Ofisi Premium Market - Segment Analizi</title>
+    <title>Petrol Ofisi Premium Market - Segment Analizi | Time & Growity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --accent-blue: #00d4ff;
+            --accent-purple: #7c3aed;
+            --accent-orange: #ff6b35;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
+            --accent-pink: #ec4899;
+            --accent-red: #e31e24;
+            --text-primary: #f0f0f5;
+            --text-secondary: #8888a0;
+            --border-color: #2a2a3a;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; color: #fff; }
-        .header { background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .nav-btn { padding: 5px 10px; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; background: transparent; color: #fff; font-size: 10px; cursor: pointer; text-decoration: none; }
-        .nav-btn:hover { background: rgba(255,255,255,0.1); }
-        .logo { display: flex; align-items: center; gap: 6px; }
-        .logo-icon { width: 26px; height: 26px; background: linear-gradient(135deg, #e31e24, #c41e24); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 9px; }
-        .logo-text { font-size: 13px; font-weight: 700; }
-        .btn { padding: 5px 10px; border: none; border-radius: 4px; font-size: 9px; font-weight: 600; cursor: pointer; }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
         
-        .main-wrapper { display: flex; flex-direction: column; height: calc(100vh - 44px); overflow: hidden; }
-        .top-section { display: flex; flex: 1; min-height: 0; overflow: hidden; }
-        
-        .left-panel { width: 200px; background: rgba(255,255,255,0.02); border-right: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; }
-        .panel-header { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .panel-title { font-size: 10px; font-weight: 600; }
-        .filter-row { display: flex; gap: 2px; flex-wrap: wrap; margin-top: 5px; }
-        .filter-btn { padding: 3px 5px; border: 1px solid rgba(255,255,255,0.15); border-radius: 3px; background: transparent; color: #aaa; font-size: 8px; cursor: pointer; }
-        .filter-btn.active { background: rgba(227,30,36,0.2); border-color: #e31e24; color: #e31e24; }
-        .segment-list { flex: 1; overflow-y: auto; padding: 4px; }
-        .segment-group { margin-bottom: 3px; }
-        .segment-group-header { display: flex; align-items: center; justify-content: space-between; padding: 4px 5px; background: rgba(255,255,255,0.05); border-radius: 3px; cursor: pointer; font-size: 8px; font-weight: 600; border-left: 2px solid #666; }
-        .segment-items { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
-        .segment-items.open { max-height: 350px; }
-        .segment-item { display: flex; align-items: center; gap: 4px; padding: 4px 5px; border-radius: 2px; cursor: pointer; margin-top: 1px; font-size: 8px; }
-        .segment-item:hover { background: rgba(255,255,255,0.05); }
-        .segment-item.selected { background: rgba(227,30,36,0.15); }
-        .tier-badge { min-width: 16px; height: 12px; display: flex; align-items: center; justify-content: center; border-radius: 2px; font-size: 7px; font-weight: bold; }
-        .tier-super { background: #ffd700; color: #000; }
-        .tier-t1 { background: #4caf50; color: #fff; }
-        .tier-t2 { background: #2196f3; color: #fff; }
-        .tier-t3 { background: #ff9800; color: #fff; }
-        .tier-t4 { background: #f44336; color: #fff; }
-        
-        .center-panel { flex: 1; display: flex; flex-direction: column; padding: 8px; min-width: 0; }
-        .canvas-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .canvas-title { font-size: 11px; font-weight: 600; }
-        .view-toggle { display: flex; background: rgba(255,255,255,0.1); border-radius: 3px; padding: 2px; }
-        .view-btn { padding: 3px 6px; border: none; background: transparent; color: #888; font-size: 8px; cursor: pointer; border-radius: 2px; }
-        .view-btn.active { background: rgba(227,30,36,0.3); color: #fff; }
-        .canvas-wrap { flex: 1; background: rgba(255,255,255,0.02); border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); position: relative; }
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(227, 30, 36, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(227, 30, 36, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(10,10,15,0.95);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(20px);
+        }
+
+        .header-left { display: flex; align-items: center; gap: 16px; }
+
+        .nav-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 12px;
+            font-family: 'Sora', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--accent-blue);
+            background: rgba(0,212,255,0.1);
+        }
+
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 44px; height: 44px; }
+        .logo-text h1 { font-size: 18px; font-weight: 600; background: linear-gradient(90deg, #E91E8C, #7B2D8E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-text .version-line { display: flex; align-items: center; gap: 8px; }
+        .logo-text .version { font-size: 10px; color: var(--text-secondary); font-family: 'Space Mono', monospace; }
+        .logo-text .update-date { font-size: 10px; color: var(--text-secondary); font-family: 'Space Mono', monospace; opacity: 0.7; }
+
+        .po-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(227,30,36,0.15);
+            border: 1px solid rgba(227,30,36,0.4);
+            padding: 8px 14px;
+            border-radius: 10px;
+            margin-left: 16px;
+        }
+
+        .po-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #e31e24, #c41e24);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .po-text { font-size: 13px; font-weight: 600; color: #fff; }
+
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Sora', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-red);
+            background: rgba(227,30,36,0.1);
+        }
+
+        /* Main Layout */
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 68px);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .top-section {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 220px;
+            background: rgba(26,26,36,0.8);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-header {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 5px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--accent-red);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: rgba(227,30,36,0.2);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .segment-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .segment-group {
+            margin-bottom: 6px;
+        }
+
+        .segment-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            border-left: 3px solid #666;
+            transition: all 0.2s;
+        }
+
+        .segment-group-header:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .segment-items {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+
+        .segment-items.open {
+            max-height: 400px;
+        }
+
+        .segment-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 4px;
+            font-size: 10px;
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+        }
+
+        .segment-item:hover {
+            background: rgba(0,212,255,0.05);
+        }
+
+        .segment-item.selected {
+            background: rgba(227,30,36,0.15);
+            border: 1px solid rgba(227,30,36,0.3);
+        }
+
+        .tier-badge {
+            min-width: 20px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 8px;
+            font-weight: bold;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .tier-super { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
+        .tier-t1 { background: var(--accent-green); color: #fff; }
+        .tier-t2 { background: var(--accent-blue); color: #000; }
+        .tier-t3 { background: var(--accent-orange); color: #000; }
+        .tier-t4 { background: var(--accent-red); color: #fff; }
+
+        /* Center Panel */
+        .center-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            min-width: 0;
+        }
+
+        .canvas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .canvas-title {
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .view-toggle {
+            display: flex;
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 3px;
+            border: 1px solid var(--border-color);
+        }
+
+        .view-btn {
+            padding: 6px 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 9px;
+            font-family: 'Sora', sans-serif;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        .view-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .view-btn.active {
+            background: rgba(227,30,36,0.3);
+            color: #fff;
+        }
+
+        .canvas-wrap {
+            flex: 1;
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
         #quadrantCanvas { width: 100%; height: 100%; }
-        .tooltip { position: fixed; background: rgba(0,0,0,0.95); padding: 8px 10px; border-radius: 5px; font-size: 9px; pointer-events: none; z-index: 1000; display: none; max-width: 220px; }
-        
-        .right-panel { width: 260px; background: rgba(255,255,255,0.02); border-left: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; overflow-y: auto; }
-        .detail-section { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .detail-title { font-size: 8px; font-weight: 600; color: #888; text-transform: uppercase; margin-bottom: 5px; }
-        .detail-header { display: flex; align-items: center; gap: 6px; }
-        .detail-name { font-size: 11px; font-weight: 600; }
-        .detail-parent { font-size: 8px; color: #888; }
-        .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; }
-        .metric-box { background: rgba(255,255,255,0.03); border-radius: 3px; padding: 4px 2px; text-align: center; }
-        .metric-value { font-size: 12px; font-weight: 700; color: #e31e24; }
-        .metric-label { font-size: 6px; color: #888; }
-        .info-text { font-size: 9px; line-height: 1.4; color: #aaa; }
-        .info-text.highlight { color: #4fc3f7; }
-        
+
+        /* Right Panel */
+        .right-panel {
+            width: 280px;
+            background: rgba(26,26,36,0.8);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .detail-section {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .detail-parent {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .metric-box {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 8px 4px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-red);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .metric-label {
+            font-size: 8px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .info-text {
+            font-size: 11px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        .info-text.highlight {
+            color: var(--accent-blue);
+        }
+
         /* Bottom Panel */
-        .bottom-panel { background: rgba(20,20,40,0.98); border-top: 2px solid #e31e24; height: 0; overflow: hidden; transition: height 0.3s; position: relative; z-index: 100; }
-        .bottom-panel.active { height: 340px; overflow-y: auto; }
-        .bottom-content { padding: 12px 16px; }
-        .bottom-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .bottom-title { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .bottom-subtitle { font-size: 10px; color: #888; }
-        
-        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        
+        .bottom-panel {
+            background: rgba(20,20,35,0.98);
+            border-top: 2px solid var(--accent-red);
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s;
+            position: relative;
+            z-index: 100;
+        }
+
+        .bottom-panel.active {
+            height: 360px;
+            overflow-y: auto;
+        }
+
+        .bottom-content {
+            padding: 16px 20px;
+        }
+
+        .bottom-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .bottom-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bottom-subtitle {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
         /* BHT Impact Section */
-        .bht-impact-section { background: rgba(255,255,255,0.02); border-radius: 8px; padding: 12px; }
-        .bht-impact-title { font-size: 10px; font-weight: 600; margin-bottom: 10px; color: #4fc3f7; }
-        .bht-category { margin-bottom: 8px; }
-        .bht-category-header { font-size: 9px; font-weight: 600; padding: 4px 6px; border-radius: 4px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
-        .bht-category-header.awareness { background: rgba(156,39,176,0.2); color: #ce93d8; }
-        .bht-category-header.consideration { background: rgba(255,152,0,0.2); color: #ffb74d; }
-        .bht-category-header.conversion { background: rgba(76,175,80,0.2); color: #81c784; }
-        .bht-impact-value { font-size: 11px; font-weight: 700; }
-        .bht-questions-list { font-size: 8px; color: #aaa; padding-left: 8px; }
-        .bht-question-item { padding: 2px 0; display: flex; align-items: center; gap: 4px; }
-        .bht-question-item.recommended { color: #fff; }
-        .bht-question-item.recommended::before { content: '★'; color: #e31e24; }
-        
+        .bht-impact-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .bht-impact-title {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--accent-blue);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .bht-category {
+            margin-bottom: 12px;
+        }
+
+        .bht-category-header {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 8px 10px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bht-category-header.awareness { background: rgba(124,58,237,0.2); color: #a78bfa; }
+        .bht-category-header.consideration { background: rgba(245,158,11,0.2); color: #fbbf24; }
+        .bht-category-header.conversion { background: rgba(16,185,129,0.2); color: #34d399; }
+
+        .bht-impact-value {
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .bht-questions-list {
+            font-size: 10px;
+            color: var(--text-secondary);
+            padding-left: 10px;
+        }
+
+        .bht-question-item {
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bht-question-item.recommended {
+            color: var(--text-primary);
+        }
+
+        .bht-question-item.recommended::before {
+            content: '★';
+            color: var(--accent-red);
+        }
+
         /* Platform Targeting */
-        .platform-section { background: rgba(255,255,255,0.02); border-radius: 8px; padding: 12px; }
-        .platform-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-        .platform-card { background: rgba(255,255,255,0.03); border-radius: 6px; overflow: hidden; }
-        .platform-header { padding: 6px 8px; font-size: 9px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-        .platform-header.meta { background: rgba(24,119,242,0.2); color: #4a90d9; border-bottom: 2px solid #1877f2; }
-        .platform-header.x { background: rgba(0,0,0,0.5); color: #fff; border-bottom: 2px solid #000; }
-        .platform-header.tiktok { background: rgba(0,0,0,0.4); color: #00f2ea; border-bottom: 2px solid #00f2ea; }
-        .platform-header.youtube { background: rgba(255,0,0,0.15); color: #ff6666; border-bottom: 2px solid #ff0000; }
-        .platform-header.dv360 { background: rgba(52,168,83,0.2); color: #34a853; border-bottom: 2px solid #34a853; }
-        .platform-body { padding: 6px; }
-        .targeting-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 8px; }
+        .platform-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .platform-card {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .platform-header {
+            padding: 8px 10px;
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .platform-header.meta { background: rgba(24,119,242,0.2); color: #60a5fa; border-bottom: 2px solid #1877f2; }
+        .platform-header.x { background: rgba(255,255,255,0.1); color: #fff; border-bottom: 2px solid #fff; }
+        .platform-header.tiktok { background: rgba(0,242,234,0.15); color: #00f2ea; border-bottom: 2px solid #00f2ea; }
+        .platform-header.youtube { background: rgba(255,0,0,0.15); color: #f87171; border-bottom: 2px solid #ff0000; }
+        .platform-header.dv360 { background: rgba(52,168,83,0.2); color: #4ade80; border-bottom: 2px solid #34a853; }
+
+        .platform-body { padding: 8px; }
+
+        .targeting-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 9px;
+        }
+
         .targeting-row:last-child { border-bottom: none; }
-        .targeting-type { color: #888; }
-        .targeting-value { color: #fff; text-align: right; max-width: 60%; }
-        .bht-mini { font-size: 6px; padding: 1px 3px; border-radius: 4px; margin-left: 3px; }
-        .bht-mini.aw { background: rgba(156,39,176,0.3); color: #ce93d8; }
-        .bht-mini.co { background: rgba(255,152,0,0.3); color: #ffb74d; }
-        .bht-mini.cv { background: rgba(76,175,80,0.3); color: #81c784; }
-        
-        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #555; text-align: center; padding: 20px; }
-        .empty-icon { font-size: 28px; margin-bottom: 6px; }
-        
-        .extra-targeting-card { background: rgba(255,255,255,0.03); border-radius: 6px; overflow: hidden; }
-        .extra-targeting-header { padding: 6px 8px; font-size: 9px; font-weight: 600; background: rgba(255,255,255,0.05); color: #4fc3f7; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .extra-targeting-body { padding: 6px 8px; }
-        .extra-item { display: flex; align-items: center; gap: 6px; padding: 3px 0; font-size: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .targeting-type { color: var(--text-secondary); }
+        .targeting-value { color: var(--text-primary); text-align: right; max-width: 65%; }
+
+        .bht-mini {
+            font-size: 7px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin-left: 4px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .bht-mini.aw { background: rgba(124,58,237,0.3); color: #a78bfa; }
+        .bht-mini.co { background: rgba(245,158,11,0.3); color: #fbbf24; }
+        .bht-mini.cv { background: rgba(16,185,129,0.3); color: #34d399; }
+
+        /* Extra Targeting */
+        .extra-targeting-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .extra-targeting-card {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .extra-targeting-header {
+            padding: 8px 10px;
+            font-size: 10px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.05);
+            color: var(--accent-blue);
+            border-bottom: 1px solid var(--border-color);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .extra-targeting-body { padding: 8px 10px; }
+
+        .extra-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
         .extra-item:last-child { border-bottom: none; }
-        .app-icon { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: bold; }
+
+        .app-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
         .app-getir { background: #5c3d9e; }
         .app-migros { background: #ff6600; }
         .app-yemeksepeti { background: #fa0050; }
@@ -130,26 +656,85 @@
         .app-nefis { background: #e91e63; }
         .app-moov { background: #00a651; }
         .app-obilet { background: #1a73e8; }
-        .tv-item { color: #ce93d8; }
-        .food-item { color: #ffb74d; font-size: 7px; }
+
+        .tv-item { color: #a78bfa; }
+        .food-item { color: #fbbf24; font-size: 9px; }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 24px;
+        }
+
+        .empty-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: fixed;
+            background: rgba(26,26,36,0.98);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 11px;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+            max-width: 260px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-red); }
     </style>
 </head>
 <body>
+    <div class="bg-grid"></div>
+
     <header class="header">
         <div class="header-left">
             <a href="../../" class="nav-btn">← Kütüphane</a>
             <a href="../" class="nav-btn">📊 Quadrant</a>
             <div class="logo">
-                <div class="logo-icon">PO</div>
-                <div class="logo-text">Premium Market</div>
+                <div class="logo-icon">
+                    <svg viewBox="0 0 44 44" width="44" height="44">
+                        <circle cx="15" cy="22" r="11" fill="none" stroke="#E91E8C" stroke-width="4"/>
+                        <circle cx="29" cy="22" r="11" fill="none" stroke="#7B2D8E" stroke-width="4"/>
+                        <path d="M15 11 A11 11 0 0 0 15 33" fill="none" stroke="#E91E8C" stroke-width="4"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Time & Growity</h1>
+                    <div class="version-line">
+                        <span class="version">PO Segment Tool v7.8</span>
+                        <span class="update-date">• Ocak 2026</span>
+                    </div>
+                </div>
+            </div>
+            <div class="po-badge">
+                <div class="po-icon">PO</div>
+                <span class="po-text">Premium Market</span>
             </div>
         </div>
-        <div style="display:flex;gap:5px;">
+        <div class="header-actions">
             <button class="btn btn-secondary" onclick="exportPNG()">📥 PNG</button>
             <button class="btn btn-secondary" onclick="exportExcel()">📊 Excel</button>
         </div>
     </header>
-    
+
     <div class="main-wrapper">
         <div class="top-section">
             <div class="left-panel">
@@ -166,7 +751,7 @@
                 </div>
                 <div class="segment-list" id="segmentList"></div>
             </div>
-            
+
             <div class="center-panel">
                 <div class="canvas-header">
                     <div class="canvas-title">Segment Quadrant</div>
@@ -180,17 +765,21 @@
                 </div>
                 <div class="canvas-wrap"><canvas id="quadrantCanvas"></canvas></div>
             </div>
-            
+
             <div class="right-panel">
                 <div id="emptyState" class="empty-state">
                     <div class="empty-icon">👆</div>
-                    <div style="font-size:11px;color:#888;">Segment Seçin</div>
+                    <div style="font-size:12px;color:var(--text-secondary);">Segment Seçin</div>
+                    <div style="font-size:10px;color:var(--text-secondary);margin-top:6px;">Detayları görmek için bir segment tıklayın</div>
                 </div>
                 <div id="detailPanel" style="display:none;">
                     <div class="detail-section">
                         <div class="detail-header">
                             <div class="tier-badge" id="detailTier">T1</div>
-                            <div><div class="detail-name" id="detailName">Segment</div><div class="detail-parent" id="detailParent">Parent</div></div>
+                            <div>
+                                <div class="detail-name" id="detailName">Segment</div>
+                                <div class="detail-parent" id="detailParent">Parent</div>
+                            </div>
                         </div>
                     </div>
                     <div class="detail-section">
@@ -204,13 +793,13 @@
                     </div>
                     <div class="detail-section">
                         <div class="detail-title">Strateji</div>
-                        <div class="info-text" id="detailReason" style="margin-bottom:4px;"></div>
+                        <div class="info-text" id="detailReason" style="margin-bottom:6px;"></div>
                         <div class="info-text highlight" id="detailStrategy"></div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Bottom Panel -->
         <div class="bottom-panel" id="bottomPanel">
             <div class="bottom-content">
@@ -246,7 +835,7 @@
                             <div class="bht-questions-list" id="cvQuestions"></div>
                         </div>
                     </div>
-                    
+
                     <!-- Platform Targeting -->
                     <div class="platform-section">
                         <div class="bht-impact-title">🎯 Platform Hedefleme Önerileri</div>
@@ -272,19 +861,18 @@
                                 <div class="platform-body" id="dv360Targeting"></div>
                             </div>
                         </div>
-                        
-                        <!-- Ek Hedefleme Detayları -->
-                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px;">
+
+                        <div class="extra-targeting-grid">
                             <div class="extra-targeting-card">
                                 <div class="extra-targeting-header">📱 App Hedefleme</div>
                                 <div class="extra-targeting-body" id="appTargeting"></div>
                             </div>
                             <div class="extra-targeting-card">
-                                <div class="extra-targeting-header">📺 TV & Video İlgi Alanları</div>
+                                <div class="extra-targeting-header">📺 TV Kategorileri</div>
                                 <div class="extra-targeting-body" id="tvTargeting"></div>
                             </div>
                             <div class="extra-targeting-card">
-                                <div class="extra-targeting-header">🍔 Food & Drink Kategorileri</div>
+                                <div class="extra-targeting-header">🍔 Food & Drink</div>
                                 <div class="extra-targeting-body" id="foodTargeting"></div>
                             </div>
                         </div>
@@ -293,9 +881,9 @@
             </div>
         </div>
     </div>
-    
+
     <div class="tooltip" id="tooltip"></div>
-    
+
     <script>
         const bhtQ = {
             awareness: [
@@ -335,132 +923,44 @@
 
         const targetT = {
             'Aile Seyahat Planlayıcıları': {
-                meta: [
-                    { type: 'Interest', target: 'Seyahat, Aile tatili, Kamp', bht: 'aw' },
-                    { type: 'Behavior', target: 'Sık seyahat edenler', bht: 'co' },
-                    { type: 'Custom', target: 'PO app users', bht: 'cv' }
-                ],
-                x: [
-                    { type: 'Trend Takeover', target: '#HaftaSonuKaçamağı', bht: 'aw' },
-                    { type: 'Timeline Takeover', target: 'İlk 24 saat görünürlük', bht: 'aw' },
-                    { type: 'Keyword', target: 'tatil, yolculuk, gezi', bht: 'co' },
-                    { type: 'Follower LA', target: '@KulturYollari @obiabordam', bht: 'co' },
-                    { type: 'Engagement', target: 'Video görüntüleyenler', bht: 'cv' }
-                ],
-                tiktok: [
-                    { type: 'Hashtag', target: '#aileiletatil #yolculuk', bht: 'aw' },
-                    { type: 'Creator', target: 'Aile/seyahat influencer', bht: 'co' },
-                    { type: 'Retarget', target: 'Video %50+ izleyenler', bht: 'cv' }
-                ],
-                youtube: [
-                    { type: 'Affinity', target: 'Travel Buffs, Family-Focused', bht: 'aw' },
-                    { type: 'In-Market', target: 'Family Vacations, Auto Fuel', bht: 'co' },
-                    { type: 'Remarketing', target: 'Kanal aboneleri', bht: 'cv' }
-                ],
-                dv360: [
-                    { type: 'Affinity', target: 'Travel Buffs, Family-Focused, Outdoor Enthusiasts', bht: 'aw' },
-                    { type: 'In-Market', target: 'Travel/Hotels, Auto Fuel & Charging', bht: 'co' },
-                    { type: 'Custom Intent', target: 'aile tatili rotası, yol gezisi', bht: 'cv' }
-                ],
-                apps: ['Getir', 'Migros', 'Yemeksepeti', 'Moov by Garanti', 'Obilet'],
-                tvCategories: ['TV Family-Oriented Shows', 'TV Reality Shows', 'TV Talent & Variety Shows'],
-                foodCategories: ['/Food & Drink/Restaurants/Fast Food', '/Food & Drink/Beverages/Soft Drinks', '/Food & Drink/Food/Candy & Sweets']
+                meta: [{ type: 'Interest', target: 'Seyahat, Aile tatili, Kamp', bht: 'aw' }, { type: 'Behavior', target: 'Sık seyahat edenler', bht: 'co' }, { type: 'Custom', target: 'PO app users', bht: 'cv' }],
+                x: [{ type: 'Trend', target: '#HaftaSonuKaçamağı', bht: 'aw' }, { type: 'Keyword', target: 'tatil, yolculuk', bht: 'co' }, { type: 'Follower', target: '@KulturYollari', bht: 'co' }],
+                tiktok: [{ type: 'Hashtag', target: '#aileiletatil', bht: 'aw' }, { type: 'Creator', target: 'Aile influencer', bht: 'co' }],
+                youtube: [{ type: 'Affinity', target: 'Travel Buffs', bht: 'aw' }, { type: 'In-Market', target: 'Family Vacations', bht: 'co' }],
+                dv360: [{ type: 'Affinity', target: 'Travel Buffs, Family', bht: 'aw' }, { type: 'In-Market', target: 'Auto Fuel', bht: 'co' }],
+                apps: ['Getir', 'Migros', 'Yemeksepeti', 'Moov', 'Obilet'],
+                tvCategories: ['TV Family Shows', 'TV Reality', 'TV Talent Shows'],
+                foodCategories: ['Fast Food', 'Soft Drinks', 'Candy & Sweets']
             },
             'Deneyim Odaklı Şehirli Premiumlar': {
-                meta: [
-                    { type: 'Interest', target: 'Wellness, Fitness, Organik', bht: 'aw' },
-                    { type: 'Behavior', target: 'Health conscious, Early adopters', bht: 'co' },
-                    { type: 'Lookalike', target: 'Premium müşteri LAL %1-2', bht: 'cv' }
-                ],
-                x: [
-                    { type: 'Trend Takeover', target: '#PremiumAnlar', bht: 'aw' },
-                    { type: 'Timeline Takeover', target: 'Sabah saatleri (07-10)', bht: 'aw' },
-                    { type: 'Keyword', target: 'kahve, wellness, premium', bht: 'co' },
-                    { type: 'Follower LA', target: '@Starbucks_TR @Nike', bht: 'co' },
-                    { type: 'Website Retarget', target: 'Premium sayfa ziyaretçileri', bht: 'cv' }
-                ],
-                tiktok: [
-                    { type: 'Hashtag', target: '#wellness #sağlıklıyaşam', bht: 'aw' },
-                    { type: 'Creator', target: 'Lifestyle/wellness creators', bht: 'co' },
-                    { type: 'Retarget', target: 'Engaged users 7 gün', bht: 'cv' }
-                ],
-                youtube: [
-                    { type: 'Affinity', target: 'Health & Fitness Buffs, Foodies', bht: 'aw' },
-                    { type: 'In-Market', target: 'Health Food, Premium Beverages', bht: 'co' },
-                    { type: 'Remarketing', target: 'High-value viewers', bht: 'cv' }
-                ],
-                dv360: [
-                    { type: 'Affinity', target: 'Coffee Shop Regulars, Health & Fitness Buffs, Foodies', bht: 'aw' },
-                    { type: 'In-Market', target: 'Health Food, Coffee, Organic Products', bht: 'co' },
-                    { type: 'Custom Intent', target: 'specialty coffee, organik ürün', bht: 'cv' }
-                ],
-                apps: ['Starbucks', 'Nefis Yemek Tarifleri', 'Nike Training', 'Calm', 'Headspace'],
-                tvCategories: ['TV Talk Shows', 'TV Sci-Fi & Fantasy Shows', 'TV Comedies'],
-                foodCategories: ['/Food & Drink/Beverages/Energy Drinks', '/Food & Drink/Beverages/Nutrition Drinks & Shakes', '/Food & Drink/Food/Grains & Pasta']
+                meta: [{ type: 'Interest', target: 'Wellness, Fitness, Organik', bht: 'aw' }, { type: 'Behavior', target: 'Health conscious', bht: 'co' }, { type: 'LAL', target: 'Premium %1-2', bht: 'cv' }],
+                x: [{ type: 'Trend', target: '#PremiumAnlar', bht: 'aw' }, { type: 'Keyword', target: 'kahve, wellness', bht: 'co' }, { type: 'Follower', target: '@Starbucks_TR', bht: 'co' }],
+                tiktok: [{ type: 'Hashtag', target: '#wellness', bht: 'aw' }, { type: 'Creator', target: 'Lifestyle creators', bht: 'co' }],
+                youtube: [{ type: 'Affinity', target: 'Health & Fitness', bht: 'aw' }, { type: 'In-Market', target: 'Health Food', bht: 'co' }],
+                dv360: [{ type: 'Affinity', target: 'Coffee Shop Regulars', bht: 'aw' }, { type: 'In-Market', target: 'Coffee, Organic', bht: 'co' }],
+                apps: ['Starbucks', 'Nefis Yemek', 'Nike Training', 'Calm'],
+                tvCategories: ['TV Talk Shows', 'TV Sci-Fi', 'TV Comedies'],
+                foodCategories: ['Energy Drinks', 'Nutrition Drinks', 'Grains & Pasta']
             },
             'Değer Odaklı Hızlı Alışverişçiler': {
-                meta: [
-                    { type: 'Interest', target: 'Fırsatlar, İndirimler, Kuponlar', bht: 'aw' },
-                    { type: 'Behavior', target: 'Deal seekers, Coupon users', bht: 'co' },
-                    { type: 'Custom', target: 'Sadakat programı üyeleri', bht: 'cv' }
-                ],
-                x: [
-                    { type: 'Trend Takeover', target: '#FlashFırsat #Kampanya', bht: 'aw' },
-                    { type: 'Amplify Pre-roll', target: 'Haber & gündem içerikleri', bht: 'aw' },
-                    { type: 'Keyword', target: 'indirim, kampanya, fırsat', bht: 'co' },
-                    { type: 'Follower LA', target: '@A101 @BIM_Magazalari', bht: 'co' },
-                    { type: 'Engagement', target: 'Kupon RT yapanlar', bht: 'cv' }
-                ],
-                tiktok: [
-                    { type: 'Hashtag', target: '#indirim #fırsat #tasarruf', bht: 'aw' },
-                    { type: 'Creator', target: 'Fırsat/para biriktirme creators', bht: 'co' },
-                    { type: 'Retarget', target: 'Profil ziyaretçileri', bht: 'cv' }
-                ],
-                youtube: [
-                    { type: 'Affinity', target: 'Bargain Hunters, Value Shoppers', bht: 'aw' },
-                    { type: 'In-Market', target: 'Coupons & Discount Offers', bht: 'co' },
-                    { type: 'Remarketing', target: 'Deal sayfası izleyicileri', bht: 'cv' }
-                ],
-                dv360: [
-                    { type: 'Affinity', target: 'Bargain Hunters, Value Shoppers, Coupon Savers', bht: 'aw' },
-                    { type: 'In-Market', target: 'Coupons & Discounts, Convenience Stores', bht: 'co' },
-                    { type: 'Custom Intent', target: 'indirim kampanya fırsat', bht: 'cv' }
-                ],
+                meta: [{ type: 'Interest', target: 'Fırsatlar, İndirimler', bht: 'aw' }, { type: 'Behavior', target: 'Deal seekers', bht: 'co' }, { type: 'Custom', target: 'Sadakat üyeleri', bht: 'cv' }],
+                x: [{ type: 'Trend', target: '#FlashFırsat', bht: 'aw' }, { type: 'Keyword', target: 'indirim, kampanya', bht: 'co' }, { type: 'Follower', target: '@A101', bht: 'co' }],
+                tiktok: [{ type: 'Hashtag', target: '#indirim #fırsat', bht: 'aw' }, { type: 'Creator', target: 'Fırsat creators', bht: 'co' }],
+                youtube: [{ type: 'Affinity', target: 'Bargain Hunters', bht: 'aw' }, { type: 'In-Market', target: 'Coupons', bht: 'co' }],
+                dv360: [{ type: 'Affinity', target: 'Value Shoppers', bht: 'aw' }, { type: 'In-Market', target: 'Convenience Stores', bht: 'co' }],
                 apps: ['Getir', 'Trendyol', 'Hepsiburada', 'A101', 'BİM'],
-                tvCategories: ['TV Game Shows', 'TV Reality Shows', 'TV Soap Operas'],
-                foodCategories: ['/Food & Drink/Restaurants/Fast Food', '/Food & Drink/Food/Candy & Sweets', '/Food & Drink/Beverages/Soft Drinks']
+                tvCategories: ['TV Game Shows', 'TV Reality', 'TV Soap Operas'],
+                foodCategories: ['Fast Food', 'Candy & Sweets', 'Soft Drinks']
             },
             'Erişilebilir Premium Tüketiciler': {
-                meta: [
-                    { type: 'Interest', target: 'Self-care, Premium kahve, Treats', bht: 'aw' },
-                    { type: 'Behavior', target: 'Impulse buyers, Upgraders', bht: 'co' },
-                    { type: 'Lookalike', target: 'Premium alıcılar LAL %1-3', bht: 'cv' }
-                ],
-                x: [
-                    { type: 'Trend Takeover', target: '#KendineÖdül #GününKeyfi', bht: 'aw' },
-                    { type: 'Timeline Takeover', target: 'Öğle molası (12-14)', bht: 'aw' },
-                    { type: 'Keyword', target: 'kahve keyfi, mola, şımartmak', bht: 'co' },
-                    { type: 'Follower LA', target: '@Starbucks_TR @PetrolOfisi', bht: 'co' },
-                    { type: 'Website Retarget', target: 'Market sayfası ziyaretçileri', bht: 'cv' }
-                ],
-                tiktok: [
-                    { type: 'Hashtag', target: '#kendinişımart #kahvekeyfi', bht: 'aw' },
-                    { type: 'Creator', target: 'Lifestyle/kahve creators', bht: 'co' },
-                    { type: 'Retarget', target: 'High-intent viewers', bht: 'cv' }
-                ],
-                youtube: [
-                    { type: 'Affinity', target: 'Coffee Shop Regulars, Foodies', bht: 'aw' },
-                    { type: 'In-Market', target: 'Coffee, Premium Snacks', bht: 'co' },
-                    { type: 'Remarketing', target: 'Converters', bht: 'cv' }
-                ],
-                dv360: [
-                    { type: 'Affinity', target: 'Coffee Shop Regulars, Foodies, Fast Food Cravers', bht: 'aw' },
-                    { type: 'In-Market', target: 'Coffee, Snack Foods, Convenience Stores', bht: 'co' },
-                    { type: 'Custom Intent', target: 'premium kahve grab and go', bht: 'cv' }
-                ],
-                apps: ['Starbucks', 'Getir', 'Yemeksepeti', 'Migros', 'Nefis Yemek Tarifleri'],
-                tvCategories: ['TV Comedies', 'TV Talk Shows', 'TV Talent & Variety Shows'],
-                foodCategories: ['/Food & Drink/Beverages/Energy Drinks', '/Food & Drink/Food/Candy & Sweets', '/Food & Drink/Restaurants/Street Food']
+                meta: [{ type: 'Interest', target: 'Self-care, Premium kahve', bht: 'aw' }, { type: 'Behavior', target: 'Impulse buyers', bht: 'co' }, { type: 'LAL', target: 'Premium alıcılar %1-3', bht: 'cv' }],
+                x: [{ type: 'Trend', target: '#KendineÖdül', bht: 'aw' }, { type: 'Keyword', target: 'kahve keyfi, mola', bht: 'co' }, { type: 'Follower', target: '@Starbucks_TR @PetrolOfisi', bht: 'co' }],
+                tiktok: [{ type: 'Hashtag', target: '#kendinişımart', bht: 'aw' }, { type: 'Creator', target: 'Kahve creators', bht: 'co' }],
+                youtube: [{ type: 'Affinity', target: 'Coffee Shop Regulars', bht: 'aw' }, { type: 'In-Market', target: 'Coffee, Snacks', bht: 'co' }],
+                dv360: [{ type: 'Affinity', target: 'Foodies, Fast Food', bht: 'aw' }, { type: 'In-Market', target: 'Convenience Stores', bht: 'co' }],
+                apps: ['Starbucks', 'Getir', 'Yemeksepeti', 'Migros', 'Nefis Yemek'],
+                tvCategories: ['TV Comedies', 'TV Talk Shows', 'TV Talent Shows'],
+                foodCategories: ['Energy Drinks', 'Candy & Sweets', 'Street Food']
             }
         };
 
@@ -508,11 +1008,12 @@
         ];
 
         const parentColors = {
-            'Aile Seyahat Planlayıcıları': { bg: 'rgba(33,150,243,0.25)', border: '#2196f3' },
-            'Deneyim Odaklı Şehirli Premiumlar': { bg: 'rgba(156,39,176,0.25)', border: '#9c27b0' },
-            'Değer Odaklı Hızlı Alışverişçiler': { bg: 'rgba(255,152,0,0.25)', border: '#ff9800' },
-            'Erişilebilir Premium Tüketiciler': { bg: 'rgba(76,175,80,0.25)', border: '#4caf50' }
+            'Aile Seyahat Planlayıcıları': { bg: 'rgba(0,212,255,0.2)', border: '#00d4ff' },
+            'Deneyim Odaklı Şehirli Premiumlar': { bg: 'rgba(124,58,237,0.2)', border: '#7c3aed' },
+            'Değer Odaklı Hızlı Alışverişçiler': { bg: 'rgba(255,107,53,0.2)', border: '#ff6b35' },
+            'Erişilebilir Premium Tüketiciler': { bg: 'rgba(16,185,129,0.2)', border: '#10b981' }
         };
+
         const tierCfg = { 'Süper': { icon: '⭐', class: 'tier-super' }, 'T1': { icon: 'T1', class: 'tier-t1' }, 'T2': { icon: 'T2', class: 'tier-t2' }, 'T3': { icon: 'T3', class: 'tier-t3' }, 'T4': { icon: 'T4', class: 'tier-t4' } };
         const axisL = {
             'Aile Seyahat Planlayıcıları': { x: 'Premium Açıklık', y: 'Frekans', s: 'Potansiyel' },
@@ -522,7 +1023,7 @@
         };
 
         let canvas, ctx, selectedSeg = null, currentFilter = 'all', currentView = 'all';
-        const pad = 45;
+        const pad = 55;
 
         function init() {
             canvas = document.getElementById('quadrantCanvas');
@@ -553,6 +1054,8 @@
         }
 
         function toggleGroup(h) { const i = h.nextElementSibling; i.classList.toggle('open'); h.querySelector('span:last-child').textContent = i.classList.contains('open') ? '▼' : '▶'; }
+        function filterTier(tier) { currentFilter = tier; document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.tier === tier)); draw(); }
+        function setView(view) { currentView = view; document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b.textContent === (view === 'all' ? 'Tümü' : view.split(' ')[0]))); draw(); }
         function getFiltered() {
             let f = segments;
             if (currentFilter !== 'all') { const m = { 'super': 'Süper', 't1': 'T1', 't2': 'T2', 't3': 'T3', 't4': 'T4' }; f = f.filter(s => s.tier === m[currentFilter]); }
@@ -562,142 +1065,110 @@
 
         function draw() {
             const w = canvas.width, h = canvas.height;
-            ctx.fillStyle = '#0f0f1a'; ctx.fillRect(0, 0, w, h);
+            ctx.fillStyle = '#0a0a0f'; ctx.fillRect(0, 0, w, h);
             const cw = w - pad * 2, ch = h - pad * 2, cx = pad + cw / 2, cy = pad + ch / 2;
-            ctx.fillStyle = 'rgba(255,152,0,0.04)'; ctx.fillRect(pad, pad, cw / 2, ch / 2);
-            ctx.fillStyle = 'rgba(76,175,80,0.06)'; ctx.fillRect(cx, pad, cw / 2, ch / 2);
-            ctx.fillStyle = 'rgba(244,67,54,0.04)'; ctx.fillRect(pad, cy, cw / 2, ch / 2);
-            ctx.fillStyle = 'rgba(33,150,243,0.04)'; ctx.fillRect(cx, cy, cw / 2, ch / 2);
-            ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
+            ctx.fillStyle = 'rgba(255,107,53,0.03)'; ctx.fillRect(pad, pad, cw / 2, ch / 2);
+            ctx.fillStyle = 'rgba(16,185,129,0.05)'; ctx.fillRect(cx, pad, cw / 2, ch / 2);
+            ctx.fillStyle = 'rgba(239,68,68,0.03)'; ctx.fillRect(pad, cy, cw / 2, ch / 2);
+            ctx.fillStyle = 'rgba(0,212,255,0.03)'; ctx.fillRect(cx, cy, cw / 2, ch / 2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 1;
             for (let i = 0; i <= 10; i++) { ctx.beginPath(); ctx.moveTo(pad + (cw / 10) * i, pad); ctx.lineTo(pad + (cw / 10) * i, h - pad); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pad, pad + (ch / 10) * i); ctx.lineTo(w - pad, pad + (ch / 10) * i); ctx.stroke(); }
-            ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 2;
             ctx.beginPath(); ctx.moveTo(cx, pad); ctx.lineTo(cx, h - pad); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(pad, cy); ctx.lineTo(w - pad, cy); ctx.stroke();
-            ctx.font = '9px Segoe UI'; ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.textAlign = 'center';
-            ctx.fillText('Planlı & Lifestyle', pad + cw / 4, pad + 14);
-            ctx.fillText('Dürtüsel & Lifestyle', cx + cw / 4, pad + 14);
+            ctx.font = '10px Sora'; ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.textAlign = 'center';
+            ctx.fillText('Planlı & Lifestyle', pad + cw / 4, pad + 16);
+            ctx.fillText('Dürtüsel & Lifestyle', cx + cw / 4, pad + 16);
             ctx.fillText('Planlı & Fonksiyonel', pad + cw / 4, h - pad - 8);
             ctx.fillText('Dürtüsel & Fonksiyonel', cx + cw / 4, h - pad - 8);
             const filtered = getFiltered();
             filtered.forEach(seg => {
-                const ri = segments.indexOf(seg), x = pad + (seg.x / 100) * cw, y = pad + ((100 - seg.y) / 100) * ch, size = (seg.size / 100) * 22 + 6, colors = parentColors[seg.parent];
-                if (selectedSeg === ri) { ctx.beginPath(); ctx.arc(x, y, size + 4, 0, Math.PI * 2); ctx.fillStyle = 'rgba(227,30,36,0.3)'; ctx.fill(); }
-                ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI * 2); ctx.fillStyle = colors.bg; ctx.fill(); ctx.strokeStyle = colors.border; ctx.lineWidth = selectedSeg === ri ? 3 : 1.5; ctx.stroke();
-                ctx.fillStyle = tierCfg[seg.tier].class === 'tier-super' ? '#ffd700' : '#fff'; ctx.font = `bold ${size > 16 ? 8 : 6}px Segoe UI`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(tierCfg[seg.tier].icon, x, y);
+                const ri = segments.indexOf(seg), x = pad + (seg.x / 100) * cw, y = pad + ((100 - seg.y) / 100) * ch, size = (seg.size / 100) * 24 + 8, colors = parentColors[seg.parent];
+                if (selectedSeg === ri) { ctx.beginPath(); ctx.arc(x, y, size + 6, 0, Math.PI * 2); ctx.fillStyle = colors.border + '40'; ctx.fill(); }
+                ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI * 2); ctx.fillStyle = colors.bg; ctx.fill(); ctx.strokeStyle = colors.border; ctx.lineWidth = selectedSeg === ri ? 3 : 2; ctx.stroke();
+                ctx.fillStyle = tierCfg[seg.tier].class === 'tier-super' ? '#ffd700' : '#fff'; ctx.font = `bold ${size > 18 ? 10 : 8}px Space Mono`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(tierCfg[seg.tier].icon, x, y);
             });
         }
 
         function handleMouseMove(e) {
             const rect = canvas.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top, cw = canvas.width - pad * 2, ch = canvas.height - pad * 2;
             let found = null;
-            getFiltered().forEach(seg => { const x = pad + (seg.x / 100) * cw, y = pad + ((100 - seg.y) / 100) * ch, size = (seg.size / 100) * 22 + 6; if (Math.sqrt((mx - x) ** 2 + (my - y) ** 2) < size) found = seg; });
+            getFiltered().forEach(seg => { const x = pad + (seg.x / 100) * cw, y = pad + ((100 - seg.y) / 100) * ch, size = (seg.size / 100) * 24 + 8; if (Math.sqrt((mx - x) ** 2 + (my - y) ** 2) < size) found = seg; });
             const tt = document.getElementById('tooltip');
-            if (found) { canvas.style.cursor = 'pointer'; const l = axisL[found.parent]; tt.innerHTML = `<div style="font-weight:600;">${found.name}</div><div style="color:#888;font-size:8px;margin:3px 0;">${found.parent}</div><div style="font-size:8px;">${l.x}: <b style="color:#e31e24;">${found.x}</b> | ${l.y}: <b style="color:#e31e24;">${found.y}</b></div>`; tt.style.display = 'block'; tt.style.left = (e.clientX + 12) + 'px'; tt.style.top = (e.clientY + 12) + 'px'; }
+            if (found) { canvas.style.cursor = 'pointer'; const l = axisL[found.parent]; tt.innerHTML = `<div style="font-weight:600;">${found.name}</div><div style="color:var(--text-secondary);font-size:10px;margin:4px 0;">${found.parent}</div><div style="font-size:10px;">${l.x}: <b style="color:var(--accent-red);">${found.x}</b> | ${l.y}: <b style="color:var(--accent-red);">${found.y}</b></div>`; tt.style.display = 'block'; tt.style.left = (e.clientX + 14) + 'px'; tt.style.top = (e.clientY + 14) + 'px'; }
             else { canvas.style.cursor = 'default'; tt.style.display = 'none'; }
         }
 
         function handleClick(e) {
             const rect = canvas.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top, cw = canvas.width - pad * 2, ch = canvas.height - pad * 2;
-            let found = null;
-            getFiltered().forEach(seg => { const ri = segments.indexOf(seg), x = pad + (seg.x / 100) * cw, y = pad + ((100 - seg.y) / 100) * ch, size = (seg.size / 100) * 22 + 6; if (Math.sqrt((mx - x) ** 2 + (my - y) ** 2) < size) found = ri; });
-            selectSegment(found);
+            getFiltered().forEach((seg, fi) => { const ri = segments.indexOf(seg), x = pad + (seg.x / 100) * cw, y = pad + ((100 - seg.y) / 100) * ch, size = (seg.size / 100) * 24 + 8; if (Math.sqrt((mx - x) ** 2 + (my - y) ** 2) < size) selectSegment(ri); });
         }
 
         function selectSegment(idx) {
-            selectedSeg = idx;
+            selectedSeg = idx; const seg = segments[idx], l = axisL[seg.parent];
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('detailPanel').style.display = 'block';
+            document.getElementById('detailTier').textContent = tierCfg[seg.tier].icon;
+            document.getElementById('detailTier').className = `tier-badge ${tierCfg[seg.tier].class}`;
+            document.getElementById('detailName').textContent = seg.name;
+            document.getElementById('detailParent').textContent = seg.parent;
+            document.getElementById('metricX').textContent = seg.x;
+            document.getElementById('metricXLabel').textContent = l.x;
+            document.getElementById('metricY').textContent = seg.y;
+            document.getElementById('metricYLabel').textContent = l.y;
+            document.getElementById('metricSize').textContent = seg.size;
+            document.getElementById('metricSizeLabel').textContent = l.s;
+            document.getElementById('metricTier').textContent = seg.tier;
+            document.getElementById('detailReason').textContent = seg.reason;
+            document.getElementById('detailStrategy').textContent = '→ ' + seg.strategy;
+            document.getElementById('bottomPanel').classList.add('active');
+            document.getElementById('bottomSegName').textContent = seg.name;
+            document.getElementById('bottomSegParent').textContent = seg.parent;
+            updateBhtPanel(seg.parent);
+            updateTargetingPanel(seg.parent);
             renderSegmentList();
             draw();
-            document.getElementById('emptyState').style.display = idx === null ? 'flex' : 'none';
-            document.getElementById('detailPanel').style.display = idx === null ? 'none' : 'block';
-            document.getElementById('bottomPanel').classList.toggle('active', idx !== null);
-            
-            if (idx !== null) {
-                const seg = segments[idx], l = axisL[seg.parent], tier = tierCfg[seg.tier];
-                document.getElementById('detailTier').className = 'tier-badge ' + tier.class;
-                document.getElementById('detailTier').textContent = tier.icon;
-                document.getElementById('detailName').textContent = seg.name;
-                document.getElementById('detailParent').textContent = seg.parent;
-                document.getElementById('metricX').textContent = seg.x;
-                document.getElementById('metricY').textContent = seg.y;
-                document.getElementById('metricSize').textContent = seg.size;
-                document.getElementById('metricTier').textContent = seg.tier;
-                document.getElementById('metricXLabel').textContent = l.x;
-                document.getElementById('metricYLabel').textContent = l.y;
-                document.getElementById('metricSizeLabel').textContent = l.s;
-                document.getElementById('detailReason').textContent = seg.reason;
-                document.getElementById('detailStrategy').textContent = seg.strategy;
-                
-                document.getElementById('bottomSegName').textContent = seg.name;
-                document.getElementById('bottomSegParent').textContent = '/ ' + seg.parent;
-                
-                renderBhtImpact(seg.parent);
-                renderPlatformTargeting(seg.parent);
-            }
         }
 
-        function renderBhtImpact(parent) {
-            const recs = segBhtRec[parent] || [];
-            
+        function updateBhtPanel(parent) {
+            const rec = segBhtRec[parent] || [];
+            let awImp = 0, coImp = 0, cvImp = 0;
             ['awareness', 'consideration', 'conversion'].forEach(cat => {
-                const questions = bhtQ[cat];
-                const catRecs = recs.filter(r => questions.find(q => q.id === r));
-                let totalImpact = 0;
-                
-                const html = questions.map(q => {
-                    const isRec = recs.includes(q.id);
-                    if (isRec) totalImpact += q.impact;
+                const el = document.getElementById(cat === 'awareness' ? 'awQuestions' : cat === 'consideration' ? 'coQuestions' : 'cvQuestions');
+                el.innerHTML = bhtQ[cat].map(q => {
+                    const isRec = rec.includes(q.id);
+                    if (isRec) { if (cat === 'awareness') awImp += q.impact; else if (cat === 'consideration') coImp += q.impact; else cvImp += q.impact; }
                     return `<div class="bht-question-item ${isRec ? 'recommended' : ''}">${q.text}</div>`;
                 }).join('');
-                
-                const prefix = cat === 'awareness' ? 'aw' : cat === 'consideration' ? 'co' : 'cv';
-                document.getElementById(prefix + 'Questions').innerHTML = html;
-                document.getElementById(prefix + 'Impact').textContent = '+' + totalImpact + '%';
             });
+            document.getElementById('awImpact').textContent = '+' + awImp + '%';
+            document.getElementById('coImpact').textContent = '+' + coImp + '%';
+            document.getElementById('cvImpact').textContent = '+' + cvImp + '%';
         }
 
-        function renderPlatformTargeting(parent) {
-            const t = targetT[parent] || targetT['Erişilebilir Premium Tüketiciler'];
-            
-            ['meta', 'x', 'tiktok', 'youtube', 'dv360'].forEach(p => {
-                const data = t[p] || [];
-                document.getElementById(p + 'Targeting').innerHTML = data.map(r => `
-                    <div class="targeting-row">
-                        <span class="targeting-type">${r.type}</span>
-                        <span class="targeting-value">${r.target}<span class="bht-mini ${r.bht}">${r.bht.toUpperCase()}</span></span>
-                    </div>
-                `).join('');
+        function updateTargetingPanel(parent) {
+            const t = targetT[parent];
+            if (!t) return;
+            ['meta', 'x', 'tiktok', 'youtube', 'dv360'].forEach(plat => {
+                const el = document.getElementById(plat + 'Targeting');
+                el.innerHTML = (t[plat] || []).map(r => `<div class="targeting-row"><span class="targeting-type">${r.type}</span><span class="targeting-value">${r.target}<span class="bht-mini ${r.bht}">${r.bht.toUpperCase()}</span></span></div>`).join('');
             });
-            
-            // App Targeting
-            const appColors = {
-                'Getir': 'getir', 'Migros': 'migros', 'Yemeksepeti': 'yemeksepeti', 
-                'Starbucks': 'starbucks', 'Trendyol': 'trendyol', 'Hepsiburada': 'hepsiburada',
-                'A101': 'a101', 'BİM': 'bim', 'Nike Training': 'nike', 'Calm': 'calm',
-                'Nefis Yemek Tarifleri': 'nefis', 'Moov by Garanti': 'moov', 'Obilet': 'obilet', 'Headspace': 'calm'
-            };
-            document.getElementById('appTargeting').innerHTML = (t.apps || []).map(app => `
-                <div class="extra-item">
-                    <div class="app-icon app-${appColors[app] || 'getir'}">${app.charAt(0)}</div>
-                    <span>${app}</span>
-                </div>
-            `).join('');
-            
-            // TV Categories
-            document.getElementById('tvTargeting').innerHTML = (t.tvCategories || []).map(cat => `
-                <div class="extra-item tv-item">📺 ${cat}</div>
-            `).join('');
-            
-            // Food Categories
-            document.getElementById('foodTargeting').innerHTML = (t.foodCategories || []).map(cat => `
-                <div class="extra-item food-item">🍔 ${cat}</div>
-            `).join('');
+            const appIcons = { 'Getir': 'app-getir', 'Migros': 'app-migros', 'Yemeksepeti': 'app-yemeksepeti', 'Starbucks': 'app-starbucks', 'Trendyol': 'app-trendyol', 'Hepsiburada': 'app-hepsiburada', 'A101': 'app-a101', 'BİM': 'app-bim', 'Nike Training': 'app-nike', 'Calm': 'app-calm', 'Nefis Yemek': 'app-nefis', 'Moov': 'app-moov', 'Obilet': 'app-obilet' };
+            document.getElementById('appTargeting').innerHTML = (t.apps || []).map(a => `<div class="extra-item"><div class="app-icon ${appIcons[a] || ''}">${a[0]}</div><span>${a}</span></div>`).join('');
+            document.getElementById('tvTargeting').innerHTML = (t.tvCategories || []).map(c => `<div class="extra-item tv-item">📺 ${c}</div>`).join('');
+            document.getElementById('foodTargeting').innerHTML = (t.foodCategories || []).map(c => `<div class="extra-item food-item">🍔 ${c}</div>`).join('');
         }
 
-        function filterTier(t) { currentFilter = t; document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.tier === t)); draw(); }
-        function setView(v) { currentView = v; document.querySelectorAll('.view-btn').forEach(b => { const isA = (v === 'all' && b.textContent === 'Tümü') || (v === 'Aile Seyahat Planlayıcıları' && b.textContent === 'Aile') || (v === 'Deneyim Odaklı Şehirli Premiumlar' && b.textContent === 'Urban') || (v === 'Değer Odaklı Hızlı Alışverişçiler' && b.textContent === 'Değer') || (v === 'Erişilebilir Premium Tüketiciler' && b.textContent === 'Premium'); b.classList.toggle('active', isA); }); draw(); }
-        function exportPNG() { const l = document.createElement('a'); l.download = 'po-quadrant.png'; l.href = canvas.toDataURL('image/png'); l.click(); }
-        function exportExcel() { let h = '<html><head><meta charset="UTF-8"></head><body><table border="1"><tr><th>Ana</th><th>Alt</th><th>X</th><th>Y</th><th>Size</th><th>Tier</th><th>Gerekçe</th><th>Strateji</th></tr>'; segments.forEach(s => { h += `<tr><td>${s.parent}</td><td>${s.name}</td><td>${s.x}</td><td>${s.y}</td><td>${s.size}</td><td>${s.tier}</td><td>${s.reason}</td><td>${s.strategy}</td></tr>`; }); h += '</table></body></html>'; const b = new Blob([h], { type: 'application/vnd.ms-excel' }), l = document.createElement('a'); l.href = URL.createObjectURL(b); l.download = 'po-segments.xls'; l.click(); }
-        window.onload = init;
+        function exportPNG() { const link = document.createElement('a'); link.download = 'po-segment-quadrant.png'; link.href = canvas.toDataURL('image/png'); link.click(); }
+        function exportExcel() {
+            let html = '<html><head><meta charset="UTF-8"></head><body><table border="1"><tr><th>Segment</th><th>Parent</th><th>X</th><th>Y</th><th>Size</th><th>Tier</th><th>Strategy</th></tr>';
+            segments.forEach(s => { html += `<tr><td>${s.name}</td><td>${s.parent}</td><td>${s.x}</td><td>${s.y}</td><td>${s.size}</td><td>${s.tier}</td><td>${s.strategy}</td></tr>`; });
+            html += '</table></body></html>';
+            const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+            const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'po-segments.xls'; link.click();
+        }
+
+        init();
     </script>
 </body>
 </html>
