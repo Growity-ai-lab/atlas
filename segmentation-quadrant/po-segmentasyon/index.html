@@ -94,6 +94,8 @@
         .bottom-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .bottom-title { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .bottom-subtitle { font-size: 11px; color: var(--text-secondary); font-family: 'Space Mono', monospace; }
+        .close-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary); font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .close-btn:hover { border-color: var(--accent-red); color: var(--accent-red); background: rgba(227,30,36,0.1); }
         .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .bht-impact-section { background: var(--bg-card); border-radius: 12px; padding: 16px; border: 1px solid var(--border-color); }
         .bht-impact-title { font-size: 12px; font-weight: 600; margin-bottom: 14px; color: var(--accent-blue); font-family: 'Space Mono', monospace; }
@@ -255,6 +257,7 @@
                         <span id="bottomSegName">Segment</span>
                         <span class="bottom-subtitle" id="bottomSegParent"></span>
                     </div>
+                    <button class="close-btn" onclick="closeBottomPanel()">✕</button>
                 </div>
                 <div class="bottom-grid">
                     <div class="bht-impact-section">
@@ -447,6 +450,7 @@
         function updateBhtPanel(parent) { const rec = segBhtRec[parent] || []; let awImp = 0, coImp = 0, cvImp = 0; ['awareness', 'consideration', 'conversion'].forEach(cat => { const el = document.getElementById(cat === 'awareness' ? 'awQuestions' : cat === 'consideration' ? 'coQuestions' : 'cvQuestions'); el.innerHTML = bhtQ[cat].map(q => { const isRec = rec.includes(q.id); if (isRec) { if (cat === 'awareness') awImp += q.impact; else if (cat === 'consideration') coImp += q.impact; else cvImp += q.impact; } return '<div class="bht-question-item ' + (isRec ? 'recommended' : '') + '">' + q.text + '</div>'; }).join(''); }); document.getElementById('awImpact').textContent = '+' + awImp + '%'; document.getElementById('coImpact').textContent = '+' + coImp + '%'; document.getElementById('cvImpact').textContent = '+' + cvImp + '%'; }
         function updateTargetingPanel(parent) { const t = targetT[parent]; if (!t) return; ['meta', 'x', 'tiktok', 'youtube', 'dv360'].forEach(plat => { const el = document.getElementById(plat + 'Targeting'); el.innerHTML = (t[plat] || []).map(r => '<div class="targeting-row"><span class="targeting-type">' + r.type + '</span><span class="targeting-value">' + r.target + '<span class="bht-mini ' + r.bht + '">' + r.bht.toUpperCase() + '</span></span></div>').join(''); }); document.getElementById('lifestyleTargeting').innerHTML = (t.lifestyle || []).map(l => '<div class="extra-item"><div class="extra-item-icon lifestyle"></div><span>' + l + '</span></div>').join(''); document.getElementById('affinityTargeting').innerHTML = (t.affinity || []).map(a => '<div class="extra-item"><div class="extra-item-icon affinity"></div><span>' + a + '</span></div>').join(''); document.getElementById('inmarketTargeting').innerHTML = (t.inmarket || []).map(i => '<div class="extra-item"><div class="extra-item-icon inmarket"></div><span>' + i + '</span></div>').join(''); }
         function exportPNG() { const link = document.createElement('a'); link.download = 'po-segment-quadrant.png'; link.href = canvas.toDataURL('image/png'); link.click(); }
+        function closeBottomPanel() { document.getElementById('bottomPanel').classList.remove('active'); selectedSeg = null; renderSegmentList(); draw(); }
         function exportExcel() { let html = '<html><head><meta charset="UTF-8"></head><body><table border="1"><tr><th>Segment</th><th>Parent</th><th>X</th><th>Y</th><th>Size</th><th>Tier</th></tr>'; segments.forEach(s => { html += '<tr><td>' + s.name + '</td><td>' + s.parent + '</td><td>' + s.x + '</td><td>' + s.y + '</td><td>' + s.size + '</td><td>' + s.tier + '</td></tr>'; }); html += '</table></body></html>'; const blob = new Blob([html], { type: 'application/vnd.ms-excel' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'po-segments.xls'; link.click(); }
         init();
     </script>
