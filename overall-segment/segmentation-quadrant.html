@@ -213,7 +213,11 @@
             box-shadow: 0 0 10px currentColor;
         }
 
-        .segment-info { flex: 1; min-width: 0; }
+        .segment-info { 
+            flex: 1; 
+            min-width: 0; 
+            overflow: hidden;
+        }
 
         .segment-name {
             font-size: 13px;
@@ -221,12 +225,16 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            max-width: 140px;
         }
 
         .segment-parent {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-secondary);
             font-family: 'Space Mono', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .segment-reach {
@@ -685,9 +693,6 @@
             <a href="po-segmentasyon.html" class="po-btn">
                 🎯 PO Premium Market
             </a>
-            <a href="enerjisa-30yil.html" class="po-btn" style="background: rgba(255,193,7,0.15); border-color: rgba(255,193,7,0.4); color: #ffc107;">
-                ⚡ Enerjisa 30. Yıl
-            </a>
             <button class="btn btn-secondary" onclick="exportPNG()">📥 PNG</button>
             <button class="btn btn-secondary" onclick="exportExcel()">📊 Excel</button>
         </div>
@@ -806,12 +811,21 @@
             }
 
             const rawSegments = JSON.parse(savedSegments);
+
+            // Meta mapping'leri localStorage'dan yükle
+            const metaMappings = localStorage.getItem('metaSegmentMappings');
+            let metaMap = {};
+            if (metaMappings) {
+                try { metaMap = JSON.parse(metaMappings); } catch(e) { console.log('Meta mapping parse error'); }
+            }
             segments = rawSegments.map((seg, index) => ({
                 ...seg,
                 color: segmentColors[index % segmentColors.length],
                 x: Math.floor(Math.random() * 40) + 30,
                 y: Math.floor(Math.random() * 40) + 30,
-                reachNum: seg.reach
+                reachNum: seg.reach,
+                metaInterest: metaMap[seg.id] ? metaMap[seg.id].interests[0] : null,
+                metaReachFormatted: metaMap[seg.id] ? metaMap[seg.id].interests[0].name : null
             }));
 
             quadrantCanvas = document.getElementById('quadrantCanvas');
@@ -854,9 +868,9 @@
                         <div class="segment-name">${seg.name}</div>
                         <div class="segment-parent">${seg.parent}</div>
                     </div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; min-width: 70px;">
                         <div class="segment-reach">${formatReach(seg.reachNum)}</div>
-                        ${seg.metaReachFormatted ? `<div style="font-size: 9px; color: #60a5fa; font-family: 'Space Mono', monospace;">📊 ${seg.metaReachFormatted}</div>` : ''}
+                        ${seg.metaReachFormatted ? `<div style="font-size: 9px; color: #60a5fa; font-family: 'Space Mono', monospace; white-space: nowrap; max-width: 80px; overflow: hidden; text-overflow: ellipsis;" title="${seg.metaReachFormatted}">📊 ${seg.metaReachFormatted}</div>` : ''}
                     </div>
                     <div class="segment-actions">
                         <button class="segment-action-btn" onclick="event.stopPropagation(); addToVenn('${seg.id}')" title="Venn'e ekle">+</button>
@@ -932,6 +946,72 @@
                     </div>
                 `;
             }
+        }
+        
+        
+        // Otomatik hedefleme stratejisi üret
+        function generateAutoStrategy(seg) {
+            const categoryStrategies = {
+                'lifestyle': {
+                    meta: ['Lifestyle', 'Hobbies and interests', 'Entertainment'],
+                    google: ['Affinity: Lifestyle', 'In-market: Consumer goods'],
+                    tip: 'Yaşam tarzı odaklı içeriklerle hedefleyin'
+                },
+                'demografik': {
+                    meta: ['Demographics', 'Life events', 'Family status'],
+                    google: ['Demographics targeting', 'Life events'],
+                    tip: 'Demografik filtrelerle daraltın'
+                },
+                'davranis': {
+                    meta: ['Purchase behavior', 'Online activity', 'Device usage'],
+                    google: ['In-market audiences', 'Custom intent'],
+                    tip: 'Davranışsal sinyallerle hedefleyin'
+                },
+                'b2c': {
+                    meta: ['Consumer interests', 'Shopping behavior', 'Brand affinity'],
+                    google: ['In-market: Retail', 'Affinity: Shoppers'],
+                    tip: 'Tüketici odaklı kampanyalar için idealdir'
+                },
+                'b2b': {
+                    meta: ['Job titles', 'Industries', 'Company size'],
+                    google: ['Business services', 'B2B decision makers'],
+                    linkedin: ['Job function', 'Seniority', 'Industry'],
+                    tip: 'LinkedIn ve profesyonel ağlar öncelikli'
+                }
+            };
+            
+            // Segment ID'den kategori tahmin et
+            let category = 'lifestyle';
+            if (seg.id.startsWith('inf-') || seg.id.startsWith('tk-') || seg.id.startsWith('bs-')) category = 'b2c';
+            else if (seg.id.startsWith('gk-') || seg.id.startsWith('dm-')) category = 'b2b';
+            else if (seg.id.startsWith('al-') || seg.id.startsWith('gl-')) category = 'demografik';
+            else if (seg.id.startsWith('dj-') || seg.id.startsWith('fn-') || seg.id.startsWith('md-') || seg.id.startsWith('ot-')) category = 'davranis';
+            
+            const strat = categoryStrategies[category] || categoryStrategies['lifestyle'];
+            
+            let html = `
+                <div style="background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(124,58,237,0.02)); border: 1px solid rgba(124,58,237,0.2); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                    <div style="font-size: 10px; font-weight: 600; color: #a78bfa; margin-bottom: 8px;">🤖 OTOMATİK ÖNERİ</div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 10px;">${strat.tip}</div>
+                </div>
+                <div style="background: linear-gradient(135deg, rgba(24,119,242,0.1), rgba(24,119,242,0.02)); border: 1px solid rgba(24,119,242,0.2); border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+                    <div style="font-size: 10px; font-weight: 600; color: #60a5fa; margin-bottom: 6px;">📘 META ÖNERİLERİ</div>
+                    <div style="font-size: 10px; color: #34d399;">${strat.meta.join(', ')}</div>
+                </div>
+                <div style="background: linear-gradient(135deg, rgba(234,67,53,0.1), rgba(66,133,244,0.1)); border: 1px solid rgba(234,67,53,0.2); border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+                    <div style="font-size: 10px; font-weight: 600; color: #ea4335; margin-bottom: 6px;">🔍 GOOGLE ÖNERİLERİ</div>
+                    <div style="font-size: 10px; color: #60a5fa;">${strat.google.join(', ')}</div>
+                </div>`;
+            
+            if (strat.linkedin) {
+                html += `
+                <div style="background: linear-gradient(135deg, rgba(10,102,194,0.1), rgba(10,102,194,0.02)); border: 1px solid rgba(10,102,194,0.2); border-radius: 8px; padding: 10px;">
+                    <div style="font-size: 10px; font-weight: 600; color: #0a66c2; margin-bottom: 6px;">💼 LINKEDIN ÖNERİLERİ</div>
+                    <div style="font-size: 10px; color: #34d399;">${strat.linkedin.join(', ')}</div>
+                </div>`;
+            }
+            
+            return html;
         }
         
         // Hedefleme stratejisi fonksiyonu
@@ -1329,7 +1409,7 @@
             const strategy = strategies[seg.id];
             
             if (!strategy) {
-                return `<div style="font-size: 11px; color: var(--text-secondary); padding: 10px; text-align: center;">Bu segment için henüz hedefleme stratejisi tanımlanmamış.</div>`;
+                return generateAutoStrategy(seg);
             }
             
             let html = '';
