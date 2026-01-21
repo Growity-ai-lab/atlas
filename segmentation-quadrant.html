@@ -859,6 +859,15 @@
                                 <p style="margin-top:10px;"><strong style="color:var(--accent-green);">Boyut:</strong> Erişim hacmi</p>
                             </div>
                         </div>
+                        <div class="detail-card">
+                            <div class="detail-card-title">Quadrant Rehberi</div>
+                            <div style="font-size:11px;color:var(--text-secondary);line-height:1.8;">
+                                <p>🎯 <strong style="color:#10b981;">Hemen Harekete Geç:</strong> Değerli + Erişilebilir → Öncelikli hedef</p>
+                                <p>🔧 <strong style="color:#ff6b35;">Geliştir & Büyüt:</strong> Değerli ama zor → Yatırım yap</p>
+                                <p>📢 <strong style="color:#00d4ff;">Geniş Kitleye Ulaş:</strong> Kolay ama düşük değer → Awareness</p>
+                                <p>⏸️ <strong style="color:#ef4444;">Beklet:</strong> Ne kolay ne değerli → Şimdilik bırak</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1887,10 +1896,10 @@
             quadrantCtx.font = '11px Sora';
             quadrantCtx.fillStyle = 'rgba(255,255,255,0.35)';
             quadrantCtx.textAlign = 'center';
-            quadrantCtx.fillText('YATIRIM GEREKLİ', padding + chartWidth / 4, padding + 24);
-            quadrantCtx.fillText('🎯 ÖNCELİK', centerX + chartWidth / 4, padding + 24);
-            quadrantCtx.fillText('DÜŞÜK PRİORİTE', padding + chartWidth / 4, height - padding - 12);
-            quadrantCtx.fillText('HACİM OYUNU', centerX + chartWidth / 4, height - padding - 12);
+            quadrantCtx.fillText('🔧 GELİŞTİR & BÜYÜT', padding + chartWidth / 4, padding + 24);
+            quadrantCtx.fillText('🎯 HEMEN HAREKETE GEÇ', centerX + chartWidth / 4, padding + 24);
+            quadrantCtx.fillText('⏸️ BEKLET', padding + chartWidth / 4, height - padding - 12);
+            quadrantCtx.fillText('📢 GENİŞ KİTLEYE ULAŞ', centerX + chartWidth / 4, height - padding - 12);
 
             // Axis labels
             quadrantCtx.fillStyle = 'rgba(255,255,255,0.5)';
