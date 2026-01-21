@@ -378,6 +378,9 @@
                 <button class="filter-btn" data-filter="b2c">⚡ B2C</button>
                 <button class="filter-btn" data-filter="b2b">🏢 B2B</button>
             </div>
+            <button class="btn btn-secondary" onclick="toggleAllCategories()" id="toggleAllBtn" style="margin-left:auto;font-size:12px;padding:8px 14px;">
+                <span class="icon" style="margin-right:4px;">📂</span> Tümünü Aç
+            </button>
         </div>
         <div class="segment-grid" id="segmentGrid"></div>
     </div>
@@ -391,196 +394,196 @@
     </div>
     <script>
 const segments = [
-    { id: 'yasam-tarzi', name: 'Yaşam Tarzı Segmentleri', icon: '🌟', category: 'lifestyle', subs: [
+    { id: 'yasam-tarzi', name: 'Yaşam Tarzı', icon: '🌟', category: 'lifestyle', subs: [
         { id: 'yt-1', name: 'Trendsetter Öncüler', desc: 'Yeniliklere açık, trendleri belirleyen', reach: 8.2 },
         { id: 'yt-2', name: 'Statü Odaklı Profesyoneller', desc: 'Kariyer ve sosyal statü öncelikli', reach: 12.5 },
         { id: 'yt-3', name: 'Deneyim Avcıları', desc: 'Yeni deneyimler arayan maceraperestler', reach: 9.8 },
-        { id: 'yt-4', name: 'Wellness Tutkunları', desc: 'Sağlık ve wellness odaklı', reach: 7.3 }
+        { id: 'yt-4', name: 'Wellness Tutkunları', desc: 'Sağlık ve wellness odaklı yaşam', reach: 7.3 },
+        { id: 'yt-5', name: 'Sürdürülebilir Yaşam', desc: 'Çevre dostu tercihler yapan', reach: 11.4 },
+        { id: 'yt-6', name: 'Minimalistler', desc: 'Az ve öz yaşamı tercih eden', reach: 5.8 }
     ]},
-    { id: 'tuketim', name: 'Tüketim Alışkanlıkları', icon: '🛒', category: 'davranis', subs: [
+    { id: 'tuketim', name: 'Tüketim Davranışı', icon: '🛒', category: 'davranis', subs: [
         { id: 'tk-1', name: 'Premium Tüketiciler', desc: 'Kaliteyi fiyatın önünde tutan', reach: 11.2 },
-        { id: 'tk-2', name: 'Değer Arayanlar', desc: 'Fiyat-performans peşinde', reach: 18.7 },
-        { id: 'tk-3', name: 'Dürtüsel Alışverişçiler', desc: 'Anlık kararlarla alışveriş', reach: 14.3 },
-        { id: 'tk-4', name: 'Planlı Alışverişçiler', desc: 'Her şeyi önceden planlayan', reach: 15.8 }
+        { id: 'tk-2', name: 'Akıllı Alışverişçiler', desc: 'Araştırıp en iyiyi bulan', reach: 22.4 },
+        { id: 'tk-3', name: 'Dürtüsel Alışverişçiler', desc: 'Anlık kararlarla alışveriş yapan', reach: 14.3 },
+        { id: 'tk-4', name: 'Sadık Müşteriler', desc: 'Marka bağlılığı yüksek', reach: 18.6 },
+        { id: 'tk-5', name: 'Fırsat Avcıları', desc: 'İndirim ve kampanya takipçisi', reach: 26.8 }
     ]},
     { id: 'dijital', name: 'Dijital Davranış', icon: '📱', category: 'davranis', subs: [
-        { id: 'dj-1', name: 'Dijital Yerliler', desc: 'Hayatı dijitalde yaşayan', reach: 22.4 },
-        { id: 'dj-2', name: 'Sosyal Medya Aktifi', desc: 'Tüm platformlarda aktif', reach: 28.6 },
+        { id: 'dj-1', name: 'Dijital Yerliler', desc: 'Hayatı dijitalde yaşayan Z kuşağı', reach: 22.4 },
+        { id: 'dj-2', name: 'Sosyal Medya Aktifi', desc: 'Tüm platformlarda aktif paylaşımcı', reach: 28.6 },
         { id: 'dj-3', name: 'E-Ticaret Uzmanı', desc: 'Online alışverişi tercih eden', reach: 19.2 },
-        { id: 'dj-4', name: 'Dijital Temkinli', desc: 'Teknolojiyle mesafeli', reach: 12.1 }
+        { id: 'dj-4', name: 'Gamers', desc: 'Mobil ve PC oyuncuları', reach: 16.8 },
+        { id: 'dj-5', name: 'İçerik Tüketicileri', desc: 'Video ve podcast takipçisi', reach: 31.2 }
     ]},
-    { id: 'aile', name: 'Aile Yaşamı', icon: '👨‍👩‍👧‍👦', category: 'demografik', subs: [
-        { id: 'al-1', name: 'Genç Aileler', desc: 'Küçük çocuklu aileler', reach: 16.8 },
-        { id: 'al-2', name: 'Büyüyen Aileler', desc: 'Okul çağı çocuklu', reach: 14.2 },
-        { id: 'al-3', name: 'Boş Yuva', desc: 'Çocuklar evden ayrılmış', reach: 9.5 },
-        { id: 'al-4', name: 'Tekli Yaşayanlar', desc: 'Yalnız yaşayan yetişkinler', reach: 11.3 }
+    { id: 'aile', name: 'Aile & Yaşam Evresi', icon: '👨‍👩‍👧‍👦', category: 'demografik', subs: [
+        { id: 'al-1', name: 'Genç Bekarlar', desc: 'Kariyer başlangıcı, bağımsız yaşam', reach: 14.2 },
+        { id: 'al-2', name: 'Yeni Evliler', desc: 'Yuva kuran çiftler', reach: 8.6 },
+        { id: 'al-3', name: 'Genç Aileler', desc: '0-6 yaş çocuklu aileler', reach: 16.8 },
+        { id: 'al-4', name: 'Büyüyen Aileler', desc: 'Okul çağı çocuklu aileler', reach: 14.2 },
+        { id: 'al-5', name: 'Olgun Aileler', desc: 'Gençlik çağı çocuklu', reach: 11.4 },
+        { id: 'al-6', name: 'Boş Yuva', desc: 'Çocuklar evden ayrılmış', reach: 9.5 }
     ]},
-    { id: 'gelir', name: 'Gelir Segmentleri', icon: '💰', category: 'demografik', subs: [
-        { id: 'gl-1', name: 'Üst Gelir A+', desc: 'En yüksek gelir grubu', reach: 5.2 },
-        { id: 'gl-2', name: 'Üst-Orta A', desc: 'Yüksek gelir grubu', reach: 12.8 },
-        { id: 'gl-3', name: 'Orta B', desc: 'Orta gelir grubu', reach: 35.4 },
-        { id: 'gl-4', name: 'Alt-Orta C', desc: 'Alt-orta gelir grubu', reach: 28.6 }
+    { id: 'gelir', name: 'Sosyo-Ekonomik', icon: '💰', category: 'demografik', subs: [
+        { id: 'gl-1', name: 'Premium (A+)', desc: 'En yüksek gelir ve harcama', reach: 5.2 },
+        { id: 'gl-2', name: 'Üst Segment (A)', desc: 'Yüksek alım gücü', reach: 12.8 },
+        { id: 'gl-3', name: 'Orta Üst (B+)', desc: 'Konforlu orta sınıf', reach: 18.4 },
+        { id: 'gl-4', name: 'Orta (B)', desc: 'Geniş orta segment', reach: 28.6 }
     ]},
     { id: 'medya', name: 'Medya Tüketimi', icon: '📺', category: 'davranis', subs: [
-        { id: 'md-1', name: 'TV Ağırlıklı', desc: 'Geleneksel TV izleyicisi', reach: 42.3 },
-        { id: 'md-2', name: 'Streaming Odaklı', desc: 'Dijital içerik tercih eden', reach: 31.5 },
-        { id: 'md-3', name: 'Multi-Screen', desc: 'Çoklu ekran kullanıcısı', reach: 38.7 },
-        { id: 'md-4', name: 'Radyo Dinleyicisi', desc: 'Aktif radyo takipçisi', reach: 24.8 }
+        { id: 'md-1', name: 'TV Bağımlıları', desc: 'Geleneksel TV ağırlıklı', reach: 32.3 },
+        { id: 'md-2', name: 'Streaming Nesli', desc: 'Netflix, YouTube Premium', reach: 28.5 },
+        { id: 'md-3', name: 'Podcast Dinleyicileri', desc: 'Sesli içerik takipçisi', reach: 12.4 },
+        { id: 'md-4', name: 'Sosyal Video', desc: 'TikTok, Reels, Shorts izleyicisi', reach: 34.8 },
+        { id: 'md-5', name: 'Haber Takipçileri', desc: 'Aktif haber okuyucusu', reach: 26.2 }
     ]},
-    { id: 'otomobil', name: 'Otomobil Segmentleri', icon: '🚗', category: 'davranis', subs: [
-        { id: 'ot-1', name: 'Premium Araç Sahipleri', desc: 'Lüks segment araç', reach: 8.4 },
-        { id: 'ot-2', name: 'SUV Tutkunları', desc: 'SUV/crossover tercihi', reach: 15.2 },
-        { id: 'ot-3', name: 'Ekonomik Sürücüler', desc: 'Yakıt tasarrufu odaklı', reach: 22.6 },
-        { id: 'ot-4', name: 'Elektrik/Hibrit İlgili', desc: 'Alternatif yakıt meraklıları', reach: 6.8 }
+    { id: 'otomotiv', name: 'Otomotiv', icon: '🚗', category: 'davranis', subs: [
+        { id: 'ot-1', name: 'Premium Araç Sahipleri', desc: 'Lüks segment tercih eden', reach: 8.4 },
+        { id: 'ot-2', name: 'SUV & Crossover', desc: 'Geniş aile aracı seven', reach: 15.2 },
+        { id: 'ot-3', name: 'Elektrikli Araç İlgilileri', desc: 'EV ve hibrit meraklıları', reach: 9.8 }
     ]},
-    { id: 'seyahat', name: 'Seyahat Tercihleri', icon: '✈️', category: 'lifestyle', subs: [
-        { id: 'sy-1', name: 'Sık Seyahat Edenler', desc: 'Yılda 4+ seyahat', reach: 12.4 },
-        { id: 'sy-2', name: 'Tatil Planlayıcıları', desc: 'Yıllık tatil odaklı', reach: 28.6 },
-        { id: 'sy-3', name: 'İş Seyahati Yapanlar', desc: 'Profesyonel seyahat', reach: 9.8 },
-        { id: 'sy-4', name: 'Yerel Gezginler', desc: 'Yurt içi keşif seven', reach: 18.2 }
+    { id: 'seyahat', name: 'Seyahat', icon: '✈️', category: 'lifestyle', subs: [
+        { id: 'sy-1', name: 'Sık Seyahat Edenler', desc: 'Yılda 4+ uçuş yapan', reach: 12.4 },
+        { id: 'sy-2', name: 'Tatilciler', desc: 'Yıllık tatil planlayıcısı', reach: 28.6 },
+        { id: 'sy-3', name: 'İş Gezgini', desc: 'Profesyonel seyahat eden', reach: 9.8 }
     ]},
     { id: 'finans', name: 'Finansal Davranış', icon: '💳', category: 'davranis', subs: [
-        { id: 'fn-1', name: 'Yatırımcılar', desc: 'Aktif yatırım yapan', reach: 14.6 },
-        { id: 'fn-2', name: 'Tasarruf Odaklı', desc: 'Birikim öncelikli', reach: 22.8 },
-        { id: 'fn-3', name: 'Kredi Kullanıcıları', desc: 'Aktif kredi kullanan', reach: 31.4 },
-        { id: 'fn-4', name: 'Dijital Bankacılık', desc: 'Mobile banking aktif', reach: 45.2 }
+        { id: 'fn-1', name: 'Aktif Yatırımcılar', desc: 'Borsa ve kripto ilgili', reach: 14.6 },
+        { id: 'fn-2', name: 'Tasarrufçular', desc: 'Birikim ve güvenlik odaklı', reach: 22.8 },
+        { id: 'fn-3', name: 'Kredi Kullanıcıları', desc: 'Taksit ve kredi aktif', reach: 31.4 },
+        { id: 'fn-4', name: 'Dijital Bankacılık', desc: 'Mobile-first bankacılık', reach: 45.2 },
+        { id: 'fn-5', name: 'BNPL Kullanıcıları', desc: 'Şimdi al sonra öde tercih eden', reach: 18.6 }
     ]},
-    { id: 'beslenme', name: 'Beslenme Tercihleri', icon: '🍽️', category: 'lifestyle', subs: [
-        { id: 'bs-1', name: 'Sağlıklı Beslenme', desc: 'Organik ve doğal tercih', reach: 18.4 },
-        { id: 'bs-2', name: 'Fast Food Severler', desc: 'Hızlı yemek tercihi', reach: 24.6 },
-        { id: 'bs-3', name: 'Gurme Tutkunları', desc: 'Kaliteli restoran seven', reach: 11.2 },
-        { id: 'bs-4', name: 'Ev Yemekleri', desc: 'Evde pişirmeyi tercih', reach: 32.8 }
+    { id: 'beslenme', name: 'Yeme-İçme', icon: '🍽️', category: 'lifestyle', subs: [
+        { id: 'bs-1', name: 'Sağlıklı Beslenme', desc: 'Organik ve doğal tercih eden', reach: 18.4 },
+        { id: 'bs-2', name: 'Foodie & Gurme', desc: 'Yemek kültürü meraklısı', reach: 14.2 },
+        { id: 'bs-3', name: 'Hızlı Tüketim', desc: 'Fast food ve hazır gıda', reach: 24.6 }
     ]},
-    { id: 'influencers', name: 'Influencers (Etkileyiciler)', icon: '⚡', category: 'b2c', subs: [
+    { id: 'konut', name: 'Konut & Emlak', icon: '🏠', category: 'demografik', subs: [
+        { id: 'kn-1', name: 'Ev Sahipleri', desc: 'Mülk sahibi haneler', reach: 42.5 },
+        { id: 'kn-2', name: 'Kiracılar', desc: 'Kirada oturan haneler', reach: 38.2 },
+        { id: 'kn-3', name: 'Ev Arayanlar', desc: 'Aktif emlak araştıran', reach: 12.8 },
+        { id: 'kn-4', name: 'Yatırımcı', desc: 'Emlak yatırımı yapan', reach: 6.4 }
+    ]},
+    { id: 'influencers', name: 'B2C Etkileyiciler', icon: '⚡', category: 'b2c', subs: [
         { id: 'inf-1', name: 'Hane Halkları - Kesintisiz Enerji', desc: 'Güvenilir elektrik bekleyen', reach: 42.5 },
-        { id: 'inf-2', name: 'Hane Halkları - Dijital Müşteri', desc: 'Online işlem isteyen', reach: 28.3 },
-        { id: 'inf-3', name: 'Mobil Kullanıcılar', desc: 'Uygulama üzerinden işlem', reach: 35.6 },
-        { id: 'inf-4', name: 'Küçük İşletmeler', desc: 'Enerji optimizasyonu arayan KOBİ', reach: 12.8 },
-        { id: 'inf-5', name: 'Enerjisa Çalışanları', desc: 'İç paydaşlar', reach: 1.2 },
-        { id: 'inf-6', name: 'Güven Odaklı Tüketiciler', desc: 'Şeffaf iletişim bekleyen', reach: 38.4 },
-        { id: 'inf-7', name: 'Sosyal Medya Takipçileri', desc: 'Dijital kanallarda aktif', reach: 48.2 },
-        { id: 'inf-8', name: 'Fiyat Odaklı Tüketiciler', desc: 'Maliyet hassasiyeti yüksek', reach: 52.1 }
+        { id: 'inf-2', name: 'Dijital Müşteriler', desc: 'Online işlem tercih eden', reach: 28.3 },
+        { id: 'inf-3', name: 'Mobil Uygulama Kullanıcıları', desc: 'App üzerinden işlem yapan', reach: 35.6 },
+        { id: 'inf-4', name: 'KOBİ Sahipleri', desc: 'Enerji maliyeti odaklı işletme', reach: 12.8 },
+        { id: 'inf-5', name: 'Fiyat Hassas Tüketiciler', desc: 'Maliyet öncelikli karar veren', reach: 52.1 },
+        { id: 'inf-6', name: 'Sosyal Medya Takipçileri', desc: 'Marka etkileşimi yüksek', reach: 48.2 }
     ]},
-    { id: 'gatekeeper', name: 'Gatekeepers', icon: '🏛️', category: 'b2b', subs: [
-        { id: 'gk-1', name: 'Yerel Yönetimler', desc: 'Belediyeler ve il idareleri', reach: 2.4 },
-        { id: 'gk-2', name: 'Muhtarlar', desc: 'Mahalle toplum liderleri', reach: 4.8 },
-        { id: 'gk-3', name: 'STK ve Sivil Toplum', desc: 'Sürdürülebilirlik odaklı', reach: 1.6 },
-        { id: 'gk-4', name: 'Akademik Kurumlar', desc: 'Üniversiteler', reach: 0.8 },
-        { id: 'gk-5', name: 'Sürdürülebilirlik Partnerleri', desc: 'Yeşil enerji ortakları', reach: 1.2 },
-        { id: 'gk-6', name: 'Medya Kuruluşları', desc: 'Gazeteciler', reach: 3.5 },
-        { id: 'gk-7', name: 'Enerji Sektörü Analistleri', desc: 'Sektör uzmanları', reach: 0.5 },
-        { id: 'gk-8', name: 'Yerel Ticaret Odaları', desc: 'Bölgesel iş temsilcileri', reach: 2.1 },
-        { id: 'gk-9', name: 'Tüketici Dernekleri', desc: 'Tüketici hakları', reach: 1.8 },
-        { id: 'gk-10', name: 'Çevre Aktivistleri', desc: 'İklim odaklı gruplar', reach: 2.2 }
+    { id: 'gatekeeper', name: 'B2B Gatekeepers', icon: '🏛️', category: 'b2b', subs: [
+        { id: 'gk-1', name: 'Yerel Yönetimler', desc: 'Belediyeler ve kamu kurumları', reach: 2.4 },
+        { id: 'gk-2', name: 'Toplum Liderleri', desc: 'Muhtarlar ve kanaat önderleri', reach: 4.8 },
+        { id: 'gk-3', name: 'STK & Sivil Toplum', desc: 'Çevre ve sosyal sorumluluk', reach: 1.6 },
+        { id: 'gk-4', name: 'Akademi & Araştırma', desc: 'Üniversiteler ve enstitüler', reach: 0.8 },
+        { id: 'gk-5', name: 'Medya & Basın', desc: 'Gazeteciler ve editörler', reach: 3.5 },
+        { id: 'gk-6', name: 'Sektör Uzmanları', desc: 'Enerji analistleri', reach: 0.5 }
     ]},
-    { id: 'decisionmaker', name: 'Decision Makers', icon: '🎯', category: 'b2b', subs: [
-        { id: 'dm-1', name: 'Devlet Kurumları', desc: 'EPDK, Enerji Bakanlığı', reach: 0.3 },
-        { id: 'dm-2', name: 'Regülatörler (EPDK)', desc: 'Düzenleyici kurumlar', reach: 0.2 },
-        { id: 'dm-3', name: 'Kurumsal Yatırımcılar', desc: 'ESG odaklı fonlar', reach: 0.8 },
-        { id: 'dm-4', name: 'Bireysel Yatırımcılar', desc: 'Hisse takipçileri', reach: 3.5 },
-        { id: 'dm-5', name: 'Stratejik İş Ortakları', desc: 'Uzun vadeli ortaklık', reach: 1.4 },
-        { id: 'dm-6', name: 'Finans Kuruluşları', desc: 'Bankalar', reach: 0.6 },
-        { id: 'dm-7', name: 'Uluslararası Enerji Fonları', desc: 'Global ESG fonları', reach: 0.4 },
-        { id: 'dm-8', name: 'Borsa Analistleri', desc: 'Equity research', reach: 0.7 },
-        { id: 'dm-9', name: 'Finans Medyası', desc: 'Bloomberg, Reuters', reach: 1.2 },
-        { id: 'dm-10', name: 'Perakende Yatırımcı Toplulukları', desc: 'Online forumlar', reach: 4.8 }
+    { id: 'decisionmaker', name: 'B2B Karar Vericiler', icon: '🎯', category: 'b2b', subs: [
+        { id: 'dm-1', name: 'Kamu Regülatörleri', desc: 'EPDK, Bakanlıklar', reach: 0.3 },
+        { id: 'dm-2', name: 'Kurumsal Yatırımcılar', desc: 'ESG odaklı fonlar', reach: 0.8 },
+        { id: 'dm-3', name: 'Bireysel Yatırımcılar', desc: 'Hisse ve fon takipçileri', reach: 3.5 },
+        { id: 'dm-4', name: 'Stratejik Ortaklar', desc: 'İş geliştirme partnerleri', reach: 1.4 },
+        { id: 'dm-5', name: 'Finans Kuruluşları', desc: 'Bankalar ve fonlar', reach: 0.6 }
     ]}
 ];
 
 const INTEREST_RECOMMENDATIONS = {
-    // Yaşam Tarzı Segmentleri
+    // Yaşam Tarzı
     'yt-1': { keyword: 'early adopter technology', name: 'Technology early adopters' },
     'yt-2': { keyword: 'business executive', name: 'Business and industry' },
-    'yt-3': { keyword: 'adventure', name: 'Outdoor recreation' },
+    'yt-3': { keyword: 'adventure outdoor', name: 'Outdoor recreation' },
     'yt-4': { keyword: 'fitness wellness', name: 'Physical fitness' },
+    'yt-5': { keyword: 'sustainability eco', name: 'Environmentalism' },
+    'yt-6': { keyword: 'minimalism lifestyle', name: 'Minimalism' },
     
-    // Tüketim Alışkanlıkları
+    // Tüketim Davranışı
     'tk-1': { keyword: 'luxury shopping', name: 'Luxury goods' },
     'tk-2': { keyword: 'online shopping', name: 'Online shopping' },
     'tk-3': { keyword: 'shopping fashion', name: 'Shopping and fashion' },
-    'tk-4': { keyword: 'personal finance', name: 'Personal finance' },
+    'tk-4': { keyword: 'brand loyalty', name: 'Brand awareness' },
+    'tk-5': { keyword: 'coupons deals', name: 'Coupons' },
     
     // Dijital Davranış
-    'dj-1': { keyword: 'technology', name: 'Consumer electronics' },
+    'dj-1': { keyword: 'technology gadgets', name: 'Consumer electronics' },
     'dj-2': { keyword: 'social media', name: 'Social media' },
-    'dj-3': { keyword: 'online shopping', name: 'Online shopping' },
-    'dj-4': { keyword: 'television', name: 'Television' },
+    'dj-3': { keyword: 'online shopping ecommerce', name: 'Online shopping' },
+    'dj-4': { keyword: 'video games gaming', name: 'Video games' },
+    'dj-5': { keyword: 'streaming video', name: 'Entertainment' },
     
-    // Aile Yaşamı
-    'al-1': { keyword: 'parenting', name: 'Family and relationships' },
-    'al-2': { keyword: 'family activities', name: 'Family' },
-    'al-3': { keyword: 'travel leisure', name: 'Travel' },
-    'al-4': { keyword: 'entertainment', name: 'Entertainment' },
+    // Aile & Yaşam Evresi
+    'al-1': { keyword: 'young professionals', name: 'Young adults' },
+    'al-2': { keyword: 'newlyweds wedding', name: 'Newlywed' },
+    'al-3': { keyword: 'parenting babies', name: 'Parenting' },
+    'al-4': { keyword: 'family children', name: 'Family' },
+    'al-5': { keyword: 'teenagers parents', name: 'Family' },
+    'al-6': { keyword: 'empty nesters', name: 'Travel' },
     
-    // Gelir Segmentleri
-    'gl-1': { keyword: 'luxury', name: 'Luxury goods' },
-    'gl-2': { keyword: 'investment', name: 'Investing' },
-    'gl-3': { keyword: 'shopping', name: 'Shopping and fashion' },
-    'gl-4': { keyword: 'discount', name: 'Coupons' },
+    // Sosyo-Ekonomik
+    'gl-1': { keyword: 'luxury premium', name: 'Luxury goods' },
+    'gl-2': { keyword: 'investment wealth', name: 'Investing' },
+    'gl-3': { keyword: 'shopping lifestyle', name: 'Shopping and fashion' },
+    'gl-4': { keyword: 'value shopping', name: 'Online shopping' },
     
     // Medya Tüketimi
-    'md-1': { keyword: 'television', name: 'Television' },
-    'md-2': { keyword: 'streaming entertainment', name: 'Entertainment' },
-    'md-3': { keyword: 'smartphone', name: 'Smartphones' },
-    'md-4': { keyword: 'music', name: 'Music' },
+    'md-1': { keyword: 'television tv', name: 'Television' },
+    'md-2': { keyword: 'streaming netflix', name: 'Entertainment' },
+    'md-3': { keyword: 'podcasts audio', name: 'Podcasts' },
+    'md-4': { keyword: 'tiktok short video', name: 'TikTok' },
+    'md-5': { keyword: 'news media', name: 'News and media' },
     
-    // Otomobil Segmentleri
-    'ot-1': { keyword: 'luxury vehicles', name: 'Automobiles' },
-    'ot-2': { keyword: 'SUV cars', name: 'SUVs' },
-    'ot-3': { keyword: 'automotive', name: 'Automotive industry' },
-    'ot-4': { keyword: 'electric car', name: 'Electric vehicle' },
+    // Otomotiv
+    'ot-1': { keyword: 'luxury cars', name: 'Automobiles' },
+    'ot-2': { keyword: 'suv crossover', name: 'SUVs' },
+    'ot-3': { keyword: 'electric vehicles ev', name: 'Electric vehicle' },
     
-    // Seyahat Tercihleri
+    // Seyahat
     'sy-1': { keyword: 'frequent traveler', name: 'Air travel' },
-    'sy-2': { keyword: 'vacation travel', name: 'Tourism' },
+    'sy-2': { keyword: 'vacation holiday', name: 'Tourism' },
     'sy-3': { keyword: 'business travel', name: 'Business travel' },
-    'sy-4': { keyword: 'domestic tourism', name: 'Tourism' },
     
     // Finansal Davranış
-    'fn-1': { keyword: 'investing finance', name: 'Investing' },
-    'fn-2': { keyword: 'personal finance', name: 'Personal finance' },
-    'fn-3': { keyword: 'credit card', name: 'Credit cards' },
+    'fn-1': { keyword: 'investing stocks crypto', name: 'Investing' },
+    'fn-2': { keyword: 'savings finance', name: 'Personal finance' },
+    'fn-3': { keyword: 'credit card loans', name: 'Credit cards' },
     'fn-4': { keyword: 'mobile banking', name: 'Online banking' },
+    'fn-5': { keyword: 'buy now pay later', name: 'Online shopping' },
     
-    // Beslenme Tercihleri
-    'bs-1': { keyword: 'healthy food', name: 'Organic food' },
-    'bs-2': { keyword: 'fast food restaurants', name: 'Fast food restaurants' },
-    'bs-3': { keyword: 'restaurants dining', name: 'Restaurants' },
-    'bs-4': { keyword: 'cooking recipes', name: 'Cooking' },
+    // Yeme-İçme
+    'bs-1': { keyword: 'healthy organic food', name: 'Organic food' },
+    'bs-2': { keyword: 'foodie restaurants', name: 'Restaurants' },
+    'bs-3': { keyword: 'fast food delivery', name: 'Fast food restaurants' },
     
-    // Influencers (B2C)
+    // Konut & Emlak
+    'kn-1': { keyword: 'homeowners home', name: 'Home improvement' },
+    'kn-2': { keyword: 'rental apartment', name: 'Apartment' },
+    'kn-3': { keyword: 'real estate property', name: 'Real estate' },
+    'kn-4': { keyword: 'property investment', name: 'Real estate investing' },
+    
+    // B2C Etkileyiciler
     'inf-1': { keyword: 'home improvement', name: 'Home improvement' },
-    'inf-2': { keyword: 'online services', name: 'Online shopping' },
-    'inf-3': { keyword: 'smartphone apps', name: 'Smartphones' },
+    'inf-2': { keyword: 'online services digital', name: 'Online shopping' },
+    'inf-3': { keyword: 'mobile apps smartphone', name: 'Smartphones' },
     'inf-4': { keyword: 'small business owner', name: 'Small business' },
-    'inf-5': { keyword: 'corporate', name: 'Business and industry' },
-    'inf-6': { keyword: 'customer experience', name: 'Online shopping' },
-    'inf-7': { keyword: 'social media', name: 'Social media' },
-    'inf-8': { keyword: 'bargain hunting', name: 'Coupons' },
+    'inf-5': { keyword: 'bargain deals discount', name: 'Coupons' },
+    'inf-6': { keyword: 'social media followers', name: 'Social media' },
     
-    // Gatekeepers (B2B)
-    'gk-1': { keyword: 'government', name: 'Politics and social issues' },
+    // B2B Gatekeepers
+    'gk-1': { keyword: 'government public', name: 'Politics and social issues' },
     'gk-2': { keyword: 'community local', name: 'Community' },
     'gk-3': { keyword: 'nonprofit charity', name: 'Charity and causes' },
-    'gk-4': { keyword: 'higher education', name: 'Higher education' },
-    'gk-5': { keyword: 'sustainability green', name: 'Environmentalism' },
-    'gk-6': { keyword: 'news journalism', name: 'Journalism' },
-    'gk-7': { keyword: 'energy industry', name: 'Energy industry' },
-    'gk-8': { keyword: 'business networking', name: 'Business' },
-    'gk-9': { keyword: 'consumer rights', name: 'Consumer awareness' },
-    'gk-10': { keyword: 'environment climate', name: 'Environmentalism' },
+    'gk-4': { keyword: 'higher education research', name: 'Higher education' },
+    'gk-5': { keyword: 'journalism media', name: 'Journalism' },
+    'gk-6': { keyword: 'energy industry', name: 'Energy industry' },
     
-    // Decision Makers (B2B)
+    // B2B Karar Vericiler
     'dm-1': { keyword: 'government policy', name: 'Politics and social issues' },
-    'dm-2': { keyword: 'regulation compliance', name: 'Business and industry' },
-    'dm-3': { keyword: 'sustainable investing', name: 'Investing' },
-    'dm-4': { keyword: 'stock market', name: 'Investing' },
-    'dm-5': { keyword: 'b2b business', name: 'Business' },
-    'dm-6': { keyword: 'banking finance', name: 'Banking' },
-    'dm-7': { keyword: 'international business', name: 'Business' },
-    'dm-8': { keyword: 'financial analysis', name: 'Finance' },
-    'dm-9': { keyword: 'financial news', name: 'Business news' },
-    'dm-10': { keyword: 'stock trading', name: 'Investing' }
+    'dm-2': { keyword: 'esg investing sustainable', name: 'Investing' },
+    'dm-3': { keyword: 'stock market trading', name: 'Investing' },
+    'dm-4': { keyword: 'b2b business', name: 'Business' },
+    'dm-5': { keyword: 'banking finance', name: 'Banking' }
 };
 
 let selectedSegments = new Set();
@@ -590,9 +593,9 @@ let META_SEGMENT_MAP = {};
 let metaDataCache = {};
 
 const funnelSegments = {
-    awareness: ['yt-1','yt-3','dj-2','dj-1','md-2','md-1','inf-1','inf-2','inf-6','inf-7','gk-1','gk-2','gk-3','gk-6','dm-3','dm-5','bs-1','sy-2'],
-    consideration: ['yt-2','yt-4','tk-1','tk-2','dj-3','al-1','al-2','md-3','inf-3','inf-4','inf-8','gk-4','gk-5','gk-7','dm-4','dm-6','dm-8','fn-1','fn-4','ot-4'],
-    conversion: ['tk-3','tk-4','dj-4','al-3','al-4','fn-2','fn-3','inf-5','gk-8','gk-9','gk-10','dm-1','dm-2','dm-7','dm-9','dm-10']
+    awareness: ['yt-1','yt-3','yt-5','dj-2','dj-5','md-2','md-4','md-5','inf-1','inf-6','gk-1','gk-2','gk-3','gk-5','bs-2','sy-2','kn-1'],
+    consideration: ['yt-2','yt-4','tk-1','tk-2','dj-1','dj-3','dj-4','al-3','al-4','md-3','inf-2','inf-3','gk-4','gk-6','dm-2','dm-3','fn-1','fn-4','fn-5','ot-3','kn-3'],
+    conversion: ['tk-3','tk-4','tk-5','al-1','al-2','fn-2','fn-3','inf-4','inf-5','gk-1','dm-1','dm-4','dm-5','kn-2','kn-4','bs-1','bs-3']
 };
 
 const META_CONFIG = { 
@@ -726,6 +729,27 @@ function renderSegments(filter, search) {
 function toggleParent(parentId) {
     var card = document.querySelector('[data-parent="' + parentId + '"]');
     card.classList.toggle('expanded');
+}
+
+let allCategoriesExpanded = false;
+
+function toggleAllCategories() {
+    var cards = document.querySelectorAll('.parent-card');
+    var btn = document.getElementById('toggleAllBtn');
+    
+    allCategoriesExpanded = !allCategoriesExpanded;
+    
+    cards.forEach(function(card) {
+        if (allCategoriesExpanded) {
+            card.classList.add('expanded');
+        } else {
+            card.classList.remove('expanded');
+        }
+    });
+    
+    btn.innerHTML = allCategoriesExpanded ? 
+        '<span class="icon" style="margin-right:4px;">📁</span> Tümünü Kapat' : 
+        '<span class="icon" style="margin-right:4px;">📂</span> Tümünü Aç';
 }
 
 function toggleSegment(segmentId) {
