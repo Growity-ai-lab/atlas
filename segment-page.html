@@ -639,12 +639,13 @@ const META_CONFIG = {
 
 const TIKTOK_CONFIG = {
     appId: '7598110409156984833',
-    appSecret: '1c5b38fb69f512a8db47f11067015884c00aed44',
+    appSecret: '', // Backend'de tutuluyor, frontend'de gerekmez
     redirectUri: 'https://growity-ai-lab.github.io/atlas/',
     accessToken: localStorage.getItem('tiktokAccessToken') || '',
     advertiserId: localStorage.getItem('tiktokAdvertiserId') || '',
     apiVersion: 'v1.3',
-    authUrl: 'https://business-api.tiktok.com/portal/auth'
+    authUrl: 'https://business-api.tiktok.com/portal/auth',
+    backendUrl: 'https://atlas-taupe-alpha.vercel.app' // Backend Proxy URL
 };
 
 // Platform state
@@ -835,30 +836,21 @@ function handleTikTokCallback() {
 }
 
 function exchangeTikTokToken(authCode) {
-    // Not: Bu işlem normalde backend'de yapılmalı (secret key güvenliği için)
-    // Frontend'de demo amaçlı gösteriyoruz
-    
     showToast('🎵 TikTok bağlantısı kuruluyor...', 'info');
     
-    // TikTok API endpoint
-    const tokenUrl = `https://business-api.tiktok.com/open_api/${TIKTOK_CONFIG.apiVersion}/oauth2/access_token/`;
-    
-    // CORS nedeniyle bu istek frontend'den çalışmayabilir
-    // Gerçek implementasyonda backend proxy kullanılmalı
-    fetch(tokenUrl, {
+    // Backend proxy üzerinden token al
+    fetch(`${TIKTOK_CONFIG.backendUrl}/api/tiktok/token`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            app_id: TIKTOK_CONFIG.appId,
-            secret: TIKTOK_CONFIG.appSecret,
             auth_code: authCode
         })
     })
     .then(res => res.json())
     .then(data => {
-        if (data.code === 0 && data.data) {
+        if (data.success && data.data) {
             // Token'ları kaydet
             TIKTOK_CONFIG.accessToken = data.data.access_token;
             localStorage.setItem('tiktokAccessToken', data.data.access_token);
@@ -870,15 +862,15 @@ function exchangeTikTokToken(authCode) {
             
             showToast('🎵 TikTok başarıyla bağlandı!', 'success');
             updateTikTokConnectionUI();
+            switchPlatform('tiktok');
         } else {
             console.error('TikTok token error:', data);
-            showToast('TikTok bağlantı hatası: ' + (data.message || 'Bilinmeyen hata'), 'error');
+            showToast('TikTok bağlantı hatası: ' + (data.error || 'Bilinmeyen hata'), 'error');
         }
     })
     .catch(err => {
         console.error('TikTok auth error:', err);
-        // CORS hatası durumunda demo moda geç
-        showToast('TikTok API bağlantısı CORS nedeniyle kısıtlı. Demo mod aktif.', 'info');
+        showToast('TikTok bağlantı hatası. Lütfen tekrar deneyin.', 'error');
     });
 }
 
@@ -1491,8 +1483,39 @@ function searchMetaInterest(query, resultsDiv) {
 }
 
 function searchTikTokInterest(query, resultsDiv) {
-    // TikTok API simülasyonu - gerçek API entegrasyonu için TIKTOK_CONFIG kullanılacak
     var queryLower = query.toLowerCase();
+    
+    // Eğer token varsa gerçek API'yi kullan
+    if (TIKTOK_CONFIG.accessToken && TIKTOK_CONFIG.advertiserId) {
+        fetch(`${TIKTOK_CONFIG.backendUrl}/api/tiktok/interest-search`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                access_token: TIKTOK_CONFIG.accessToken,
+                advertiser_id: TIKTOK_CONFIG.advertiserId,
+                keyword: query
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.data && data.data.list) {
+                renderTikTokResults(data.data.list, resultsDiv, true);
+            } else {
+                // API hata verirse simüle dataya düş
+                searchTikTokLocal(queryLower, resultsDiv);
+            }
+        })
+        .catch(err => {
+            console.error('TikTok API error:', err);
+            searchTikTokLocal(queryLower, resultsDiv);
+        });
+    } else {
+        // Token yoksa simüle data kullan
+        searchTikTokLocal(queryLower, resultsDiv);
+    }
+}
+
+function searchTikTokLocal(queryLower, resultsDiv) {
     var results = [];
     
     // Keyword ve subcategory eşleştirme
@@ -1529,22 +1552,27 @@ function searchTikTokInterest(query, resultsDiv) {
     // Sırala - en iyi eşleşmeler önce
     results.sort(function(a, b) { return b.matchScore - a.matchScore; });
     
+    renderTikTokResults(results, resultsDiv, false);
+}
+
+function renderTikTokResults(results, resultsDiv, isLive) {
     setTimeout(function() {
         if (results.length === 0) {
             resultsDiv.innerHTML = '<div style="text-align:center;padding:24px">' +
                 '<div style="font-size:32px;margin-bottom:12px">🔍</div>' +
-                '<p style="color:var(--text-secondary)">TikTok\'ta "<strong>' + query + '</strong>" için sonuç bulunamadı</p>' +
+                '<p style="color:var(--text-secondary)">TikTok\'ta sonuç bulunamadı</p>' +
                 '<p style="color:var(--text-secondary);font-size:11px;margin-top:8px">Farklı bir anahtar kelime deneyin</p></div>';
             return;
         }
         
         // Platform özeti
-        var totalReach = results.reduce(function(sum, r) { return sum + r.audience_size; }, 0);
+        var totalReach = results.reduce(function(sum, r) { return sum + (r.audience_size || 0); }, 0);
+        var modeLabel = isLive ? '🟢 Canlı API' : '🟡 Demo Modu';
         
         var html = '<div style="margin-bottom:16px;padding:14px;background:linear-gradient(135deg,rgba(0,0,0,0.3),rgba(238,45,86,0.15));border-radius:12px;border:1px solid rgba(238,45,86,0.3)">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
-            '<div style="font-size:13px;color:#ee2d5e;font-weight:600">🎵 TikTok Türkiye</div>' +
-            '<div style="font-size:11px;color:var(--text-secondary)">' + results.length + ' kategori • Toplam ' + formatMetaNumber(totalReach) + ' potansiyel reach</div></div>' +
+            '<div style="font-size:13px;color:#ee2d5e;font-weight:600">🎵 TikTok Türkiye <span style="font-size:10px;color:var(--text-secondary);font-weight:400;margin-left:8px">' + modeLabel + '</span></div>' +
+            '<div style="font-size:11px;color:var(--text-secondary)">' + results.length + ' kategori' + (totalReach > 0 ? ' • Toplam ' + formatMetaNumber(totalReach) + ' potansiyel reach' : '') + '</div></div>' +
             '<select id="segmentSelector" style="width:100%;padding:10px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:12px">' +
             '<option value="">-- Atanacak Segment Seç --</option>' + getAllSegmentOptions() + '</select></div>';
         
