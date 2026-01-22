@@ -85,12 +85,24 @@
         .quick-action-count { font-size: 11px; color: var(--text-secondary); font-family: 'Space Mono', monospace; }
         .quick-action.active { border-color: var(--accent-green); background: rgba(16,185,129,0.1); }
         .meta-panel { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
-        .meta-panel-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .meta-panel-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
         .meta-panel-title { font-size: 13px; font-weight: 600; color: var(--accent-blue); display: flex; align-items: center; gap: 8px; }
         .meta-status { font-size: 10px; padding: 4px 10px; border-radius: 12px; font-family: 'Space Mono', monospace; background: rgba(255,255,255,0.05); color: var(--text-secondary); }
         .meta-status.connected { background: rgba(52,211,153,0.15); color: #34d399; }
         .meta-status.loading { background: rgba(251,191,36,0.15); color: #fbbf24; }
-        .meta-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .platform-tabs { display: flex; gap: 6px; }
+        .platform-tab { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-secondary); font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .platform-tab:hover:not(:disabled) { border-color: var(--accent-blue); color: var(--text-primary); }
+        .platform-tab.active { background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15)); border-color: var(--accent-blue); color: var(--text-primary); }
+        .platform-tab[data-platform="meta"].active { background: linear-gradient(135deg, rgba(24,119,242,0.2), rgba(66,103,178,0.15)); border-color: #1877f2; }
+        .platform-tab[data-platform="tiktok"].active { background: linear-gradient(135deg, rgba(0,0,0,0.2), rgba(238,45,86,0.15)); border-color: #ee2d5e; }
+        .platform-tab[data-platform="google"].active { background: linear-gradient(135deg, rgba(66,133,244,0.2), rgba(52,168,83,0.15)); border-color: #4285f4; }
+        .platform-tab:disabled { opacity: 0.4; cursor: not-allowed; }
+        .platform-tab svg { flex-shrink: 0; }
+        .connection-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-color); margin-left: 4px; }
+        .connection-dot.connected { background: #10b981; box-shadow: 0 0 6px #10b981; }
+        .connection-dot.pending { background: #f59e0b; animation: pulse 1.5s infinite; }
+        .meta-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
         .meta-input { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-secondary); color: var(--text-primary); font-size: 12px; width: 200px; }
         .meta-input:focus { outline: none; border-color: var(--accent-blue); }
         .meta-btn { padding: 8px 14px; background: linear-gradient(135deg, #1877f2, #0d65d9); border: none; border-radius: 8px; color: white; font-size: 11px; font-weight: 500; cursor: pointer; }
@@ -121,6 +133,12 @@
         .suggestion-status { font-size: 10px; color: var(--accent-green); font-weight: 500; }
         .meta-reach { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: linear-gradient(135deg, rgba(24,119,242,0.15), rgba(24,119,242,0.05)); border: 1px solid rgba(24,119,242,0.25); border-radius: 10px; font-size: 9px; font-family: 'Space Mono', monospace; color: #60a5fa; }
         .meta-reach.loaded { color: #34d399; border-color: rgba(52,211,153,0.3); background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(52,211,153,0.05)); }
+        .platform-badges { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+        .platform-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 10px; font-size: 9px; font-family: 'Space Mono', monospace; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+        .platform-badge.meta { background: linear-gradient(135deg, rgba(24,119,242,0.15), rgba(24,119,242,0.05)); border: 1px solid rgba(24,119,242,0.25); color: #60a5fa; }
+        .platform-badge.tiktok { background: linear-gradient(135deg, rgba(238,45,86,0.15), rgba(238,45,86,0.05)); border: 1px solid rgba(238,45,86,0.25); color: #ee2d5e; }
+        .platform-badge.google { background: linear-gradient(135deg, rgba(66,133,244,0.15), rgba(52,168,83,0.05)); border: 1px solid rgba(66,133,244,0.25); color: #4285f4; }
+        .platform-badge.empty { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-secondary); }
         .meta-live { width: 6px; height: 6px; background: #34d399; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
@@ -341,13 +359,30 @@
         </section>
         <div class="meta-panel">
             <div class="meta-panel-header">
-                <div class="meta-panel-title"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span> Meta Audience Data <span class="meta-status" id="metaStatus">Hazır</span></div>
-                <div class="meta-controls">
-                    <input type="text" id="interestSearch" class="meta-input" placeholder="Interest ara (ör: travel)...">
-                    <button class="meta-btn" onclick="searchInterest()" aria-label="Interest Ara"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span> Ara</button>
-                    <button class="meta-btn purple" onclick="showMappingsModal()" aria-label="Eşleştirmeleri Görüntüle"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></span> Eşleştirmeler</button>
-                    <span class="meta-count" id="metaLoadedCount">0 eşleşme</span>
+                <div class="meta-panel-title"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span> Audience Data <span class="meta-status" id="metaStatus">Hazır</span></div>
+                <div class="platform-tabs">
+                    <button class="platform-tab active" data-platform="meta" onclick="switchPlatform('meta')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                        Meta
+                        <span class="connection-dot connected"></span>
+                    </button>
+                    <button class="platform-tab" data-platform="tiktok" onclick="switchPlatform('tiktok')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                        TikTok
+                        <span class="connection-dot" id="tiktokConnectionDot"></span>
+                    </button>
+                    <button class="platform-tab" data-platform="google" onclick="switchPlatform('google')" disabled title="Yakında">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        Google
+                        <span class="connection-dot"></span>
+                    </button>
                 </div>
+            </div>
+            <div class="meta-controls">
+                <input type="text" id="interestSearch" class="meta-input" placeholder="Interest ara (ör: travel)...">
+                <button class="meta-btn" onclick="searchInterest()" aria-label="Interest Ara"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span> Ara</button>
+                <button class="meta-btn purple" onclick="showMappingsModal()" aria-label="Eşleştirmeleri Görüntüle"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg></span> Eşleştirmeler</button>
+                <span class="meta-count" id="metaLoadedCount">0 eşleşme</span>
             </div>
             <div id="interestResults"></div>
             <div class="ai-suggestions" id="aiSuggestions">
@@ -602,11 +637,310 @@ const META_CONFIG = {
     apiVersion: 'v18.0' 
 };
 
+const TIKTOK_CONFIG = {
+    appId: '7598110409156984833',
+    appSecret: '1c5b38fb69f512a8db47f11067015884c00aed44',
+    redirectUri: 'https://growity-ai-lab.github.io/atlas/',
+    accessToken: localStorage.getItem('tiktokAccessToken') || '',
+    advertiserId: localStorage.getItem('tiktokAdvertiserId') || '',
+    apiVersion: 'v1.3',
+    authUrl: 'https://business-api.tiktok.com/portal/auth'
+};
+
+// Platform state
+let activePlatform = 'meta';
+let PLATFORM_SEGMENT_MAP = {
+    meta: {},
+    tiktok: {},
+    google: {}
+};
+let platformDataCache = {
+    meta: {},
+    tiktok: {},
+    google: {}
+};
+
+// TikTok Interest kategorileri (Türkiye pazarı - simüle edilmiş, gerçek API'den gelecek)
+const TIKTOK_INTEREST_CATEGORIES = {
+    // Ana Kategoriler
+    'technology': { id: '25001', name: 'Teknoloji', audience_size: 8500000, subcategories: ['Akıllı Telefon', 'Bilgisayar', 'Yazılım'] },
+    'fashion': { id: '25002', name: 'Moda', audience_size: 12000000, subcategories: ['Streetwear', 'Lüks Moda', 'Vintage'] },
+    'food': { id: '25003', name: 'Yemek & Tarif', audience_size: 15000000, subcategories: ['Türk Mutfağı', 'Vegan', 'Fast Food'] },
+    'travel': { id: '25004', name: 'Seyahat', audience_size: 6500000, subcategories: ['Yurt İçi', 'Yurt Dışı', 'Macera'] },
+    'fitness': { id: '25005', name: 'Fitness & Spor', audience_size: 7200000, subcategories: ['Gym', 'Yoga', 'Koşu'] },
+    'gaming': { id: '25006', name: 'Oyun', audience_size: 9800000, subcategories: ['Mobile Gaming', 'PC Gaming', 'E-Spor'] },
+    'music': { id: '25007', name: 'Müzik', audience_size: 18000000, subcategories: ['Pop', 'Rap/Hip-Hop', 'Türk Sanat'] },
+    'beauty': { id: '25008', name: 'Güzellik & Makyaj', audience_size: 11000000, subcategories: ['Skincare', 'Makyaj', 'Saç Bakımı'] },
+    'sports': { id: '25009', name: 'Spor', audience_size: 8000000, subcategories: ['Futbol', 'Basketbol', 'Voleybol'] },
+    'business': { id: '25010', name: 'İş & Kariyer', audience_size: 4500000, subcategories: ['Girişimcilik', 'Freelance', 'Kariyer'] },
+    'education': { id: '25011', name: 'Eğitim', audience_size: 5200000, subcategories: ['Dil Öğrenimi', 'Sınav Hazırlık', 'Online Kurs'] },
+    'entertainment': { id: '25012', name: 'Eğlence', audience_size: 22000000, subcategories: ['Komedi', 'Drama', 'Reality'] },
+    'family': { id: '25013', name: 'Aile & Çocuk', audience_size: 9500000, subcategories: ['Bebek Bakımı', 'Çocuk Aktiviteleri', 'Aile Yaşamı'] },
+    'finance': { id: '25014', name: 'Finans & Yatırım', audience_size: 3800000, subcategories: ['Borsa', 'Kripto', 'Tasarruf'] },
+    'home': { id: '25015', name: 'Ev & Dekorasyon', audience_size: 6800000, subcategories: ['DIY', 'İç Mekan', 'Bahçe'] },
+    'automotive': { id: '25016', name: 'Otomotiv', audience_size: 4200000, subcategories: ['Araba İncelemeleri', 'Modifiye', 'Elektrikli Araç'] },
+    'pets': { id: '25017', name: 'Evcil Hayvan', audience_size: 5500000, subcategories: ['Kedi', 'Köpek', 'Egzotik'] },
+    'shopping': { id: '25018', name: 'Alışveriş', audience_size: 16000000, subcategories: ['Online Shopping', 'İndirim', 'Lüks'] },
+    'wellness': { id: '25019', name: 'Sağlık & Wellness', audience_size: 7800000, subcategories: ['Mental Sağlık', 'Beslenme', 'Meditasyon'] },
+    'parenting': { id: '25020', name: 'Ebeveynlik', audience_size: 8200000, subcategories: ['Hamilelik', 'Bebek', 'Çocuk Eğitimi'] },
+    
+    // Türkiye'ye Özel Ek Kategoriler
+    'turkishcontent': { id: '25021', name: 'Türk İçerik Üreticileri', audience_size: 14000000, subcategories: ['Influencer', 'Vlogger', 'Komedyen'] },
+    'dizi': { id: '25022', name: 'Dizi & Film', audience_size: 16500000, subcategories: ['Türk Dizileri', 'Netflix', 'Sinema'] },
+    'wedding': { id: '25023', name: 'Düğün & Nişan', audience_size: 4800000, subcategories: ['Gelin', 'Organizasyon', 'Mekan'] },
+    'realestate': { id: '25024', name: 'Emlak', audience_size: 3200000, subcategories: ['Ev Alma', 'Kiralama', 'Yatırım'] },
+    'career': { id: '25025', name: 'Kariyer & İş Arama', audience_size: 5800000, subcategories: ['CV Hazırlama', 'Mülakat', 'Remote Work'] },
+    'student': { id: '25026', name: 'Öğrenci Hayatı', audience_size: 7500000, subcategories: ['Üniversite', 'YKS/LGS', 'Erasmus'] },
+    'coffee': { id: '25027', name: 'Kahve Kültürü', audience_size: 6200000, subcategories: ['3. Dalga', 'Türk Kahvesi', 'Cafe'] },
+    'sustainability': { id: '25028', name: 'Sürdürülebilirlik', audience_size: 2800000, subcategories: ['Zero Waste', 'Vegan Yaşam', 'Eko Ürünler'] },
+    'luxury': { id: '25029', name: 'Lüks Yaşam', audience_size: 2400000, subcategories: ['Premium Markalar', 'VIP', 'Koleksiyon'] },
+    'nightlife': { id: '25030', name: 'Gece Hayatı', audience_size: 4100000, subcategories: ['Mekanlar', 'Etkinlikler', 'DJ/Parti'] }
+};
+
+// TikTok - Segment eşleştirme önerileri
+const TIKTOK_SEGMENT_RECOMMENDATIONS = {
+    'yt-1': { keyword: 'technology', name: 'Teknoloji' },
+    'yt-2': { keyword: 'business', name: 'İş & Kariyer' },
+    'yt-3': { keyword: 'travel', name: 'Seyahat' },
+    'yt-4': { keyword: 'wellness', name: 'Sağlık & Wellness' },
+    'yt-5': { keyword: 'sustainability', name: 'Sürdürülebilirlik' },
+    'yt-6': { keyword: 'home', name: 'Ev & Dekorasyon' },
+    'tk-1': { keyword: 'luxury', name: 'Lüks Yaşam' },
+    'tk-2': { keyword: 'shopping', name: 'Alışveriş' },
+    'tk-3': { keyword: 'shopping', name: 'Alışveriş' },
+    'tk-4': { keyword: 'shopping', name: 'Alışveriş' },
+    'tk-5': { keyword: 'shopping', name: 'Alışveriş' },
+    'dj-1': { keyword: 'technology', name: 'Teknoloji' },
+    'dj-2': { keyword: 'turkishcontent', name: 'Türk İçerik Üreticileri' },
+    'dj-3': { keyword: 'shopping', name: 'Alışveriş' },
+    'dj-4': { keyword: 'gaming', name: 'Oyun' },
+    'dj-5': { keyword: 'entertainment', name: 'Eğlence' },
+    'al-1': { keyword: 'career', name: 'Kariyer & İş Arama' },
+    'al-2': { keyword: 'wedding', name: 'Düğün & Nişan' },
+    'al-3': { keyword: 'parenting', name: 'Ebeveynlik' },
+    'al-4': { keyword: 'family', name: 'Aile & Çocuk' },
+    'al-5': { keyword: 'travel', name: 'Seyahat' },
+    'gl-1': { keyword: 'luxury', name: 'Lüks Yaşam' },
+    'gl-2': { keyword: 'finance', name: 'Finans & Yatırım' },
+    'gl-3': { keyword: 'shopping', name: 'Alışveriş' },
+    'gl-4': { keyword: 'shopping', name: 'Alışveriş' },
+    'md-1': { keyword: 'dizi', name: 'Dizi & Film' },
+    'md-2': { keyword: 'entertainment', name: 'Eğlence' },
+    'md-3': { keyword: 'entertainment', name: 'Eğlence' },
+    'md-4': { keyword: 'turkishcontent', name: 'Türk İçerik Üreticileri' },
+    'md-5': { keyword: 'turkishcontent', name: 'Türk İçerik Üreticileri' },
+    'ot-1': { keyword: 'automotive', name: 'Otomotiv' },
+    'ot-2': { keyword: 'automotive', name: 'Otomotiv' },
+    'ot-3': { keyword: 'automotive', name: 'Otomotiv' },
+    'sy-1': { keyword: 'travel', name: 'Seyahat' },
+    'sy-2': { keyword: 'travel', name: 'Seyahat' },
+    'sy-3': { keyword: 'business', name: 'İş & Kariyer' },
+    'fn-1': { keyword: 'finance', name: 'Finans & Yatırım' },
+    'fn-2': { keyword: 'finance', name: 'Finans & Yatırım' },
+    'fn-3': { keyword: 'finance', name: 'Finans & Yatırım' },
+    'fn-4': { keyword: 'technology', name: 'Teknoloji' },
+    'fn-5': { keyword: 'shopping', name: 'Alışveriş' },
+    'bs-1': { keyword: 'wellness', name: 'Sağlık & Wellness' },
+    'bs-2': { keyword: 'food', name: 'Yemek & Tarif' },
+    'bs-3': { keyword: 'food', name: 'Yemek & Tarif' },
+    'kn-1': { keyword: 'home', name: 'Ev & Dekorasyon' },
+    'kn-2': { keyword: 'realestate', name: 'Emlak' },
+    'kn-3': { keyword: 'realestate', name: 'Emlak' },
+    'kn-4': { keyword: 'finance', name: 'Finans & Yatırım' },
+    'inf-1': { keyword: 'home', name: 'Ev & Dekorasyon' },
+    'inf-2': { keyword: 'technology', name: 'Teknoloji' },
+    'inf-3': { keyword: 'technology', name: 'Teknoloji' },
+    'inf-4': { keyword: 'business', name: 'İş & Kariyer' },
+    'inf-5': { keyword: 'shopping', name: 'Alışveriş' },
+    'inf-6': { keyword: 'turkishcontent', name: 'Türk İçerik Üreticileri' }
+};
+
+function switchPlatform(platform) {
+    activePlatform = platform;
+    
+    // Tab'ları güncelle
+    document.querySelectorAll('.platform-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.platform === platform) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // Status'u güncelle
+    const status = document.getElementById('metaStatus');
+    if (platform === 'meta') {
+        status.textContent = 'Meta Hazır';
+        status.className = 'meta-status connected';
+    } else if (platform === 'tiktok') {
+        if (TIKTOK_CONFIG.accessToken) {
+            status.textContent = 'TikTok Bağlı ✓';
+            status.className = 'meta-status connected';
+        } else {
+            status.textContent = 'TikTok - Bağlan';
+            status.className = 'meta-status';
+        }
+    } else if (platform === 'google') {
+        status.textContent = 'Google (Yakında)';
+        status.className = 'meta-status';
+    }
+    
+    // Placeholder'ı güncelle
+    const searchInput = document.getElementById('interestSearch');
+    if (platform === 'tiktok') {
+        searchInput.placeholder = 'TikTok interest ara (ör: gaming, music)...';
+    } else {
+        searchInput.placeholder = 'Interest ara (ör: travel)...';
+    }
+    
+    // TikTok seçildiğinde ve token yoksa, bağlantı butonunu göster
+    updateTikTokConnectionUI();
+    
+    // Sayaçları güncelle
+    updateMetaCount();
+    
+    // Sonuçları temizle
+    document.getElementById('interestResults').style.display = 'none';
+}
+
+// TikTok OAuth Functions
+function initTikTokAuth() {
+    const state = 'atlas_' + Date.now(); // CSRF protection
+    localStorage.setItem('tiktokAuthState', state);
+    
+    const authUrl = `${TIKTOK_CONFIG.authUrl}?app_id=${TIKTOK_CONFIG.appId}&state=${state}&redirect_uri=${encodeURIComponent(TIKTOK_CONFIG.redirectUri)}`;
+    
+    window.location.href = authUrl;
+}
+
+function handleTikTokCallback() {
+    // URL'den auth_code ve state'i al
+    const urlParams = new URLSearchParams(window.location.search);
+    const authCode = urlParams.get('auth_code');
+    const state = urlParams.get('state');
+    const savedState = localStorage.getItem('tiktokAuthState');
+    
+    if (authCode) {
+        // State doğrulama (CSRF protection)
+        if (state && savedState && state !== savedState) {
+            showToast('Güvenlik hatası: State eşleşmedi', 'error');
+            return;
+        }
+        
+        // Auth code ile access token al
+        exchangeTikTokToken(authCode);
+        
+        // URL'i temizle
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
+
+function exchangeTikTokToken(authCode) {
+    // Not: Bu işlem normalde backend'de yapılmalı (secret key güvenliği için)
+    // Frontend'de demo amaçlı gösteriyoruz
+    
+    showToast('🎵 TikTok bağlantısı kuruluyor...', 'info');
+    
+    // TikTok API endpoint
+    const tokenUrl = `https://business-api.tiktok.com/open_api/${TIKTOK_CONFIG.apiVersion}/oauth2/access_token/`;
+    
+    // CORS nedeniyle bu istek frontend'den çalışmayabilir
+    // Gerçek implementasyonda backend proxy kullanılmalı
+    fetch(tokenUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            app_id: TIKTOK_CONFIG.appId,
+            secret: TIKTOK_CONFIG.appSecret,
+            auth_code: authCode
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.code === 0 && data.data) {
+            // Token'ları kaydet
+            TIKTOK_CONFIG.accessToken = data.data.access_token;
+            localStorage.setItem('tiktokAccessToken', data.data.access_token);
+            
+            if (data.data.advertiser_ids && data.data.advertiser_ids.length > 0) {
+                TIKTOK_CONFIG.advertiserId = data.data.advertiser_ids[0];
+                localStorage.setItem('tiktokAdvertiserId', data.data.advertiser_ids[0]);
+            }
+            
+            showToast('🎵 TikTok başarıyla bağlandı!', 'success');
+            updateTikTokConnectionUI();
+        } else {
+            console.error('TikTok token error:', data);
+            showToast('TikTok bağlantı hatası: ' + (data.message || 'Bilinmeyen hata'), 'error');
+        }
+    })
+    .catch(err => {
+        console.error('TikTok auth error:', err);
+        // CORS hatası durumunda demo moda geç
+        showToast('TikTok API bağlantısı CORS nedeniyle kısıtlı. Demo mod aktif.', 'info');
+    });
+}
+
+function updateTikTokConnectionUI() {
+    const resultsDiv = document.getElementById('interestResults');
+    const tiktokDot = document.getElementById('tiktokConnectionDot');
+    
+    // Connection dot'u güncelle
+    if (tiktokDot) {
+        if (TIKTOK_CONFIG.accessToken) {
+            tiktokDot.classList.add('connected');
+        } else {
+            tiktokDot.classList.remove('connected');
+        }
+    }
+    
+    if (activePlatform === 'tiktok' && !TIKTOK_CONFIG.accessToken) {
+        resultsDiv.style.display = 'block';
+        resultsDiv.innerHTML = `
+            <div style="text-align:center;padding:30px;">
+                <div style="font-size:48px;margin-bottom:16px;">🎵</div>
+                <h3 style="font-size:16px;margin-bottom:8px;color:var(--text-primary);">TikTok Business API</h3>
+                <p style="color:var(--text-secondary);font-size:12px;margin-bottom:20px;max-width:400px;margin-left:auto;margin-right:auto;">
+                    TikTok Ads Manager hesabınızı bağlayarak gerçek audience verilerine erişebilirsiniz. 
+                    Bağlantı olmadan simüle edilmiş Türkiye verileri kullanılır.
+                </p>
+                <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                    <button onclick="initTikTokAuth()" style="padding:12px 24px;background:linear-gradient(135deg,#ee2d5e,#ff0050);border:none;border-radius:10px;color:white;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                        TikTok Hesabını Bağla
+                    </button>
+                    <button onclick="document.getElementById('interestResults').style.display='none'" style="padding:12px 24px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;color:var(--text-secondary);font-size:13px;cursor:pointer;">
+                        Demo Mod ile Devam Et
+                    </button>
+                </div>
+                <p style="color:var(--text-secondary);font-size:10px;margin-top:16px;">
+                    App ID: ${TIKTOK_CONFIG.appId}
+                </p>
+            </div>
+        `;
+    }
+}
+
+function disconnectTikTok() {
+    TIKTOK_CONFIG.accessToken = '';
+    TIKTOK_CONFIG.advertiserId = '';
+    localStorage.removeItem('tiktokAccessToken');
+    localStorage.removeItem('tiktokAdvertiserId');
+    showToast('TikTok bağlantısı kaldırıldı', 'info');
+    updateTikTokConnectionUI();
+    switchPlatform('tiktok');
+}
+
 function init() {
+    // TikTok OAuth callback kontrolü
+    handleTikTokCallback();
+    
     renderSegments();
     setupEventListeners();
     checkOnboardingState();
     loadSavedMappings();
+    loadTikTokMappings();
     updateMetaCount();
 }
 
@@ -703,14 +1037,27 @@ function renderSegments(filter, search) {
         
         var subsHtml = '';
         parent.subs.forEach(function(sub) {
-            var mapping = META_SEGMENT_MAP[sub.id];
-            var metaText = mapping ? mapping.interests[0].name : '--';
+            var metaMapping = META_SEGMENT_MAP[sub.id];
+            var tiktokMapping = PLATFORM_SEGMENT_MAP.tiktok[sub.id];
             var isSelected = selectedSegments.has(sub.id);
+            
+            // Platform badge'leri oluştur
+            var platformBadges = '';
+            if (metaMapping) {
+                platformBadges += '<span class="platform-badge meta" title="Meta: ' + metaMapping.interests[0].name + '">📘 ' + metaMapping.interests[0].name + '</span>';
+            }
+            if (tiktokMapping) {
+                platformBadges += '<span class="platform-badge tiktok" title="TikTok: ' + tiktokMapping.interests[0].name + '">🎵 ' + tiktokMapping.interests[0].name + '</span>';
+            }
+            if (!metaMapping && !tiktokMapping) {
+                platformBadges = '<span class="platform-badge empty">📊 --</span>';
+            }
+            
             subsHtml += '<div class="sub-segment' + (isSelected ? ' selected' : '') + '" onclick="toggleSegment(\'' + sub.id + '\')">' +
                 '<div class="checkbox' + (isSelected ? ' checked' : '') + '"></div>' +
                 '<div class="sub-info"><div class="sub-name">' + sub.name + '</div><div class="sub-desc">' + sub.desc + '</div></div>' +
                 '<div class="sub-meta"><span class="meta-tag">' + sub.reach + '%</span>' +
-                '<span class="meta-reach' + (mapping ? ' loaded' : '') + '" id="meta-' + sub.id + '">📊 ' + metaText + '</span></div></div>';
+                '<div class="platform-badges">' + platformBadges + '</div></div></div>';
         });
         
         card.innerHTML = '<div class="parent-header" onclick="toggleParent(\'' + parent.id + '\')">' +
@@ -1047,8 +1394,22 @@ function updateMetaStatus(status, text) {
 }
 
 function updateMetaCount() {
-    var count = Object.keys(META_SEGMENT_MAP).length;
-    document.getElementById('metaLoadedCount').textContent = count + ' eşleşme';
+    var metaCount = Object.keys(META_SEGMENT_MAP).length;
+    var tiktokCount = Object.keys(PLATFORM_SEGMENT_MAP.tiktok).length;
+    var totalCount = metaCount + tiktokCount;
+    
+    var countText = '';
+    if (activePlatform === 'meta') {
+        countText = metaCount + ' Meta';
+        if (tiktokCount > 0) countText += ' • ' + tiktokCount + ' TikTok';
+    } else if (activePlatform === 'tiktok') {
+        countText = tiktokCount + ' TikTok';
+        if (metaCount > 0) countText += ' • ' + metaCount + ' Meta';
+    } else {
+        countText = totalCount + ' toplam';
+    }
+    
+    document.getElementById('metaLoadedCount').textContent = countText + ' eşleşme';
 }
 
 function getMetaReachEstimate(interests) {
@@ -1085,8 +1446,16 @@ function searchInterest() {
     
     var resultsDiv = document.getElementById('interestResults');
     resultsDiv.style.display = 'block';
-    resultsDiv.innerHTML = '<p style="color:var(--text-secondary)">🔍 Aranıyor...</p>';
+    resultsDiv.innerHTML = '<p style="color:var(--text-secondary)">🔍 ' + (activePlatform === 'tiktok' ? 'TikTok' : 'Meta') + '\'da aranıyor...</p>';
     
+    if (activePlatform === 'tiktok') {
+        searchTikTokInterest(query, resultsDiv);
+    } else {
+        searchMetaInterest(query, resultsDiv);
+    }
+}
+
+function searchMetaInterest(query, resultsDiv) {
     var url = 'https://graph.facebook.com/' + META_CONFIG.apiVersion + '/search?type=adinterest&q=' + encodeURIComponent(query) + '&access_token=' + META_CONFIG.accessToken;
     
     fetch(url)
@@ -1101,17 +1470,17 @@ function searchInterest() {
                 return;
             }
             
-            var html = '<div style="margin-bottom:16px;padding:12px;background:rgba(0,212,255,0.1);border-radius:10px">' +
-                '<div style="font-size:12px;color:var(--accent-blue);margin-bottom:8px;font-weight:600">📌 Segment seç:</div>' +
+            var html = '<div style="margin-bottom:16px;padding:12px;background:rgba(24,119,242,0.1);border-radius:10px;border:1px solid rgba(24,119,242,0.2)">' +
+                '<div style="font-size:12px;color:#1877f2;margin-bottom:8px;font-weight:600">📘 Meta - Segment seç:</div>' +
                 '<select id="segmentSelector" style="width:100%;padding:10px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:12px">' +
                 '<option value="">-- Segment Seç --</option>' + getAllSegmentOptions() + '</select></div>';
             
             data.data.slice(0, 8).forEach(function(interest) {
-                html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg-card);border-radius:10px;margin-bottom:10px">' +
+                html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg-card);border-radius:10px;margin-bottom:10px;border-left:3px solid #1877f2">' +
                     '<div style="flex:1"><div style="font-size:14px;font-weight:500">' + interest.name + '</div>' +
-                    '<div style="font-size:11px;color:var(--text-secondary)">ID: ' + interest.id + '</div></div>' +
-                    '<button onclick="assignInterestToSegment(\'' + interest.id + '\',\'' + interest.name.replace(/'/g, "\\'") + '\')" ' +
-                    'style="padding:8px 16px;background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:8px;color:white;font-size:11px;cursor:pointer">✓ Ata</button></div>';
+                    '<div style="font-size:11px;color:var(--text-secondary)">Meta ID: ' + interest.id + '</div></div>' +
+                    '<button onclick="assignInterestToSegment(\'' + interest.id + '\',\'' + interest.name.replace(/'/g, "\\'") + '\', \'meta\')" ' +
+                    'style="padding:8px 16px;background:linear-gradient(135deg,#1877f2,#0d65d9);border:none;border-radius:8px;color:white;font-size:11px;cursor:pointer">✓ Ata</button></div>';
             });
             
             resultsDiv.innerHTML = html;
@@ -1119,6 +1488,184 @@ function searchInterest() {
         .catch(function(err) {
             resultsDiv.innerHTML = '<p style="color:#f87171">Hata: ' + err.message + '</p>';
         });
+}
+
+function searchTikTokInterest(query, resultsDiv) {
+    // TikTok API simülasyonu - gerçek API entegrasyonu için TIKTOK_CONFIG kullanılacak
+    var queryLower = query.toLowerCase();
+    var results = [];
+    
+    // Keyword ve subcategory eşleştirme
+    Object.keys(TIKTOK_INTEREST_CATEGORIES).forEach(function(key) {
+        var cat = TIKTOK_INTEREST_CATEGORIES[key];
+        var matchScore = 0;
+        
+        // Ana isim eşleşmesi
+        if (key.includes(queryLower) || cat.name.toLowerCase().includes(queryLower)) {
+            matchScore = 100;
+        }
+        
+        // Subcategory eşleşmesi
+        if (cat.subcategories) {
+            cat.subcategories.forEach(function(sub) {
+                if (sub.toLowerCase().includes(queryLower)) {
+                    matchScore = Math.max(matchScore, 80);
+                }
+            });
+        }
+        
+        if (matchScore > 0) {
+            results.push({
+                id: cat.id,
+                name: cat.name,
+                audience_size: cat.audience_size,
+                subcategories: cat.subcategories || [],
+                matchScore: matchScore,
+                key: key
+            });
+        }
+    });
+    
+    // Sırala - en iyi eşleşmeler önce
+    results.sort(function(a, b) { return b.matchScore - a.matchScore; });
+    
+    setTimeout(function() {
+        if (results.length === 0) {
+            resultsDiv.innerHTML = '<div style="text-align:center;padding:24px">' +
+                '<div style="font-size:32px;margin-bottom:12px">🔍</div>' +
+                '<p style="color:var(--text-secondary)">TikTok\'ta "<strong>' + query + '</strong>" için sonuç bulunamadı</p>' +
+                '<p style="color:var(--text-secondary);font-size:11px;margin-top:8px">Farklı bir anahtar kelime deneyin</p></div>';
+            return;
+        }
+        
+        // Platform özeti
+        var totalReach = results.reduce(function(sum, r) { return sum + r.audience_size; }, 0);
+        
+        var html = '<div style="margin-bottom:16px;padding:14px;background:linear-gradient(135deg,rgba(0,0,0,0.3),rgba(238,45,86,0.15));border-radius:12px;border:1px solid rgba(238,45,86,0.3)">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+            '<div style="font-size:13px;color:#ee2d5e;font-weight:600">🎵 TikTok Türkiye</div>' +
+            '<div style="font-size:11px;color:var(--text-secondary)">' + results.length + ' kategori • Toplam ' + formatMetaNumber(totalReach) + ' potansiyel reach</div></div>' +
+            '<select id="segmentSelector" style="width:100%;padding:10px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:12px">' +
+            '<option value="">-- Atanacak Segment Seç --</option>' + getAllSegmentOptions() + '</select></div>';
+        
+        results.slice(0, 10).forEach(function(interest, idx) {
+            var subcatText = interest.subcategories.length > 0 ? interest.subcategories.slice(0, 3).join(', ') : '';
+            var audienceBar = Math.min((interest.audience_size / 22000000) * 100, 100); // Max 22M (entertainment)
+            
+            html += '<div style="padding:14px;background:var(--bg-card);border-radius:12px;margin-bottom:10px;border-left:4px solid #ee2d5e;transition:all 0.2s" onmouseover="this.style.borderLeftWidth=\'6px\'" onmouseout="this.style.borderLeftWidth=\'4px\'">' +
+                '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">' +
+                '<div style="flex:1">' +
+                '<div style="font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:4px">' + interest.name + '</div>' +
+                (subcatText ? '<div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px">Alt kategoriler: ' + subcatText + '</div>' : '') +
+                '<div style="display:flex;align-items:center;gap:8px">' +
+                '<div style="flex:1;height:4px;background:rgba(238,45,86,0.2);border-radius:2px;overflow:hidden"><div style="width:' + audienceBar + '%;height:100%;background:linear-gradient(90deg,#ee2d5e,#ff6b8a);border-radius:2px"></div></div>' +
+                '<span style="font-size:11px;color:#ee2d5e;font-weight:600;font-family:\'Space Mono\',monospace">' + formatMetaNumber(interest.audience_size) + '</span>' +
+                '</div></div>' +
+                '<button onclick="assignInterestToSegment(\'' + interest.id + '\',\'' + interest.name.replace(/'/g, "\\'") + '\', \'tiktok\')" ' +
+                'style="padding:10px 18px;background:linear-gradient(135deg,#ee2d5e,#ff0050);border:none;border-radius:8px;color:white;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;transition:transform 0.2s" onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'scale(1)\'">✓ Ata</button>' +
+                '</div></div>';
+        });
+        
+        // Önerilen eşleştirmeler butonu
+        html += '<div style="margin-top:16px;padding:12px;background:rgba(238,45,86,0.08);border-radius:10px;text-align:center">' +
+            '<button onclick="showTikTokSuggestions()" style="padding:10px 20px;background:transparent;border:1px solid #ee2d5e;border-radius:8px;color:#ee2d5e;font-size:12px;cursor:pointer">🤖 Tüm Segmentler İçin TikTok Önerileri Al</button></div>';
+        
+        resultsDiv.innerHTML = html;
+    }, 400);
+}
+
+function showTikTokSuggestions() {
+    var suggestions = [];
+    segments.forEach(function(parent) {
+        parent.subs.forEach(function(sub) {
+            if (!PLATFORM_SEGMENT_MAP.tiktok[sub.id] && TIKTOK_SEGMENT_RECOMMENDATIONS[sub.id]) {
+                var rec = TIKTOK_SEGMENT_RECOMMENDATIONS[sub.id];
+                var cat = TIKTOK_INTEREST_CATEGORIES[rec.keyword];
+                if (cat) {
+                    suggestions.push({
+                        segmentId: sub.id,
+                        segmentName: sub.name,
+                        interestId: cat.id,
+                        interestName: cat.name,
+                        audienceSize: cat.audience_size
+                    });
+                }
+            }
+        });
+    });
+    
+    if (suggestions.length === 0) {
+        showToast('Tüm segmentler zaten TikTok ile eşleştirilmiş!', 'info');
+        return;
+    }
+    
+    var modal = document.createElement('div');
+    modal.id = 'tiktokSuggestionsModal';
+    modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:10000';
+    
+    var html = '<div style="background:var(--bg-card);border-radius:16px;width:600px;max-height:80vh;overflow:hidden;border:1px solid rgba(238,45,86,0.3)">' +
+        '<div style="padding:18px 22px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,rgba(238,45,86,0.1),transparent)">' +
+        '<h3 style="font-size:15px;color:#ee2d5e">🎵 TikTok Önerileri (' + suggestions.length + ' segment)</h3>' +
+        '<button onclick="document.getElementById(\'tiktokSuggestionsModal\').remove()" style="background:none;border:none;color:var(--text-secondary);font-size:20px;cursor:pointer">✕</button></div>' +
+        '<div style="padding:16px;max-height:50vh;overflow-y:auto">';
+    
+    suggestions.forEach(function(s) {
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--bg-secondary);border-radius:10px;margin-bottom:8px;border-left:3px solid #ee2d5e">' +
+            '<div style="flex:1"><div style="font-size:13px;font-weight:500">' + s.segmentName + '</div>' +
+            '<div style="font-size:11px;color:#ee2d5e">→ ' + s.interestName + ' <span style="color:var(--text-secondary)">(' + formatMetaNumber(s.audienceSize) + ')</span></div></div>' +
+            '<button onclick="acceptTikTokSuggestion(\'' + s.segmentId + '\',\'' + s.interestId + '\',\'' + s.interestName.replace(/'/g, "\\'") + '\')" style="padding:6px 14px;background:#ee2d5e;border:none;border-radius:6px;color:white;font-size:11px;cursor:pointer">Kabul</button></div>';
+    });
+    
+    html += '</div><div style="padding:16px 22px;border-top:1px solid var(--border-color);display:flex;gap:12px;justify-content:flex-end">' +
+        '<button onclick="acceptAllTikTokSuggestions()" style="padding:12px 24px;background:linear-gradient(135deg,#ee2d5e,#ff0050);border:none;border-radius:8px;color:white;font-size:12px;font-weight:600;cursor:pointer">✓ Tümünü Kabul Et (' + suggestions.length + ')</button></div></div>';
+    
+    modal.innerHTML = html;
+    document.body.appendChild(modal);
+}
+
+function acceptTikTokSuggestion(segmentId, interestId, interestName) {
+    var seg = findSegment(segmentId);
+    PLATFORM_SEGMENT_MAP.tiktok[segmentId] = {
+        name: seg ? seg.name : segmentId,
+        interests: [{ id: interestId, name: interestName }],
+        platform: 'tiktok'
+    };
+    saveTikTokMappings();
+    updateMetaCount();
+    
+    // Modal'daki ilgili satırı kaldır
+    var modal = document.getElementById('tiktokSuggestionsModal');
+    if (modal) {
+        showTikTokSuggestions(); // Modal'ı yenile
+    }
+    renderSegments();
+    showToast('🎵 ' + interestName + ' → ' + (seg ? seg.name : segmentId), 'success');
+}
+
+function acceptAllTikTokSuggestions() {
+    var count = 0;
+    segments.forEach(function(parent) {
+        parent.subs.forEach(function(sub) {
+            if (!PLATFORM_SEGMENT_MAP.tiktok[sub.id] && TIKTOK_SEGMENT_RECOMMENDATIONS[sub.id]) {
+                var rec = TIKTOK_SEGMENT_RECOMMENDATIONS[sub.id];
+                var cat = TIKTOK_INTEREST_CATEGORIES[rec.keyword];
+                if (cat) {
+                    PLATFORM_SEGMENT_MAP.tiktok[sub.id] = {
+                        name: sub.name,
+                        interests: [{ id: cat.id, name: cat.name }],
+                        platform: 'tiktok'
+                    };
+                    count++;
+                }
+            }
+        });
+    });
+    
+    saveTikTokMappings();
+    updateMetaCount();
+    renderSegments();
+    document.getElementById('tiktokSuggestionsModal').remove();
+    showToast('🎵 ' + count + ' TikTok eşleştirmesi yapıldı!', 'success');
 }
 
 function getAllSegmentOptions() {
@@ -1134,21 +1681,48 @@ function getAllSegmentOptions() {
     return options;
 }
 
-function assignInterestToSegment(interestId, interestName) {
+function assignInterestToSegment(interestId, interestName, platform) {
+    platform = platform || activePlatform;
     var selector = document.getElementById('segmentSelector');
     var segmentId = selector.value;
     if (!segmentId) { alert('Lütfen önce bir segment seçin!'); return; }
     
     var seg = findSegment(segmentId);
-    META_SEGMENT_MAP[segmentId] = {
-        name: seg ? seg.name : segmentId,
-        interests: [{ id: interestId, name: interestName }]
-    };
-    saveMappings();
+    
+    // Platform bazlı mapping
+    if (platform === 'tiktok') {
+        PLATFORM_SEGMENT_MAP.tiktok[segmentId] = {
+            name: seg ? seg.name : segmentId,
+            interests: [{ id: interestId, name: interestName }],
+            platform: 'tiktok'
+        };
+        saveTikTokMappings();
+    } else {
+        META_SEGMENT_MAP[segmentId] = {
+            name: seg ? seg.name : segmentId,
+            interests: [{ id: interestId, name: interestName }],
+            platform: 'meta'
+        };
+        saveMappings();
+    }
+    
     updateMetaCount();
     selector.innerHTML = '<option value="">-- Segment Seç --</option>' + getAllSegmentOptions();
     renderSegments();
-    showToast(interestName + ' → ' + (seg ? seg.name : segmentId), 'success');
+    
+    var platformLabel = platform === 'tiktok' ? '🎵 TikTok' : '📘 Meta';
+    showToast(platformLabel + ': ' + interestName + ' → ' + (seg ? seg.name : segmentId), 'success');
+}
+
+function saveTikTokMappings() {
+    localStorage.setItem('tiktokSegmentMappings', JSON.stringify(PLATFORM_SEGMENT_MAP.tiktok));
+}
+
+function loadTikTokMappings() {
+    var saved = localStorage.getItem('tiktokSegmentMappings');
+    if (saved) {
+        PLATFORM_SEGMENT_MAP.tiktok = JSON.parse(saved);
+    }
 }
 
 function showMappingsModal() {
