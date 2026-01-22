@@ -11,9 +11,5 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ],
-  "env": {
-    "TIKTOK_APP_ID": "@tiktok-app-id",
-    "TIKTOK_APP_SECRET": "@tiktok-app-secret"
-  }
+  ]
 }
